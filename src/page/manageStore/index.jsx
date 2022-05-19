@@ -1,4 +1,6 @@
 import { useState } from "react";
+import parse from "html-react-parser";
+
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "store/auth";
 import {
@@ -20,9 +22,9 @@ import MainLogo from "assets/main_logo.png";
 // import EditButton from "components/Button";
 
 export default function ManageMember() {
+  console.log(<Button variant="contained">편집하기</Button>);
   const dispatch = useDispatch();
   const status = useSelector((state) => state.auth.user);
-
   const columns = [
     { field: "CMSId", headerName: "CMS ID", width: 200 },
     {
@@ -44,20 +46,19 @@ export default function ManageMember() {
       editable: false,
     },
   ];
-  console.log(editButton());
   const rows = [
     {
       id: 1,
       CMSId: "Snow",
       storeName: "Jon",
-      checkCMS: `${editButton().props.children}`,
+      checkCMS: ``,
       initPassword: "1",
     },
     {
       id: 2,
       CMSId: "Lannister",
       storeName: "Cersei",
-      checkCMS: `${editButton().props.children}`,
+      checkCMS: "편집하기",
       initPassword: "1",
     },
     {
@@ -88,6 +89,34 @@ export default function ManageMember() {
       checkCMS: `${editButton().props.children}`,
       initPassword: "1",
     },
+    {
+      id: 7,
+      CMSId: "Lannister",
+      storeName: "Jaime",
+      checkCMS: `${editButton().props.children}`,
+      initPassword: "1",
+    },
+    {
+      id: 8,
+      CMSId: "Lannister",
+      storeName: "Jaime",
+      checkCMS: `${editButton().props.children}`,
+      initPassword: "1",
+    },
+    {
+      id: 9,
+      CMSId: "Lannister",
+      storeName: "Jaime",
+      checkCMS: `${editButton().props.children}`,
+      initPassword: "1",
+    },
+    {
+      id: 10,
+      CMSId: "Lannister",
+      storeName: "Jaime",
+      checkCMS: `${editButton().props.children}`,
+      initPassword: "1",
+    },
   ];
 
   return (
@@ -98,7 +127,7 @@ export default function ManageMember() {
         mb={5}
         sx={{ fontSize: "subtitle1.fontSize" }}
       >
-        회원관리
+        매장관리
       </Typography>
       <Grid
         container
@@ -108,7 +137,7 @@ export default function ManageMember() {
           height: 68,
         }}
       >
-        <Grid item xs={1} md={2} sx={{ height: 1 }}>
+        <Grid item xs={2} md={2} sx={{ height: 1 }}>
           <FormControl
             fullWidth
             sx={{
@@ -134,7 +163,7 @@ export default function ManageMember() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={1} md={10} sx={{ height: 1 }}>
+        <Grid item xs={10} md={10} sx={{ height: 1 }}>
           <Grid
             // component="form"
             pl={2}
@@ -162,20 +191,32 @@ export default function ManageMember() {
           </Grid>
         </Grid>
       </Grid>
-      <Box sx={{ width: "100%", height: "700px" }}>
+      <Box mb={5} sx={{ width: "100%", height: "631px" }}>
         <DataGrid
+          components={{
+            NoRowsOverlay: CustomNoRowsOverlay,
+          }}
           autoPageSize
           rows={rows}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          rowsPerPageOptions={[10]}
           sx={{ textAlign: "center" }}
         ></DataGrid>
       </Box>
     </Container>
   );
 }
+function CustomNoRowsOverlay() {
+  return (
+    <Grid
+      container
+      bgcolor="grey.100"
+      height="100%"
+      sx={{ justifyContent: "center", alignItems: "center" }}
+    >
+      검색 결과가 없습니다.
+    </Grid>
+  );
+}
 
-const editButton = () => {
-  return <Button variant="contained">편집하기</Button>;
-};
+const editButton = () => <Button variant="contained">편집하기</Button>;

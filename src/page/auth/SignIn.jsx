@@ -65,7 +65,7 @@ export default function SignIn() {
           fontSize="30px"
           fontWeight={400}
         >
-          S로봇 관리자 페이지 ADMIN
+          S로봇 관리자 페이지 어드민
         </Typography>
         <Box pt={4} pb={2} sx={{ borderRadius: "borderRadius" }}>
           <TextField

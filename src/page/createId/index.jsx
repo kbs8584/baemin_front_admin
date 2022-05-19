@@ -11,6 +11,7 @@ import { ShowCreatedId } from "components/Modal";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [notAvailableId, setNotAvailableId] = useState(false);
   return (
     <Container sx={{ marginBottom: 18 }}>
       <ShowCreatedId dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
@@ -31,6 +32,7 @@ export default function CreateId() {
               alignItems: "center",
               border: "1px solid",
               borderColor: "grey.200",
+              borderRadius: "5px",
             }}
           >
             <Typography
@@ -39,23 +41,22 @@ export default function CreateId() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: 200,
+                width: "200px",
                 height: 1,
                 fontWeight: "fontWeight",
+                borderRadius: "5px 0 0 5px",
               }}
             >
               매장 ID
             </Typography>
             <InputBase
-              placeholder="매장 ID를 검색해주세요"
-              sx={{ paddingLeft: 3, fontSize: "0.9rem" }}
+              placeholder="매장 ID를 입력후 키보드의 엔터키를 입력해주세요"
+              sx={{
+                width: "calc(100% - 410px)",
+                paddingLeft: 3,
+                fontSize: "0.9rem",
+              }}
             ></InputBase>
-            <Button
-              variant="outlined"
-              sx={{ marginRight: 3, marginLeft: "auto", border: "2px solid" }}
-            >
-              검색
-            </Button>
           </Grid>
         </Box>
         <Box mb={1.3}>
@@ -66,6 +67,7 @@ export default function CreateId() {
               alignItems: "center",
               border: "1px solid",
               borderColor: "grey.200",
+              borderRadius: "5px",
             }}
           >
             <Typography
@@ -74,14 +76,18 @@ export default function CreateId() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: 200,
+                width: "200px",
                 height: 1,
                 fontWeight: "fontWeight",
+                borderRadius: "5px 0 0 5px",
               }}
             >
               매장명
             </Typography>
-            <InputBase placeholder="" sx={{ paddingLeft: 3 }}></InputBase>
+            <InputBase
+              placeholder=""
+              sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}
+            ></InputBase>
           </Grid>
         </Box>
         <Box mb={1.3}>
@@ -92,6 +98,7 @@ export default function CreateId() {
               alignItems: "center",
               border: "1px solid",
               borderColor: "grey.200",
+              borderRadius: "5px",
             }}
           >
             <Typography
@@ -100,20 +107,30 @@ export default function CreateId() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: 200,
+                width: "200px",
                 height: 1,
                 fontWeight: "fontWeight",
+                borderRadius: "5px 0 0 5px",
               }}
             >
               CMS ID
             </Typography>
             <InputBase
               placeholder="ID를 입력해주세요"
-              sx={{ paddingLeft: 3, fontSize: "0.9rem" }}
+              sx={{
+                width: "calc(100% - 410px)",
+                paddingLeft: 3,
+                fontSize: "0.9rem",
+              }}
             ></InputBase>
             <Button
               variant="outlined"
-              sx={{ marginRight: 3, marginLeft: "auto", border: "2px solid" }}
+              sx={{
+                width: "110px",
+                marginRight: 3,
+                marginLeft: "auto",
+                border: "2px solid",
+              }}
             >
               중복검사
             </Button>
@@ -127,6 +144,7 @@ export default function CreateId() {
               alignItems: "center",
               border: "1px solid",
               borderColor: "grey.200",
+              borderRadius: "5px",
             }}
           >
             <Typography
@@ -135,20 +153,30 @@ export default function CreateId() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: 200,
+                width: "200px",
                 height: 1,
                 fontWeight: "fontWeight",
+                borderRadius: "5px 0 0 5px",
               }}
             >
               패스워드
             </Typography>
             <InputBase
-              placeholder="패스워드를 검색해주세요"
-              sx={{ paddingLeft: 3, fontSize: "0.9rem" }}
+              placeholder="패스워드를 입력해주세요"
+              sx={{
+                width: "calc(100% - 410px)",
+                paddingLeft: 3,
+                fontSize: "0.9rem",
+              }}
             ></InputBase>
             <Button
               variant="outlined"
-              sx={{ marginRight: 3, marginLeft: "auto", border: "2px solid" }}
+              sx={{
+                width: "110px",
+                marginRight: 3,
+                marginLeft: "auto",
+                border: "2px solid",
+              }}
             >
               자동생성
             </Button>
@@ -157,6 +185,7 @@ export default function CreateId() {
         <Button
           fullWidth
           variant="contained"
+          disabled={notAvailableId ? true : false}
           sx={{
             height: 45,
             padding: 4,
@@ -166,7 +195,9 @@ export default function CreateId() {
           }}
           onClick={() => setDialogOpen(true)}
         >
-          신규 CMS ID 생성
+          {notAvailableId
+            ? "CMS에 이미 가입되어있는 매장입니다"
+            : "신규 CMS ID 생성"}
         </Button>
       </Box>
     </Container>

@@ -6,7 +6,7 @@ export const HOME_ROUTE_BUTTONS = [
   },
   {
     id: 1,
-    name: "CMS ID생성",
+    name: "매장아이디 생성",
     path: "create-id",
   },
   {
@@ -14,14 +14,4 @@ export const HOME_ROUTE_BUTTONS = [
     name: "배민갤러리",
     path: "gallery",
   },
-  {
-    id: 3,
-    name: "직원관리",
-    path: "manage-staff",
-  },
-  // {
-  //   id: 4,
-  //   name: "중간관리자",
-  //   path: "/",
-  // },
 ];

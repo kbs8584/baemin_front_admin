@@ -19,7 +19,9 @@ const theme = createTheme({
       main: "#1A7CFF", // button normal
       // light: '#F45452', // ????
       light: "#8cbdff",
-      dark: "#0049A9", // button clicked
+      dark: "#0049A9", // button clicked,
+      alert: "#e03131",
+      alertBg: "rgba(224, 49, 49,0.1)",
     },
     warning: {
       main: "#F45452",

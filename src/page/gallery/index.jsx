@@ -1,118 +1,348 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "store/auth";
 import {
   Grid,
   Box,
-  CardMedia,
   Typography,
-  TextField,
-  Checkbox,
+  Button,
+  Divider,
+  Tabs,
+  Tab,
+  Container,
+  ImageList,
+  ImageListItem,
+  ButtonGroup,
   FormControlLabel,
   FormGroup,
-  Button,
+  Checkbox,
 } from "@mui/material";
-import MainLogo from "assets/main_logo.png";
+import { styled } from "@mui/material/styles";
+import { TabContext, TabPanel } from "@mui/lab";
+import { CheckBox } from "@mui/icons-material";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
-export default function SignIn() {
-  const [userId, setUserId] = useState("");
-  const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const status = useSelector((state) => state.auth.user);
+export default function GallaryModal() {
+  const INITIAL_VALUE = "1";
+  const INITIAL_SUB_VALUE = "1";
+  const [value, setValue] = useState(INITIAL_VALUE);
+  const [subValue, setSubValue] = useState(INITIAL_SUB_VALUE);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const createData = (id, name, image) => ({
+    id,
+    name,
+    image,
+  });
 
-    if (status === "succeeded") {
-      // 인증된 상태로 메인화면 이동
-    }
+  const imageCategoryList = [
+    createData("1", "시즌", [
+      {
+        imageId: "1",
+        imageName: "생일01",
+        imageURL:
+          "https://i.pinimg.com/originals/dc/0e/a3/dc0ea333ec91b82a0b706dd977d84906.jpg",
+      },
+      {
+        imageId: "2",
+        imageName: "생일02",
+        imageURL:
+          "https://d3kxs6kpbh59hp.cloudfront.net/community/COMMUNITY/cc687c9133ff431d99d7ba5cc252ae4b/580deb542be4476eba319e2f19d31b06_1649592109.jpg",
+      },
+      {
+        imageId: "3",
+        imageName: "생일03",
+        imageURL:
+          "https://d3kxs6kpbh59hp.cloudfront.net/community/COMMUNITY/eb89e2fa38834e61abf0cd45f7f5d590/289149d4b7704985a93f78663834fe64_1649248695.png",
+      },
+      {
+        imageId: "4",
+        imageName: "생일04",
+        imageURL:
+          "https://cdn.crowdpic.net/detail-thumb/thumb_d_7E318A19CF49E428F7D458A803F5311C.jpg",
+      },
+      {
+        imageId: "5",
+        imageName: "생일05",
+        imageURL:
+          "https://vrthumb.imagetoday.co.kr/2015/03/25/tid114t000407.jpg",
+      },
+    ]),
+    createData("2", "돈가스/회/일식", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("3", "중식", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("4", "치킨", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("5", "백반/죽/국수", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("6", "카페/디저트", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("7", "분식", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("8", "찜/탕/찌개", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("9", "피자", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("10", "양식", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("11", "고기/구이", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("12", "족발/보쌈", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("13", "아시안", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("14", "패스트푸드", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("15", "야식", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+    createData("16", "도시락", [
+      {
+        imageId: "1",
+        imageName: "상황01",
+        imageURL:
+          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
+      },
+    ]),
+  ];
 
-    await dispatch(
-      getUser({
-        userId: userId,
-        password: password,
-      })
+  const handleValueChange = (e, value) => {
+    setSubValue(INITIAL_SUB_VALUE);
+    setValue(value);
+    e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.scrollTo(
+      {
+        top: 0,
+        behavior: "smooth",
+      }
     );
   };
 
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
   return (
-    <Grid
-      container
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      sx={{ height: "100vh" }}
-    >
-      <Grid item sx={{ border: "1px solid #DDDDDD" }} p={3}>
-        <Grid container justifyContent="center">
-          <CardMedia
-            component="img"
-            src={MainLogo}
-            sx={{ maxWidth: "150px" }}
-          />
+    <Container>
+      <Grid container pt={2} mb={4} sx={{ justifyContent: "space-between" }}>
+        <Grid item component="h1" sx={{ fontSize: "subtitle1.fontSize" }}>
+          배민 갤러리
         </Grid>
-
-        <Typography
-          sx={{ color: "#222222" }}
-          align="center"
-          pt={3}
-          pb={1}
-          fontSize="30px"
-          fontWeight={400}
-        >
-          화면 꾸미기 로그인
-        </Typography>
-        <Typography sx={{ color: "#777777" }} align="center" fontSize="12px">
-          아이디를 잊었거나, 로그인에 문제가 있다면 배민로봇 고객센터
-          1600-9977로 문의해주세요
-        </Typography>
-
-        <Box pt={4} pb={2}>
-          <TextField
-            fullWidth
-            label="아이디"
-            onChange={(e) => setUserId(e.target.value)}
-          />
-        </Box>
-
-        <Box pb={2}>
-          <TextField
-            fullWidth
-            type="password"
-            label="비밀번호"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Box>
-
-        <Grid
-          container
-          justifyContent="space-between"
-          alignItems="center"
-          pb={3}
-        >
-          <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="아이디 저장" />
-          </FormGroup>
-
-          <Typography>비밀번호 찾기</Typography>
-        </Grid>
-
-        <Box pb={4}>
+        <Grid>
+          <Button
+            variant="outlined"
+            sx={{
+              height: "28px",
+              padding: 3,
+              marginRight: 3,
+              borderColor: "primary.alert",
+              color: "primary.alert",
+              fontWeight: "fontWeight",
+              "&:hover": {
+                borderColor: "primary.alert",
+                backgroundColor: "primary.alertBg",
+              },
+            }}
+          >
+            선택 삭제
+          </Button>
           <Button
             variant="contained"
-            fullWidth
-            size="large"
-            sx={{ bgcolor: "#1A7CFF" }}
-            onClick={handleSubmit}
+            sx={{ height: "28px", padding: 3, fontWeight: "fontWeight" }}
           >
-            로그인
+            이미지 추가
           </Button>
-        </Box>
-
-        <Typography sx={{ color: "#777777" }} fontSize="12px" align="center">
-          Woowa Brothers Crop.
-        </Typography>
+        </Grid>
       </Grid>
-    </Grid>
+      <TabContext value={value}>
+        <Grid container>
+          <Grid item xs={2} md={2}>
+            <Tabs
+              onChange={handleValueChange}
+              aria-label="lab API tabs example"
+              orientation="vertical"
+              value={value}
+              TabIndicatorProps={{ style: { backgroundColor: "transparent" } }}
+            >
+              {imageCategoryList.map((listItem) => (
+                <Tab
+                  key={listItem.id}
+                  label={listItem.name}
+                  value={listItem.id}
+                  sx={{
+                    border: 1,
+                    borderColor: "grey.200",
+                    bgcolor: "grey.50",
+                    "&.Mui-selected": {
+                      borderRadius: 1,
+                      backgroundColor: "common.white",
+                    },
+                  }}
+                />
+              ))}
+            </Tabs>
+          </Grid>
+          <Grid item xs={10} md={10}>
+            <TabPanel value={value} sx={{ padding: "0" }}>
+              <ImageList
+                sx={{
+                  width: "100%",
+                  paddingLeft: 3,
+                }}
+                component="div"
+                cols={4}
+                gap={10}
+              >
+                {imageCategoryList[value - 1].image.map((listItem) => (
+                  <ImageListItem
+                    component="div"
+                    value={listItem.imageName}
+                    key={`${value}${subValue}${listItem.imageId}`}
+                    sx={{
+                      position: "relative",
+                      border: 3,
+                      borderRadius: "10px",
+                      borderColor: "grey.100",
+                      aspectRatio: "1/1",
+                    }}
+                  >
+                    {/* <HighlightOffIcon
+                      sx={{
+                        borderRadius: "100%",
+                        border: "none !important",
+                        borderColor: "common.black",
+                        color: "common.white",
+                        backgroundColor: "common.black",
+                      }}
+                    /> */}
+                    <FormControlLabel
+                      sx={{
+                        margin: "auto",
+                      }}
+                      label={
+                        <img
+                          label="haha"
+                          src={listItem.imageURL}
+                          alt={listItem.imageId}
+                          loading="lazy"
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "10px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      }
+                      control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon />}
+                          checkedIcon={<CheckBoxOutlineBlankIcon />}
+                          id="haha"
+                          sx={{
+                            width: "10px",
+                            height: "10px",
+                            position: "absolute",
+                            top: "10px",
+                            left: "10px",
+                            color: "primary.main",
+                            "&.Mui-checked": {
+                              borderRadius: 1,
+                              backgroundColor: "primary.main",
+                            },
+                          }}
+                          onClick={() => {
+                            console.log(listItem.imageId);
+                          }}
+                        />
+                      }
+                    />
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            </TabPanel>
+          </Grid>
+        </Grid>
+      </TabContext>
+    </Container>
   );
 }

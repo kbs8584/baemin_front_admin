@@ -10,45 +10,54 @@ import {
   CardMedia,
   CardActions,
   ToggleButton,
+  Avatar,
 } from "@mui/material";
 import { useState } from "react";
 import { ShowCreatedId } from "components/Modal";
 import Profile from "assets/main_logo.png";
+import { CreateStaffAccount } from "components/Modal";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [staffInfo, setStaffInfo] = useState();
   const staffArray = [
     {
+      id: 1,
       name: "슈퍼 관리자",
       position: "슈퍼관리자",
       profileImage: "",
       activated: "활성화",
     },
     {
+      id: 2,
       name: "슈퍼 관리자",
       position: "슈퍼관리자",
       profileImage: "",
       activated: "활성화",
     },
     {
+      id: 3,
       name: "슈퍼 관리자",
       position: "슈퍼관리자",
       profileImage: "",
       activated: "활성화",
     },
     {
+      id: 4,
       name: "슈퍼 관리자",
       position: "슈퍼관리자",
       profileImage: "",
       activated: "활성화",
     },
     {
+      id: 5,
       name: "슈퍼 관리자",
       position: "슈퍼관리자",
       profileImage: "",
       activated: "활성화",
     },
     {
+      id: 6,
       name: "슈퍼 관리자",
       position: "슈퍼관리자",
       profileImage: "",
@@ -57,34 +66,52 @@ export default function CreateId() {
   ];
   return (
     <Container sx={{ marginBottom: 18 }}>
+      <CreateStaffAccount
+        staffInfo={staffInfo}
+        dialogOpen={dialogOpen}
+        setDialogOpen={setDialogOpen}
+      />
       <Grid mt={6} mb={5} container sx={{ justifyContent: "space-between" }}>
-        <Typography item variant="h1" sx={{ fontSize: "subtitle1.fontSize" }}>
+        <Grid item component="h1" sx={{ fontSize: "subtitle1.fontSize" }}>
           직원 관리
-        </Typography>
+        </Grid>
         <Button
           variant="contained"
           sx={{ height: 42, padding: 3, fontWeight: "fontWeight" }}
+          onClick={() => {
+            setDialogOpen(true);
+            setStaffInfo();
+          }}
         >
           직원 추가
         </Button>
       </Grid>
-      <Grid container>
+      <Grid
+        container
+        columnGap={3}
+        rowGap={3}
+        sx={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)" }}
+      >
         {staffArray.map((staff) => (
           <Grid
+            key={staff.id}
             item
-            direction="column"
-            xs={3}
-            ms={3}
             p={4}
             sx={{
               display: "flex",
+              flexDirection: "column",
               border: "3px solid",
               borderRadius: 3,
               borderColor: "grey.200",
               alignItems: "center",
             }}
           >
-            <CardMedia
+            <Avatar
+              alt={staffArray.name}
+              src={Profile}
+              sx={{ width: "100px", height: "100px", objectFit: "contain" }}
+            />
+            {/* <CardMedia
               component="img"
               image={Profile}
               alt={staffArray.name}
@@ -95,7 +122,7 @@ export default function CreateId() {
                 boxShadow: "0px 4px 2px 2px #ddd",
                 objectFit: "contain",
               }}
-            />
+            /> */}
             <CardContent>
               <Typography
                 sx={{
@@ -110,9 +137,31 @@ export default function CreateId() {
                 {staff.position}
               </Typography>
             </CardContent>
-            <CardActions s>
-              <Button>수정하기</Button>
-              <ToggleButton>{staff.activated}</ToggleButton>
+            <CardActions
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() => {
+                  setDialogOpen(true);
+                  setStaffInfo(staff);
+                }}
+              >
+                수정하기
+              </Button>
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{ marginLeft: "0 !important", marginTop: 1 }}
+              >
+                {staff.activated}
+              </Button>
             </CardActions>
           </Grid>
         ))}

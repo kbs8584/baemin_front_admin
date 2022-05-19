@@ -13,32 +13,38 @@ import {
 } from "@mui/material";
 
 import { HOME_ROUTE_BUTTONS } from "constant";
-import TempAvatar from "assets/temp_avatar.jpeg";
 import MainLogo from "assets/main_logo.png";
 import { setCurrentCustomize } from "store/app";
 
 export default function Header() {
   const navigate = useNavigate();
-  const [dialogOpen, setDialogOpen] = useState(false);
   //   const user = useSelector((state) => state.auth.user);
 
   return (
     <Container>
-      <Box p={3}>
+      <Grid container p={3}>
         <CardMedia
           component="img"
           src={MainLogo}
           onClick={() => navigate("/")}
           sx={{
             maxWidth: "172px",
-
+            objectFit: "contain",
             "&:hover": {
               cursor: "pointer",
             },
           }}
         />
-      </Box>
-
+        <Typography
+          ml={2}
+          sx={{
+            fontSize: "subtitle1.fontSize",
+            fontWeight: "h1.fontWeight",
+          }}
+        >
+          어드민
+        </Typography>
+      </Grid>
       <RouteButtonContainer>
         <Grid item>
           {HOME_ROUTE_BUTTONS.map((button) => (

@@ -6,7 +6,7 @@ import Layout from "components/layout/index";
 import Home from "page/home/index";
 import SignIn from "page/auth/SignIn";
 import Gallery from "./page/gallery";
-import ManageMember from "./page/manageMember";
+import ManageMember from "./page/manageStore";
 import ManageStaff from "./page/manageStaff";
 import CreateId from "./page/createId";
 
@@ -17,7 +17,6 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<ManageMember />} />
           <Route index path="manage-member" element={<ManageMember />} />
-          <Route path="manage-staff" element={<ManageStaff />} />
           <Route path="create-id" element={<CreateId />} />
           <Route path="gallery" element={<Gallery />} />
         </Route>
