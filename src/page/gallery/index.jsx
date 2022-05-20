@@ -20,6 +20,7 @@ import { TabContext, TabPanel } from "@mui/lab";
 import { CheckBox } from "@mui/icons-material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ClearIcon from "@mui/icons-material/Clear";
 
 export default function GallaryModal() {
   const INITIAL_VALUE = "1";
@@ -33,7 +34,7 @@ export default function GallaryModal() {
     image,
   });
 
-  const imageCategoryList = [
+  const [imageCategoryList, setImageCategoryList] = useState([
     createData("1", "시즌", [
       {
         imageId: "1",
@@ -186,7 +187,9 @@ export default function GallaryModal() {
           "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
       },
     ]),
-  ];
+  ]);
+
+  console.log(imageCategoryList[value]);
 
   const handleValueChange = (e, value) => {
     setSubValue(INITIAL_SUB_VALUE);
@@ -273,70 +276,88 @@ export default function GallaryModal() {
                 gap={10}
               >
                 {imageCategoryList[value - 1].image.map((listItem) => (
-                  <ImageListItem
-                    component="div"
-                    value={listItem.imageName}
-                    key={`${value}${subValue}${listItem.imageId}`}
+                  <FormControlLabel
+                    key={`${value}${listItem.imageId}`}
                     sx={{
                       position: "relative",
-                      border: 3,
-                      borderRadius: "10px",
-                      borderColor: "grey.100",
-                      aspectRatio: "1/1",
+                      margin: "auto",
+                      alignItems: "start",
                     }}
-                  >
-                    {/* <HighlightOffIcon
-                      sx={{
-                        borderRadius: "100%",
-                        border: "none !important",
-                        borderColor: "common.black",
-                        color: "common.white",
-                        backgroundColor: "common.black",
-                      }}
-                    /> */}
-                    <FormControlLabel
-                      sx={{
-                        margin: "auto",
-                      }}
-                      label={
-                        <img
-                          label="haha"
-                          src={listItem.imageURL}
-                          alt={listItem.imageId}
-                          loading="lazy"
-                          style={{
-                            display: "block",
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: "10px",
-                            objectFit: "contain",
-                          }}
-                        />
-                      }
-                      control={
-                        <Checkbox
-                          icon={<CheckBoxOutlineBlankIcon />}
-                          checkedIcon={<CheckBoxOutlineBlankIcon />}
-                          id="haha"
+                    label={
+                      <>
+                        <ImageListItem
+                          component="div"
+                          value={listItem.imageName}
                           sx={{
-                            width: "10px",
-                            height: "10px",
+                            position: "relative",
+                            border: 3,
+                            borderRadius: "10px",
+                            borderColor: "grey.100",
+                            aspectRatio: "1/1",
+                          }}
+                        >
+                          <img
+                            label="haha"
+                            src={listItem.imageURL}
+                            alt={listItem.imageId}
+                            loading="lazy"
+                            style={{
+                              display: "block",
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: "10px",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </ImageListItem>
+                        <ClearIcon
+                          sx={{
                             position: "absolute",
                             top: "10px",
-                            left: "10px",
-                            color: "primary.main",
-                            "&.Mui-checked": {
-                              borderRadius: 1,
-                              backgroundColor: "primary.main",
-                            },
+                            right: "10px",
+                            zIndex: 2,
+                            width: "20px",
+                            height: "auto",
+                            borderRadius: "100%",
+                            backgroundColor: "common.black",
+                            color: "common.white",
                           }}
                           onClick={() => {
-                            console.log(listItem.imageId);
+                            const newCategory = imageCategoryList[
+                              value - 1
+                            ].image.filter(
+                              (item) => item.imageId !== listItem.imageId
+                            );
+                            // console.log(newCategory);
+                            // setImageCategoryList(imageCategoryList[value-1]를 newCategory);
                           }}
                         />
-                      }
-                    />
-                  </ImageListItem>
+                      </>
+                    }
+                    control={
+                      <Checkbox
+                        icon={<CheckBoxOutlineBlankIcon />}
+                        checkedIcon={<CheckBoxOutlineBlankIcon />}
+                        id="haha"
+                        sx={{
+                          width: "10px",
+                          height: "10px",
+                          position: "relative",
+                          zIndex: "1",
+                          top: "10px",
+                          left: "30px",
+                          color: "primary.main",
+                          "&.Mui-checked": {
+                            borderRadius: 1,
+                            backgroundColor: "primary.main",
+                          },
+                        }}
+                        onClick={() => {
+                          // console.log(listItem);
+                        }}
+                      />
+                    }
+                  />
                 ))}
               </ImageList>
             </TabPanel>

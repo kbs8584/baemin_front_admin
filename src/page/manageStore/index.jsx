@@ -1,6 +1,5 @@
 import { useState } from "react";
 import parse from "html-react-parser";
-
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "store/auth";
 import {
@@ -10,114 +9,88 @@ import {
   FormControl,
   Select,
   InputBase,
-  Paper,
   Button,
   Box,
   MenuItem,
-  InputLabel,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
-import MainLogo from "assets/main_logo.png";
-// import EditButton from "components/Button";
+import stores from "data/stores";
+
+export const Test = () => <h1>Test Component</h1>;
 
 export default function ManageMember() {
-  console.log(<Button variant="contained">편집하기</Button>);
   const dispatch = useDispatch();
   const status = useSelector((state) => state.auth.user);
+  const [inputValue, setInputValue] = useState("");
+  const [selectValue, setSelectValue] = useState("all");
+  const [storeData, setStoreData] = useState(stores);
+
+  function filterStore() {
+    let filteredStore = [];
+    if (selectValue === "all") {
+      // Object.keys(stores[0]).forEach((key) => {
+      //   const preFilteredStore = filteredStore;
+      //   console.log("preFli", preFilteredStore);
+      //   filteredStore = stores.filter((store) => {
+      //     return store[key] === inputValue;
+      //   });
+      //   setStoreData([...preFilteredStore, filteredStore]);
+      // });
+    } else {
+      filteredStore = stores.filter(
+        (store) => store[selectValue] === inputValue
+      );
+    }
+    setStoreData(filteredStore);
+  }
+
   const columns = [
-    { field: "CMSId", headerName: "CMS ID", width: 200 },
     {
+      headerClassName: "super-app-theme--header",
+      field: "CMSId",
+      headerName: "CMS ID",
+      width: 200,
+    },
+    {
+      headerClassName: "super-app-theme--header",
       field: "storeName",
       headerName: "매장명(매장ID)",
-      width: 644,
+      width: 344,
       editable: false,
     },
     {
+      headerClassName: "super-app-theme--header",
+      field: "storeEmail",
+      headerName: "이메일",
+      width: 300,
+      editable: false,
+    },
+    {
+      headerClassName: "super-app-theme--header",
       field: "checkCMS",
       headerName: "CMS 보기",
       width: 150,
+      renderCell: (params) => {
+        console.log("rendercell params", params);
+
+        return <button>Test</button>;
+      },
       editable: false,
     },
     {
+      headerClassName: "super-app-theme--header",
       field: "initPassword",
       headerName: "비밀번호 초기화",
       width: 150,
       editable: false,
     },
   ];
-  const rows = [
-    {
-      id: 1,
-      CMSId: "Snow",
-      storeName: "Jon",
-      checkCMS: ``,
-      initPassword: "1",
-    },
-    {
-      id: 2,
-      CMSId: "Lannister",
-      storeName: "Cersei",
-      checkCMS: "편집하기",
-      initPassword: "1",
-    },
-    {
-      id: 3,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-    {
-      id: 4,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-    {
-      id: 5,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-    {
-      id: 6,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-    {
-      id: 7,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-    {
-      id: 8,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-    {
-      id: 9,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-    {
-      id: 10,
-      CMSId: "Lannister",
-      storeName: "Jaime",
-      checkCMS: `${editButton().props.children}`,
-      initPassword: "1",
-    },
-  ];
+  const buttonTest = `<button>Hi</button>`;
+  function test() {
+    return parse(buttonTest);
+  }
+  // console.log(test());
 
   return (
     <Container sx={{ width: "100%", minHeight: "100vh" }}>
@@ -147,7 +120,7 @@ export default function ManageMember() {
             }}
           >
             <Select
-              value={1}
+              value={selectValue}
               labelId="category-select-label"
               id="category-select"
               sx={{
@@ -155,11 +128,14 @@ export default function ManageMember() {
                 borderRadius: "30px",
                 textAlign: "center",
               }}
+              onChange={(e) => {
+                setSelectValue(e.target.value);
+              }}
             >
-              <MenuItem value={1}>전체</MenuItem>
-              <MenuItem value={2}>매장명</MenuItem>
-              <MenuItem value={3}>회원ID</MenuItem>
-              <MenuItem value={4}>매장ID</MenuItem>
+              <MenuItem value="all">전체</MenuItem>
+              <MenuItem value="storeName">매장명</MenuItem>
+              <MenuItem value="CMSId">회원ID</MenuItem>
+              <MenuItem value="storeId">매장ID</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -177,7 +153,13 @@ export default function ManageMember() {
             }}
           >
             <SearchIcon />
-            <InputBase fullWidth></InputBase>
+            <InputBase
+              fullWidth
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                // filterStore();
+              }}
+            ></InputBase>
             <Button
               sx={{
                 height: 1,
@@ -185,22 +167,40 @@ export default function ManageMember() {
                 borderRadius: "0 30px 30px 0",
                 color: "#000",
               }}
+              onClick={() => filterStore()}
             >
               검색
             </Button>
           </Grid>
         </Grid>
       </Grid>
-      <Box mb={5} sx={{ width: "100%", height: "631px" }}>
+      <Box
+        mb={5}
+        sx={{
+          width: "100%",
+          height: "631px",
+          "& .super-app-theme--header": {
+            borderBottom: 3,
+          },
+        }}
+      >
         <DataGrid
           components={{
             NoRowsOverlay: CustomNoRowsOverlay,
           }}
           autoPageSize
-          rows={rows}
+          rows={storeData}
           columns={columns}
           rowsPerPageOptions={[10]}
-          sx={{ textAlign: "center" }}
+          sx={{
+            textAlign: "center",
+            // "& .MuiDataGrid-row": {
+            //   border: "1px solid transparent",
+            // },
+            "& .MuiDataGrid-row:nth-of-type(2n)": {
+              backgroundColor: "grey.100",
+            },
+          }}
         ></DataGrid>
       </Box>
     </Container>

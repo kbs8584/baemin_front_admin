@@ -14,19 +14,23 @@ import {
 
 import { HOME_ROUTE_BUTTONS } from "constant";
 import MainLogo from "assets/main_logo.png";
-import { setCurrentCustomize } from "store/app";
+import { setCurrentMenu } from "store/app";
+import { setUser } from "store/auth";
 
 export default function Header() {
   const navigate = useNavigate();
-  //   const user = useSelector((state) => state.auth.user);
-
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   return (
     <Container>
       <Grid container p={3}>
         <CardMedia
           component="img"
           src={MainLogo}
-          onClick={() => navigate("/")}
+          onClick={() => {
+            navigate("/");
+            dispatch(setCurrentMenu("/"));
+          }}
           sx={{
             maxWidth: "172px",
             objectFit: "contain",
@@ -54,32 +58,34 @@ export default function Header() {
           ))}
         </Grid>
         <Grid item xs={5}>
-          <Button variant="outlined" onClick={() => navigate("sign-in")}>
-            로그인
-          </Button>
-        </Grid>
-        {/* <Grid item xs={5}>
           <Grid container justifyContent="end" alignItems="center" spacing={2}>
             {Boolean(user) && (
               <>
                 <Grid item>
-                  <Avatar src={TempAvatar} />
+                  <Avatar
+                  // src={TempAvatar}
+                  />
                 </Grid>
                 <Grid item>
                   <Typography>
                     <Typography component="span" fontWeight={900}>
-                      배민분식 성남점{" "}
-                    </Typography>
-                    사장님
+                      배민 관리자
+                    </Typography>{" "}
+                    님
                   </Typography>
                 </Grid>
               </>
             )}
-
             <Grid item>
               {Boolean(user) ? (
                 // Todo: user restore
-                <Button variant="outlined" sx={{ borderRadius: 2 }}>
+                <Button
+                  variant="outlined"
+                  sx={{ borderRadius: 2 }}
+                  onClick={() => {
+                    dispatch(setUser(false));
+                  }}
+                >
                   로그아웃
                 </Button>
               ) : (
@@ -92,23 +98,8 @@ export default function Header() {
                 </Button>
               )}
             </Grid>
-
-            <Grid item>
-              {Boolean(user) && (
-                <Button
-                  variant="contained"
-                  size="medium"
-                  onClick={() => {
-                    setDialogOpen(true);
-                  }}
-                  sx={{ borderRadius: 2 }}
-                >
-                  로봇 동기화
-                </Button>
-              )}
-            </Grid>
           </Grid>
-        </Grid> */}
+        </Grid>
       </RouteButtonContainer>
     </Container>
   );
@@ -121,29 +112,20 @@ const RouteButtonContainer = ({ children }) => (
 );
 
 const RouteButton = ({ children, to }) => {
-  //   const currentMode = useSelector((state) => state.app.currentCustomize.mode);
-
-  //   need update
-  const currentMode = "Hi";
-  //
+  const currentMenu = useSelector((state) => state.app.currentMenu);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleChangeMode = () => {
-    if (to === "promote") {
-      dispatch(setCurrentCustomize({ key: "scene", value: to }));
-    }
-
-    dispatch(setCurrentCustomize({ key: "mode", value: to }));
+    dispatch(setCurrentMenu(to));
     navigate(to);
   };
-
   return (
     <Button
       sx={{
         color:
-          currentMode === to ? "#000000" : (theme) => theme.palette.grey[400],
+          currentMenu === to ? "#000000" : (theme) => theme.palette.grey[400],
         fontWeight: 900,
       }}
       onClick={handleChangeMode}

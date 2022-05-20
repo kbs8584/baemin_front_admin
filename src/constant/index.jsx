@@ -1,8 +1,8 @@
 export const HOME_ROUTE_BUTTONS = [
   {
     id: 0,
-    name: "회원관리",
-    path: "/manage-member",
+    name: "매장관리",
+    path: "/",
   },
   {
     id: 1,

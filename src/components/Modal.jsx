@@ -113,6 +113,37 @@ export const ShowCreatedId = ({ dialogOpen, setDialogOpen }) => {
               }}
             >
               <Typography
+                item
+                bgcolor="grey.100"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: 140,
+                  height: 1,
+                  fontWeight: "fontWeight",
+                  borderRadius: "5px 0 0 5px",
+                }}
+              >
+                매장이메일
+              </Typography>
+              <Typography item sx={{ paddingLeft: 3 }}>
+                {}baemin@baemin.com
+              </Typography>
+            </Grid>
+          </Box>
+          <Box mb={1.3}>
+            <Grid
+              container
+              height={75}
+              sx={{
+                alignItems: "center",
+                border: "1px solid",
+                borderColor: "grey.200",
+                borderRadius: "5px",
+              }}
+            >
+              <Typography
                 bgcolor="grey.100"
                 sx={{
                   display: "flex",
