@@ -27,7 +27,6 @@ export default function App() {
 const RequiredAuth = ({ redirectPath, children }) => {
   const user = useSelector((state) => state.auth.user);
   let location = useLocation();
-
   if (!user) {
     // redirect with memo current path
     return <Navigate to={redirectPath} state={{ from: location }} replace />;

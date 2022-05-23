@@ -42,6 +42,7 @@ export default function Header() {
   //   });
   // }, []);
 
+  console.log(user);
   return (
     <Container>
       <Grid container p={3}>

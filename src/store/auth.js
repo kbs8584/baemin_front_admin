@@ -3,7 +3,7 @@ import { signIn } from "api/auth";
 
 const initialState = {
   status: "idle",
-  user: true,
+  user: false,
   error: null,
 };
 

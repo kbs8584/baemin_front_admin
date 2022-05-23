@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "store/auth";
+import { getUser, setUser } from "store/auth";
 import {
   Grid,
   Box,
@@ -15,12 +15,17 @@ import {
 import MainLogo from "assets/main_logo.png";
 import API from "api";
 import { signIn } from "api/auth";
+import { useNavigate } from "react-router";
 
 export default function SignIn() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
+
+  const navigate = useNavigate();
+
+  console.log(user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,17 +37,18 @@ export default function SignIn() {
 
     console.log(res);
 
-    window.localStorage.setItem("access_token", res.token);
+    dispatch(setUser(true));
+    navigate("/");
 
-    if (status === "succeeded") {
+    if (user === "succeeded") {
       // 인증된 상태로 메인화면 이동
       alert("인증됨");
     }
 
-    await dispatch(
+    dispatch(
       getUser({
-        userId: userId,
-        password: password,
+        userId,
+        password,
       })
     );
   };
