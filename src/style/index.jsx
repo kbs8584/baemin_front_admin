@@ -37,7 +37,6 @@ const theme = createTheme({
   },
   shape: {
     borderRadius: 3, // default
-    headerMarginTop: 5,
   },
   typography: {
     fontWeight: "700",

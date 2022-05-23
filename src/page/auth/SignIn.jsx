@@ -13,6 +13,8 @@ import {
   Button,
 } from "@mui/material";
 import MainLogo from "assets/main_logo.png";
+import API from "api";
+import { signIn } from "api/auth";
 
 export default function SignIn() {
   const [userId, setUserId] = useState("");
@@ -23,8 +25,18 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const res = await signIn({
+      userId,
+      password,
+    });
+
+    console.log(res);
+
+    window.localStorage.setItem("access_token", res.token);
+
     if (status === "succeeded") {
       // 인증된 상태로 메인화면 이동
+      alert("인증됨");
     }
 
     await dispatch(

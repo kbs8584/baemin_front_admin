@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,11 +16,32 @@ import { HOME_ROUTE_BUTTONS } from "constant";
 import MainLogo from "assets/main_logo.png";
 import { setCurrentMenu } from "store/app";
 import { setUser } from "store/auth";
+import { getUserInfo, signOut } from "api/auth";
+
+// (e) => {
+//   dispatch(setUser(false));
+//   handleSubmit(e);
+
+// }
 
 export default function Header() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = window.localStorage.getItem("access_token");
+    const res = await signOut();
+    // console.log(res);
+  };
+
+  // useEffect(() => {
+  //   const res = getUserInfo().then((data) => {
+  //     console.log(data);
+  //   });
+  // }, []);
+
   return (
     <Container>
       <Grid container p={3}>
@@ -82,9 +103,7 @@ export default function Header() {
                 <Button
                   variant="outlined"
                   sx={{ borderRadius: 2 }}
-                  onClick={() => {
-                    dispatch(setUser(false));
-                  }}
+                  onClick={handleSubmit}
                 >
                   로그아웃
                 </Button>

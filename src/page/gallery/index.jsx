@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   Button,
@@ -13,6 +13,9 @@ import {
 import { TabContext, TabPanel } from "@mui/lab";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import ClearIcon from "@mui/icons-material/Clear";
+import axios from "axios";
+
+const BASE_URL = "http://localhost:8080";
 
 export default function GallaryModal() {
   const INITIAL_VALUE = "1";
@@ -193,6 +196,17 @@ export default function GallaryModal() {
   };
 
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
+  useEffect(() => {
+    (async () => {
+      const res = await axios.post(`${BASE_URL}/posts`, {
+        // author: 'jy',
+        title: "axios22",
+      });
+      const result = await res.data;
+      console.log(result);
+    })();
+  }, []);
 
   return (
     <Container>
