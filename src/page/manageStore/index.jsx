@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import parse from "html-react-parser";
 import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "store/auth";
 import {
   Container,
   Typography,
@@ -15,14 +14,21 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
+import { getUsersInfo } from "api/auth";
 import stores from "data/stores";
 
 export default function ManageMember() {
-  const dispatch = useDispatch();
-  const status = useSelector((state) => state.auth.user);
   const [inputValue, setInputValue] = useState("");
   const [selectValue, setSelectValue] = useState("all");
-  const [storeData, setStoreData] = useState(stores);
+
+  const [storeData, setStoreData] = useState([]);
+
+  useEffect(() => {
+    // 회원정보 조회
+    getUsersInfo().then((data) => {
+      setStoreData(data);
+    });
+  }, []);
 
   function filterStore() {
     let filteredStore = [];

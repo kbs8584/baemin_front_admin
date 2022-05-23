@@ -16,33 +16,30 @@ import { HOME_ROUTE_BUTTONS } from "constant";
 import MainLogo from "assets/main_logo.png";
 import { setCurrentMenu } from "store/app";
 import { setUser } from "store/auth";
-import { getUserInfo, signOut } from "api/auth";
-
-// (e) => {
-//   dispatch(setUser(false));
-//   handleSubmit(e);
-
-// }
+import { getUsersInfo, signOut, checkDuplicateId } from "api/auth";
 
 export default function Header() {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = window.localStorage.getItem("access_token");
+    // e.preventDefault();
+    dispatch(setUser(false));
     const res = await signOut();
-    // console.log(res);
   };
 
-  // useEffect(() => {
-  //   const res = getUserInfo().then((data) => {
-  //     console.log(data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    // const res = getUsersInfo().then((data) => {
+    //   console.log("getUserInfo", data);
+    // });
+    // const resOfCheckId = checkDuplicateId().then((data) => {
+    //   console.log("resOfCheckId", data);
+    // });
+  }, []);
 
-  console.log(user);
+  console.log("현재유저정보", user);
+
   return (
     <Container>
       <Grid container p={3}>

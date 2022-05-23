@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "store/auth";
 
@@ -14,7 +14,6 @@ import {
   Button,
 } from "@mui/material";
 import MainLogo from "assets/main_logo.png";
-import { signIn } from "api/auth";
 import { useNavigate } from "react-router";
 
 export default function SignIn() {
@@ -22,29 +21,27 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-
+  const [userInfo, setUserInfo] = useState(user);
   const navigate = useNavigate();
 
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-
-
-    if (user === "succeeded") {
-      // 인증된 상태로 메인화면 이동
-      alert("인증됨");
-    }
-
-    dispatch(getUser({
+    dispatch(
+      getUser({
         userId,
         password,
       })
     );
-
-
-    navigate("/");
   };
+  useEffect(() => {
+    setUserInfo(user);
+  });
+  useEffect(() => {
+    if (user.result === "success") {
+      navigate("/");
+    }
+  }, [userInfo]);
 
   return (
     <Grid

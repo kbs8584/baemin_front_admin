@@ -10,6 +10,7 @@ import { useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
 import stores from "data/stores";
 import { inputValueArray } from "constant/inputValue";
+import { checkDuplicateId } from "api/auth";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -21,6 +22,12 @@ export default function CreateId() {
   const [newStoresArray, setNewStoresArray] = useState("");
   const [checkedStoreId, setCheckedStoreId] = useState([]);
 
+  const handleCheckDuplicateIdButton = async (e) => {
+    e.preventDefault();
+
+    const checkedDuplicateId = await checkDuplicateId(CMSIdValue);
+    console.log("중복아이디체크 데이터", checkedDuplicateId);
+  };
   function createCMSId() {
     // value를 database에 저장
     setNewStoresArray([
@@ -205,6 +212,7 @@ export default function CreateId() {
                 marginLeft: "auto",
                 border: "2px solid",
               }}
+              onClick={handleCheckDuplicateIdButton}
             >
               중복검사
             </Button>

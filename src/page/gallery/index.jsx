@@ -197,16 +197,16 @@ export default function GallaryModal() {
 
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-  useEffect(() => {
-    (async () => {
-      const res = await axios.post(`${BASE_URL}/posts`, {
-        // author: 'jy',
-        title: "axios22",
-      });
-      const result = await res.data;
-      console.log(result);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await axios.post(`${BASE_URL}/posts`, {
+  //       // author: 'jy',
+  //       title: "axios22",
+  //     });
+  //     const result = await res.data;
+  //     console.log(result);
+  //   })();
+  // }, []);
 
   return (
     <Container>
