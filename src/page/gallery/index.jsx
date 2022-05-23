@@ -1,25 +1,17 @@
 import { useState } from "react";
 import {
   Grid,
-  Box,
-  Typography,
   Button,
-  Divider,
   Tabs,
   Tab,
   Container,
   ImageList,
   ImageListItem,
-  ButtonGroup,
   FormControlLabel,
-  FormGroup,
   Checkbox,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { TabContext, TabPanel } from "@mui/lab";
-import { CheckBox } from "@mui/icons-material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ClearIcon from "@mui/icons-material/Clear";
 
 export default function GallaryModal() {
@@ -188,8 +180,6 @@ export default function GallaryModal() {
       },
     ]),
   ]);
-
-  console.log(imageCategoryList[value]);
 
   const handleValueChange = (e, value) => {
     setSubValue(INITIAL_SUB_VALUE);

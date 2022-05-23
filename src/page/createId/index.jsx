@@ -7,16 +7,17 @@ import {
   InputBase,
 } from "@mui/material";
 import { useState } from "react";
-import { ShowCreatedId } from "components/Modal";
+import ShowCreatedId from "./ShowCreatedId";
 import stores from "data/stores";
+import { inputValueArray } from "constant/inputValue";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [notAvailableId, setNotAvailableId] = useState(false);
-
   const [storeNameValue, setStoreNameValue] = useState("");
   const [storeEmailValue, setStoreEmailValue] = useState("");
+  const [passwordValue, setPasswordValue] = useState("");
   const [CMSIdValue, setCMSIdValue] = useState("");
+  const [storeIdValue, setStoreIdValue] = useState("");
   const [newStoresArray, setNewStoresArray] = useState("");
   const [checkedStoreId, setCheckedStoreId] = useState([]);
 
@@ -33,10 +34,20 @@ export default function CreateId() {
     ]);
     // newArray를 update한다
   }
-
+  function setInfoWithInputValue(e, setFunc) {
+    setFunc(e.target.value);
+  }
   return (
     <Container sx={{ marginBottom: 18 }}>
-      <ShowCreatedId dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
+      <ShowCreatedId
+        dialogOpen={dialogOpen}
+        setDialogOpen={setDialogOpen}
+        storeId={storeIdValue}
+        CMSId={CMSIdValue}
+        storeName={storeNameValue}
+        storeEmail={storeEmailValue}
+        password={passwordValue}
+      />
       <Typography
         variant="h1"
         mt={6}
@@ -83,6 +94,7 @@ export default function CreateId() {
                   (store) => e.target.value === store.storeId
                 );
                 setCheckedStoreId(checked);
+                setInfoWithInputValue(e, setStoreIdValue);
               }}
             ></InputBase>
           </Grid>
@@ -109,13 +121,13 @@ export default function CreateId() {
                 fontWeight: "fontWeight",
                 borderRadius: "5px 0 0 5px",
               }}
-              onChange={(e) => setStoreNameValue(e.target.value)}
             >
               매장명
             </Typography>
             <InputBase
               placeholder=""
               sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}
+              onChange={(e) => setInfoWithInputValue(e, setStoreNameValue)}
             ></InputBase>
           </Grid>
         </Box>
@@ -141,13 +153,13 @@ export default function CreateId() {
                 fontWeight: "fontWeight",
                 borderRadius: "5px 0 0 5px",
               }}
-              onChange={(e) => setStoreEmailValue(e.target.value)}
             >
               매장이메일
             </Typography>
             <InputBase
               placeholder=""
               sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}
+              onChange={(e) => setInfoWithInputValue(e, setStoreEmailValue)}
             ></InputBase>
           </Grid>
         </Box>
@@ -173,7 +185,6 @@ export default function CreateId() {
                 fontWeight: "fontWeight",
                 borderRadius: "5px 0 0 5px",
               }}
-              onChange={(e) => setCMSIdValue(e.target.value)}
             >
               CMS ID
             </Typography>
@@ -184,6 +195,7 @@ export default function CreateId() {
                 paddingLeft: 3,
                 fontSize: "0.9rem",
               }}
+              onChange={(e) => setInfoWithInputValue(e, setCMSIdValue)}
             ></InputBase>
             <Button
               variant="outlined"
@@ -230,6 +242,7 @@ export default function CreateId() {
                 paddingLeft: 3,
                 fontSize: "0.9rem",
               }}
+              onChange={(e) => setInfoWithInputValue(e, setPasswordValue)}
             ></InputBase>
             <Button
               variant="outlined"

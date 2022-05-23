@@ -3,11 +3,9 @@ import { useSelector } from "react-redux";
 
 import Layout from "components/layout/index";
 
-import Home from "page/home/index";
 import SignIn from "page/auth/SignIn";
 import Gallery from "./page/gallery";
 import ManageStore from "./page/manageStore";
-import ManageStaff from "./page/manageStaff";
 import CreateId from "./page/createId";
 
 export default function App() {
