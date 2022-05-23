@@ -1,5 +1,3 @@
-import Test from "page/manageStore/index";
-
 const stores = [
   {
     id: 1,
@@ -7,7 +5,6 @@ const stores = [
     storeName: "배민 매장 성남",
     storeId: "853",
     storeEmail: "info@sample.com",
-    checkCMS: () => <Test />,
     initPassword: "초기화",
   },
   {
@@ -16,7 +13,7 @@ const stores = [
     storeName: "배민 매장 판교점",
     storeId: "122",
     storeEmail: "info@sample.com",
-    checkCMS: "편집하기",
+    // checkCMS:`편집하기`,
     initPassword: "초기화",
   },
   {
@@ -25,7 +22,7 @@ const stores = [
     storeName: "배민 매장 강남점",
     storeId: "352",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
   {
@@ -34,7 +31,7 @@ const stores = [
     storeName: "배민 매장 강남점",
     storeId: "84",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
   {
@@ -43,7 +40,7 @@ const stores = [
     storeName: "배민 매장 일산점",
     storeId: "17",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
   {
@@ -52,7 +49,7 @@ const stores = [
     storeName: "배민 매장 성남",
     storeId: "9452",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
   {
@@ -61,7 +58,7 @@ const stores = [
     storeName: "배민 매장 판교점",
     storeId: "853",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
   {
@@ -70,7 +67,7 @@ const stores = [
     storeName: "배민 매장 판교점",
     storeId: "853",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
   {
@@ -79,7 +76,7 @@ const stores = [
     storeName: "배민 매장 판교점",
     storeId: "853",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
   {
@@ -88,7 +85,7 @@ const stores = [
     storeName: "배민 매장 판교점",
     storeId: "853",
     storeEmail: "info@sample.com",
-    checkCMS: `편집하기`,
+    // checkCMS: `편집하기`,
     initPassword: "초기화",
   },
 ];

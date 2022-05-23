@@ -17,8 +17,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import stores from "data/stores";
 
-export const Test = () => <h1>Test Component</h1>;
-
 export default function ManageMember() {
   const dispatch = useDispatch();
   const status = useSelector((state) => state.auth.user);
@@ -70,11 +68,9 @@ export default function ManageMember() {
       headerClassName: "super-app-theme--header",
       field: "checkCMS",
       headerName: "CMS 보기",
-      width: 150,
+      width: 170,
       renderCell: (params) => {
-        console.log("rendercell params", params);
-
-        return <button>Test</button>;
+        return <EditButton>편집하기</EditButton>;
       },
       editable: false,
     },
@@ -82,15 +78,26 @@ export default function ManageMember() {
       headerClassName: "super-app-theme--header",
       field: "initPassword",
       headerName: "비밀번호 초기화",
-      width: 150,
+      width: 130,
+      renderCell: (params) => {
+        return (
+          <EditButton
+            sx={{
+              borderColor: "primary.alert",
+              color: "primary.alert",
+              "&:hover": {
+                backgroundColor: "primary.alertBg",
+                borderColor: "red",
+              },
+            }}
+          >
+            초기화
+          </EditButton>
+        );
+      },
       editable: false,
     },
   ];
-  const buttonTest = `<button>Hi</button>`;
-  function test() {
-    return parse(buttonTest);
-  }
-  // console.log(test());
 
   return (
     <Container sx={{ width: "100%", minHeight: "100vh" }}>
@@ -219,4 +226,10 @@ function CustomNoRowsOverlay() {
   );
 }
 
-const editButton = () => <Button variant="contained">편집하기</Button>;
+function EditButton({ children, ...rest }) {
+  return (
+    <Button variant="outlined" {...rest}>
+      {children}
+    </Button>
+  );
+}
