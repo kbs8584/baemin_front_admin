@@ -9,17 +9,14 @@ const initialState = {
 
 export const getUser = createAsyncThunk("auth/getUser", async (data) => {
   const user = await signIn(data);
-
-  return user.data;
+  return user;
 });
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
-    },
+
   },
   extraReducers: (builder) => {
     builder
@@ -28,6 +25,8 @@ export const authSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.status = "succeeded";
+
+        console.log(action.payload)
         state.user = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {

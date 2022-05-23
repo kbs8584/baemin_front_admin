@@ -10,5 +10,5 @@ export const store = configureStore({
     auth: authReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
-  // middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
 });
