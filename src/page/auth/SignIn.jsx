@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import MainLogo from "assets/main_logo.png";
 import { useNavigate } from "react-router";
+import { setUser } from "store/auth";
+import { getUsersInfo } from "api/auth";
 
 export default function SignIn() {
   const [userId, setUserId] = useState("");
@@ -40,6 +42,7 @@ export default function SignIn() {
   useEffect(() => {
     if (user.result === "success") {
       navigate("/");
+      window.localStorage.setItem("token", user.token);
     }
   }, [userInfo]);
 

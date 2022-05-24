@@ -16,17 +16,24 @@ import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import { getUsersInfo } from "api/auth";
 import stores from "data/stores";
+import { getStoreList } from "store/app";
 
 export default function ManageMember() {
   const [inputValue, setInputValue] = useState("");
   const [selectValue, setSelectValue] = useState("all");
+  const storeList = useSelector((state) => state.app.storeList);
 
   const [storeData, setStoreData] = useState([]);
 
   useEffect(() => {
-    // 회원정보 조회
     getUsersInfo().then((data) => {
-      setStoreData(data);
+      const newArray = data.list.map((store) => {
+        return {
+          ...store,
+          id: store.seqNo,
+        };
+      });
+      setStoreData(newArray);
     });
   }, []);
 
@@ -49,10 +56,11 @@ export default function ManageMember() {
     setStoreData(filteredStore);
   }
 
+  // field를 받아온 데이터의 key와 동일하게 맞춰야 함
   const columns = [
     {
       headerClassName: "super-app-theme--header",
-      field: "CMSId",
+      field: "userId",
       headerName: "CMS ID",
       width: 200,
     },
@@ -65,7 +73,7 @@ export default function ManageMember() {
     },
     {
       headerClassName: "super-app-theme--header",
-      field: "storeEmail",
+      field: "fullName",
       headerName: "이메일",
       width: 300,
       editable: false,

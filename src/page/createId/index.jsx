@@ -10,7 +10,7 @@ import { useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
 import stores from "data/stores";
 import { inputValueArray } from "constant/inputValue";
-import { checkDuplicateId } from "api/auth";
+import { signUp, checkDuplicateId } from "api/auth";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -28,22 +28,25 @@ export default function CreateId() {
     const checkedDuplicateId = await checkDuplicateId(CMSIdValue);
     console.log("중복아이디체크 데이터", checkedDuplicateId);
   };
-  function createCMSId() {
-    // value를 database에 저장
-    setNewStoresArray([
-      ...stores,
-      {
-        id: 0,
-        CMSId: CMSIdValue,
-        storeName: storeNameValue,
-        storeEmail: storeEmailValue,
-      },
-    ]);
-    // newArray를 update한다
-  }
+  const checkDuplicateId = (e) => {
+    const checked = stores.filter((store) => e.target.value === store.storeId);
+    setCheckedStoreId(checked);
+    console.log(checkedStoreId);
+    setInfoWithInputValue(e, setStoreIdValue);
+  };
+
   function setInfoWithInputValue(e, setFunc) {
     setFunc(e.target.value);
   }
+  const createCMSId = async () => {
+    const formdata = new FormData();
+    formdata.append("userId", "test10@test.com");
+    formdata.append("password", passwordValue);
+    formdata.append("name", "이유진b");
+    formdata.append("position", "과장");
+    formdata.append("role", "0");
+    // await signUp(formdata);
+  };
   return (
     <Container sx={{ marginBottom: 18 }}>
       <ShowCreatedId
@@ -96,13 +99,7 @@ export default function CreateId() {
                 paddingLeft: 3,
                 fontSize: "0.9rem",
               }}
-              onChange={(e) => {
-                const checked = stores.filter(
-                  (store) => e.target.value === store.storeId
-                );
-                setCheckedStoreId(checked);
-                setInfoWithInputValue(e, setStoreIdValue);
-              }}
+              onChange={checkDuplicateId}
             ></InputBase>
           </Grid>
         </Box>

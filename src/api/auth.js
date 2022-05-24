@@ -1,5 +1,11 @@
 import API from "api";
-
+export const signUp = async (data) => {
+  try {
+    const response = await API.post("/api/v1/login/signUp", data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 export const signIn = async (data) => {
   try {
     const response = await API.post("/api/authenticate/process", data);
@@ -13,8 +19,6 @@ export const signIn = async (data) => {
 export const signOut = async () => {
   try {
     const response = await API.post("/api/v1/common/logout");
-
-    console.log("logout", response);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -22,30 +26,58 @@ export const signOut = async () => {
 };
 
 export const getUsersInfo = async () => {
+  const response = await API.get("api/v1/user", {
+    params: {
+      cpage: 1,
+      rowItem: 20,
+      sortMode: 0,
+      orderMode: false,
+      role: 1,
+    },
+  });
   // const response = await API.get(
-  //   "api/v1/user",
-  //   {
-  //     params: {
-  //       cpage: 1,
-  //       rowItem: 20,
-  //       sortMode: 0,
-  //       orderMode: false,
-  //       role: 1,
-  //     },
-  //   }
+  //   "/api/v1/user?cpage=1&rowItem=20&sortMode=0&orderMode=false&role=1"
   // );
-  const response = await API.get(
-    "/api/v1/user?cpage=1&rowItem=20&sortMode=0&orderMode=false&role=1"
-  );
-  console.log("유저조회", response);
   return response.data;
 };
 
 export const checkDuplicateId = async (CMSId) => {
-  const response = await API.get("/api/v1/login/checkUserId", {
-    params: {
-      userId: CMSId,
-    },
-  });
-  return response.data;
+  try {
+    const response = await API.get("/api/v1/login/checkUserId", {
+      params: {
+        userId: CMSId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const getGalleryImage = async (category) => {
+  try {
+    const response = await API.get("/api/v1/image/list", {
+      params: {
+        mainCategory: category,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const addGalleryImage = async (imageFile) => {
+  try {
+    const response = await API.post("/api/v1/image/save", imageFile);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const deleteOneGalleryImage = async (seqNo) => {
+  try {
+    const response = await API.patch(`/api/v1/image/delete?seqNo=${seqNo}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
 };

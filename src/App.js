@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Layout from "components/layout/index";
 
@@ -7,6 +7,8 @@ import SignIn from "page/auth/SignIn";
 import Gallery from "./page/gallery";
 import ManageStore from "./page/manageStore";
 import CreateId from "./page/createId";
+
+import { setUser } from "store/auth";
 
 export default function App() {
   return (
@@ -27,10 +29,17 @@ export default function App() {
 const RequiredAuth = ({ redirectPath, children }) => {
   const user = useSelector((state) => state.auth.user);
   let location = useLocation();
-  if (!user) {
-    // redirect with memo current path
+  const dispatch = useDispatch();
+  // 유효한 토큰인지 확인필요
+  if (window.localStorage.getItem("token") !== "") {
+    dispatch(setUser(true));
+  } else {
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
+  // if (!user) {
+  //   // redirect with memo current path
+  //   return <Navigate to={redirectPath} state={{ from: location }} replace />;
+  // }
 
   return children ? children : <Outlet />;
 };

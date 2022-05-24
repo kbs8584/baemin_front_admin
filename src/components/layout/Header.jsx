@@ -16,29 +16,25 @@ import { HOME_ROUTE_BUTTONS } from "constant";
 import MainLogo from "assets/main_logo.png";
 import { setCurrentMenu } from "store/app";
 import { setUser } from "store/auth";
-import { getUsersInfo, signOut, checkDuplicateId } from "api/auth";
+import { getUsersInfo, signOut } from "api/auth";
 
 export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
+  // logout
   const handleSubmit = async (e) => {
     // e.preventDefault();
     dispatch(setUser(false));
     const res = await signOut();
   };
-
+  //유저정보 조회
   useEffect(() => {
-    // const res = getUsersInfo().then((data) => {
-    //   console.log("getUserInfo", data);
-    // });
-    // const resOfCheckId = checkDuplicateId().then((data) => {
-    //   console.log("resOfCheckId", data);
-    // });
+    const res = getUsersInfo().then((data) => {
+      // console.log("getUserInfo", data);
+    });
   }, []);
-
-  console.log("현재유저정보", user);
 
   return (
     <Container>
