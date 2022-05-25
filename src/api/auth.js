@@ -73,9 +73,17 @@ export const addGalleryImage = async (imageFile) => {
     console.error(error);
   }
 };
-export const deleteOneGalleryImage = async (seqNo) => {
+export const deleteGalleryImage = async (seqNo) => {
   try {
     const response = await API.patch(`/api/v1/image/delete?seqNo=${seqNo}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const deleteCheckedGalleryImages = async (seqNo) => {
+  try {
+    const response = await API.patch(`/api/v1/image/deletes?seqNo=${seqNo}`);
     return response.data;
   } catch (error) {
     console.error(error);

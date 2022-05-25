@@ -4,6 +4,7 @@ import {
   Button,
   Tabs,
   Tab,
+  Box,
   Container,
   ImageList,
   ImageListItem,
@@ -17,9 +18,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 import {
   getGalleryImage,
   addGalleryImage,
-  deleteOneGalleryImage,
+  deleteGalleryImage,
+  deleteCheckedGalleryImages,
 } from "api/auth";
 import { imageCategoryList } from "constant/galleryCategory";
+import { grid } from "@mui/system";
 
 export default function GallaryModal() {
   const INITIAL_VALUE = "1";
@@ -27,12 +30,39 @@ export default function GallaryModal() {
 
   const [imageList, setImageList] = useState([]);
   const [imageListUpdated, setImageListUpdated] = useState();
+  const [checkedImageSeqNo, setCheckedImageSeqNo] = useState([-1]);
   useEffect(() => {
     getGalleryImage(value).then((data) => setImageList(data.list));
   }, [value, imageListUpdated]);
   console.log("value", value);
   console.log("이미지리스트", imageList);
 
+  function deleteDummyData() {
+    const newArray = [...checkedImageSeqNo];
+    newArray.shift();
+    setCheckedImageSeqNo(newArray);
+  }
+  const [duplicate, setDuplicate] = useState(false);
+  function addCheckedImage(listItem) {
+    setDuplicate(false);
+    checkedImageSeqNo.forEach((checked) => {
+      if (listItem.seqNo !== checked) setDuplicate(true);
+    });
+    if (duplicate) {
+      checkedImageSeqNo.forEach((checked) => {
+        if (listItem.seqNo === checked) {
+          const newArray = checkedImageSeqNo.filter((item) => {
+            console.log("현재넘버", listItem.seqNo);
+            console.log("비교넘버", item);
+            return listItem.seqNo !== item;
+          });
+          setCheckedImageSeqNo(newArray);
+        }
+      });
+    } else {
+      setCheckedImageSeqNo([...checkedImageSeqNo, listItem.seqNo]);
+    }
+  }
   const addImage = async (e) => {
     const currentFile = e.target.files[0];
     var imageFileData = new FormData();
@@ -42,10 +72,13 @@ export default function GallaryModal() {
     setImageListUpdated(res);
   };
 
-  const deleteOneImage = async (listItem) => {
+  const deleteImage = async (listItem) => {
     const seqNo = listItem.seqNo;
-    console.log(seqNo);
-    const res = await deleteOneGalleryImage(seqNo);
+    const res = await deleteGalleryImage(seqNo);
+    setImageListUpdated(res);
+  };
+  const deleteCheckedImages = async (seqNo) => {
+    const res = await deleteCheckedGalleryImages(seqNo);
     setImageListUpdated(res);
   };
 
@@ -60,6 +93,7 @@ export default function GallaryModal() {
   };
 
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  console.log(checkedImageSeqNo);
 
   return (
     <Container sx={{ marginBottom: 5 }}>
@@ -81,6 +115,9 @@ export default function GallaryModal() {
                 borderColor: "primary.alert",
                 backgroundColor: "primary.alertBg",
               },
+            }}
+            onClick={() => {
+              deleteCheckedImages(checkedImageSeqNo);
             }}
           >
             선택 삭제
@@ -114,22 +151,25 @@ export default function GallaryModal() {
               value={value}
               TabIndicatorProps={{ style: { backgroundColor: "transparent" } }}
             >
-              {imageCategoryList.map((listItem) => (
-                <Tab
-                  key={listItem.id}
-                  label={listItem.title}
-                  value={listItem.id}
-                  sx={{
-                    border: 1,
-                    borderColor: "grey.200",
-                    bgcolor: "grey.50",
-                    "&.Mui-selected": {
-                      borderRadius: 1,
-                      backgroundColor: "common.white",
-                    },
-                  }}
-                />
-              ))}
+              {imageCategoryList.map((listItem) => {
+                console.log(listItem.id);
+                return (
+                  <Tab
+                    key={listItem.id}
+                    label={listItem.title}
+                    value={listItem.id}
+                    sx={{
+                      border: 1,
+                      borderColor: "grey.200",
+                      bgcolor: "grey.50",
+                      "&.Mui-selected": {
+                        borderRadius: 1,
+                        backgroundColor: "common.white",
+                      },
+                    }}
+                  />
+                );
+              })}
             </Tabs>
           </Grid>
           <Grid item xs={10} md={10}>
@@ -147,18 +187,20 @@ export default function GallaryModal() {
                   <FormControlLabel
                     key={`${value}${listItem.seqNo}`}
                     sx={{
+                      width: "100%",
                       position: "relative",
                       margin: "auto",
                       alignItems: "start",
+                      "span:nth-of-type(2)": {
+                        width: "100%",
+                      },
                     }}
                     label={
-                      <div style={{ width: "100%" }}>
+                      <>
                         <ImageListItem
                           component="div"
-                          // 다른 카테고리랑 연관되는지 확인 필요
                           value={listItem.seqNo}
                           sx={{
-                            // minWidth: "180px",
                             grid: 1,
                             position: "relative",
                             border: 3,
@@ -192,9 +234,9 @@ export default function GallaryModal() {
                             backgroundColor: "common.black",
                             color: "common.white",
                           }}
-                          onClick={() => deleteOneImage(listItem)}
+                          onClick={() => deleteImage(listItem)}
                         />
-                      </div>
+                      </>
                     }
                     control={
                       <Checkbox
@@ -215,7 +257,7 @@ export default function GallaryModal() {
                           },
                         }}
                         onClick={() => {
-                          // console.log(listItem);
+                          addCheckedImage(listItem);
                         }}
                       />
                     }

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import parse from "html-react-parser";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Container,
   Typography,
@@ -16,44 +14,54 @@ import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import { getUsersInfo } from "api/auth";
 import stores from "data/stores";
-import { getStoreList } from "store/app";
+import { RestartAlt } from "@mui/icons-material";
 
 export default function ManageMember() {
   const [inputValue, setInputValue] = useState("");
   const [selectValue, setSelectValue] = useState("all");
-  const storeList = useSelector((state) => state.app.storeList);
 
+  const [initialStoreData, setInitialStoreData] = useState([]);
   const [storeData, setStoreData] = useState([]);
-
   useEffect(() => {
     getUsersInfo().then((data) => {
-      const newArray = data.list.map((store) => {
+      const newArray = data.list.map((store, i) => {
         return {
           ...store,
-          id: store.seqNo,
+          id: i,
         };
       });
-      setStoreData(newArray);
+      setInitialStoreData(newArray);
     });
   }, []);
-
+  // console.log("초기리스트", initialStoreData);
   function filterStore() {
     let filteredStore = [];
     if (selectValue === "all") {
-      // Object.keys(stores[0]).forEach((key) => {
-      //   const preFilteredStore = filteredStore;
-      //   console.log("preFli", preFilteredStore);
-      //   filteredStore = stores.filter((store) => {
-      //     return store[key] === inputValue;
-      //   });
-      //   setStoreData([...preFilteredStore, filteredStore]);
-      // });
+      filteredStore = initialStoreData.filter((store, i) => {
+        const storeWithNoId = { ...store };
+        delete storeWithNoId.id;
+        const values = Object.values(storeWithNoId);
+        const matched = values.filter((value) => {
+          return value.toString().match(inputValue);
+        });
+        return matched.length !== 0;
+      });
     } else {
-      filteredStore = stores.filter(
-        (store) => store[selectValue] === inputValue
-      );
+      filteredStore = initialStoreData.filter((store) => {
+        const matched = store[selectValue].toString().match(inputValue);
+        if (matched !== null) {
+          return store[selectValue] === matched.input;
+        }
+      });
     }
     setStoreData(filteredStore);
+  }
+  function redirectToUserSite() {
+    // window.location.href = `http://경로?storeId=${storeId}&user=${token}`;
+    window.location.href = `http://naver.com/`;
+  }
+  function initPassword() {
+    //emai주소, 회원id보내기
   }
 
   // field를 받아온 데이터의 key와 동일하게 맞춰야 함
@@ -67,13 +75,20 @@ export default function ManageMember() {
     {
       headerClassName: "super-app-theme--header",
       field: "storeName",
-      headerName: "매장명(매장ID)",
-      width: 344,
+      headerName: "매장명",
+      width: 244,
       editable: false,
     },
     {
       headerClassName: "super-app-theme--header",
-      field: "fullName",
+      field: "storeId",
+      headerName: "매장ID",
+      width: 100,
+      editable: false,
+    },
+    {
+      headerClassName: "super-app-theme--header",
+      field: "userEmail",
       headerName: "이메일",
       width: 300,
       editable: false,
@@ -84,7 +99,7 @@ export default function ManageMember() {
       headerName: "CMS 보기",
       width: 170,
       renderCell: (params) => {
-        return <EditButton>편집하기</EditButton>;
+        return <EditButton onClick={redirectToUserSite}>편집하기</EditButton>;
       },
       editable: false,
     },
@@ -104,6 +119,7 @@ export default function ManageMember() {
                 borderColor: "red",
               },
             }}
+            onClick={initPassword}
           >
             초기화
           </EditButton>
@@ -155,7 +171,7 @@ export default function ManageMember() {
             >
               <MenuItem value="all">전체</MenuItem>
               <MenuItem value="storeName">매장명</MenuItem>
-              <MenuItem value="CMSId">회원ID</MenuItem>
+              <MenuItem value="userId">회원ID</MenuItem>
               <MenuItem value="storeId">매장ID</MenuItem>
             </Select>
           </FormControl>
@@ -176,9 +192,12 @@ export default function ManageMember() {
             <SearchIcon />
             <InputBase
               fullWidth
+              autoFocus
               onChange={(e) => {
                 setInputValue(e.target.value);
-                // filterStore();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") filterStore();
               }}
             ></InputBase>
             <Button
