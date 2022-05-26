@@ -12,28 +12,40 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
-import { getUsersInfo } from "api/auth";
-import stores from "data/stores";
-import { RestartAlt } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { getStoreList } from "store/storeList";
+import { initPassword } from "api/auth";
 
 export default function ManageMember() {
   const [inputValue, setInputValue] = useState("");
   const [selectValue, setSelectValue] = useState("all");
-
-  const [initialStoreData, setInitialStoreData] = useState([]);
   const [storeData, setStoreData] = useState([]);
+  const storeDataFromDB = useSelector((state) => state.storeList.storeData);
+  const [initialStoreData, setInitialStoreData] = useState([]);
+  const dispatch = useDispatch();
   useEffect(() => {
-    getUsersInfo().then((data) => {
-      const newArray = data.list.map((store, i) => {
-        return {
-          ...store,
-          id: i,
-        };
-      });
-      setInitialStoreData(newArray);
-    });
+    dispatch(getStoreList());
   }, []);
-  // console.log("초기리스트", initialStoreData);
+  useEffect(() => {
+    const newArray = storeDataFromDB.map((store, i) => {
+      return {
+        ...store,
+        id: i,
+      };
+    });
+    setInitialStoreData(newArray);
+  }, []);
+
+  // console.log("data", initialStoreData);
+
+  const handleInitPassword = async (rowInfo) => {
+    //emai주소, 회원id보내기
+    const storeId = rowInfo.row.storeId;
+    const storeEmail = rowInfo.row.storeEmail;
+    console.log(storeId, storeEmail);
+    // const res = await initPassword(storeId, storeEmail);
+  };
+
   function filterStore() {
     let filteredStore = [];
     if (selectValue === "all") {
@@ -49,19 +61,14 @@ export default function ManageMember() {
     } else {
       filteredStore = initialStoreData.filter((store) => {
         const matched = store[selectValue].toString().match(inputValue);
-        if (matched !== null) {
-          return store[selectValue] === matched.input;
-        }
+        return matched !== null;
       });
     }
     setStoreData(filteredStore);
   }
   function redirectToUserSite() {
-    // window.location.href = `http://경로?storeId=${storeId}&user=${token}`;
+    // window.location.href = `http://경로/?storeId=${storeId}&user=${token}`;
     window.location.href = `http://naver.com/`;
-  }
-  function initPassword() {
-    //emai주소, 회원id보내기
   }
 
   // field를 받아온 데이터의 key와 동일하게 맞춰야 함
@@ -88,7 +95,7 @@ export default function ManageMember() {
     },
     {
       headerClassName: "super-app-theme--header",
-      field: "userEmail",
+      field: "storeEmail",
       headerName: "이메일",
       width: 300,
       editable: false,
@@ -119,7 +126,7 @@ export default function ManageMember() {
                 borderColor: "red",
               },
             }}
-            onClick={initPassword}
+            onClick={() => handleInitPassword(params)}
           >
             초기화
           </EditButton>
@@ -178,7 +185,6 @@ export default function ManageMember() {
         </Grid>
         <Grid item xs={10} md={10} sx={{ height: 1 }}>
           <Grid
-            // component="form"
             pl={2}
             sx={{
               height: 1,
@@ -234,9 +240,6 @@ export default function ManageMember() {
           rowsPerPageOptions={[10]}
           sx={{
             textAlign: "center",
-            // "& .MuiDataGrid-row": {
-            //   border: "1px solid transparent",
-            // },
             "& .MuiDataGrid-row:nth-of-type(2n)": {
               backgroundColor: "grey.100",
             },

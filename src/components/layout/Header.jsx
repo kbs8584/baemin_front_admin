@@ -22,10 +22,10 @@ export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-
   // logout
   const handleSubmit = async (e) => {
     // e.preventDefault();
+    window.localStorage.removeItem("token");
     dispatch(setUser(false));
     const res = await signOut();
   };

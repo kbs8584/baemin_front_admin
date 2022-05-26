@@ -21,28 +21,29 @@ import { getUsersInfo } from "api/auth";
 export default function SignIn() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const [checkIdAndPassword, setCheckIdAndPassword] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const [userInfo, setUserInfo] = useState(user);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-
     dispatch(
       getUser({
         userId,
         password,
       })
     );
+    setCheckIdAndPassword(true);
   };
+
   useEffect(() => {
     setUserInfo(user);
   });
   useEffect(() => {
     if (user.result === "success") {
       navigate("/");
-      window.localStorage.setItem("token", user.token);
+      window.localStorage.setItem("TOKEN", user.token);
     }
   }, [userInfo]);
 
@@ -83,6 +84,10 @@ export default function SignIn() {
             fullWidth
             label="아이디"
             onChange={(e) => setUserId(e.target.value)}
+            onKeyDown={(e) => {
+              console.log(e);
+              if (e.key === "Enter") handleSubmit();
+            }}
           />
         </Box>
 
@@ -92,9 +97,18 @@ export default function SignIn() {
             type="password"
             label="비밀번호"
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSubmit();
+            }}
           />
         </Box>
-
+        {checkIdAndPassword && user.result !== "success" && (
+          <Box pb={1}>
+            <Typography sx={{ fontSize: "0.8rem", color: "primary.alert" }}>
+              아이디와 비밀번호를 확인해주세요.
+            </Typography>
+          </Box>
+        )}
         <Grid
           container
           justifyContent="space-between"

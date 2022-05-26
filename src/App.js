@@ -9,8 +9,13 @@ import ManageStore from "./page/manageStore";
 import CreateId from "./page/createId";
 
 import { setUser } from "store/auth";
+import { checkUser } from "api/auth";
+import { useEffect } from "react";
 
 export default function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {}, []);
+
   return (
     <Routes>
       <Route element={<RequiredAuth redirectPath="/sign-in" />}>
@@ -30,16 +35,34 @@ const RequiredAuth = ({ redirectPath, children }) => {
   const user = useSelector((state) => state.auth.user);
   let location = useLocation();
   const dispatch = useDispatch();
-  // 유효한 토큰인지 확인필요
-  if (window.localStorage.getItem("token") !== "") {
-    dispatch(setUser(true));
-  } else {
+
+  const handleCheckUser = async () => {
+    const res = await checkUser();
+    // console.log(res);
+    if (res) {
+      dispatch(setUser(true));
+    } else {
+      dispatch(setUser(false));
+    }
+  };
+  useEffect(() => {
+    handleCheckUser();
+  }, []);
+
+  if (!user) {
+    // redirect with memo current path
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
-  // if (!user) {
-  //   // redirect with memo current path
-  //   return <Navigate to={redirectPath} state={{ from: location }} replace />;
-  // }
 
   return children ? children : <Outlet />;
 };
+
+export function CheckUser() {
+  const handleCheckUser = async () => {
+    const res = await checkUser();
+    console.log(res);
+  };
+  useEffect(() => {
+    handleCheckUser();
+  }, []);
+}
