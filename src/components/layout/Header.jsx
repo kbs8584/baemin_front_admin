@@ -22,18 +22,17 @@ export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+
+  console.log("현재유저", user);
   // logout
   const handleSubmit = async (e) => {
-    // e.preventDefault();
-    window.localStorage.removeItem("token");
-    dispatch(setUser(false));
+    sessionStorage.removeItem("TOKEN");
+    dispatch(setUser(null));
     const res = await signOut();
   };
   //유저정보 조회
   useEffect(() => {
-    const res = getUsersInfo().then((data) => {
-      // console.log("getUserInfo", data);
-    });
+    const res = getUsersInfo().then((data) => {});
   }, []);
 
   return (
@@ -84,7 +83,7 @@ export default function Header() {
                 <Grid item>
                   <Typography>
                     <Typography component="span" fontWeight={900}>
-                      배민 관리자
+                      관리자
                     </Typography>{" "}
                     님
                   </Typography>

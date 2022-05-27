@@ -9,9 +9,10 @@ import {
 import { useEffect, useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
 import { inputValueArray } from "constant/inputValue";
-import { signUp, checkDuplicateId } from "api/auth";
+import { signUp, checkDuplicateId, getStoreIdAndEmail } from "api/auth";
 import { getStoreList } from "store/storeList";
 import { useDispatch, useSelector } from "react-redux";
+import { setCurrentMenu } from "store/app";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -23,7 +24,15 @@ export default function CreateId() {
   const [checkedStoreId, setCheckedStoreId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
   const storeDataFromDB = useSelector((state) => state.storeList.storeData);
+  const currentMenu = useSelector((state) => state.app.currentMenu);
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   getStoreIdAndEmail().then((data) => {
+  //     console.log("배민데이터", data);
+  //   });
+  // }, []);
+
   useEffect(() => {
     dispatch(getStoreList());
   }, []);
@@ -55,7 +64,7 @@ export default function CreateId() {
     formdata.append("password", passwordValue);
     formdata.append("email", storeEmailValue);
     formdata.append("storeId", storeIdValue);
-    formdata.append("storeName", `${storeNameValue}`);
+    formdata.append("storeName", storeNameValue);
     formdata.append("role", "0");
     await signUp(formdata);
   };

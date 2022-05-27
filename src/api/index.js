@@ -5,6 +5,6 @@ const API = axios.create({
     "http://baemin-admin-alb-1499343356.ap-northeast-2.elb.amazonaws.com",
   withCredentials: true,
 });
-const AUTH_TOKEN = localStorage.getItem("TOKEN");
+const AUTH_TOKEN = sessionStorage.getItem("TOKEN");
 API.defaults.headers.common["Authorization"] = `Bearer ${AUTH_TOKEN}`;
 export default API;

@@ -30,6 +30,7 @@ export default function GallaryModal() {
   const [imageList, setImageList] = useState([]);
   const [imageListUpdated, setImageListUpdated] = useState();
   const [checkedImageSeqNo, setCheckedImageSeqNo] = useState([-1]);
+
   useEffect(() => {
     getGalleryImage(value).then((data) => setImageList(data.list));
   }, [value, imageListUpdated]);
@@ -40,29 +41,24 @@ export default function GallaryModal() {
     newArray.shift();
     setCheckedImageSeqNo(newArray);
   }
-
-  const [duplicate, setDuplicate] = useState(false);
-  console.log("중복", duplicate);
-  console.log(checkedImageSeqNo);
+  console.log("out", checkedImageSeqNo);
 
   function addCheckedImageToDelete(listItem) {
-    setDuplicate(false);
-
-    checkedImageSeqNo.forEach((checked) => {
+    checkedImageSeqNo.forEach((checked, index) => {
       if (listItem.seqNo === checked) {
-        setDuplicate(true);
-        const newArray = checkedImageSeqNo.filter((item) => {
-          return listItem.seqNo !== item;
-        });
-        console.log(newArray);
+        console.log("index", index);
+        let newArray = [...checkedImageSeqNo];
+        newArray.splice(index, 1);
         setCheckedImageSeqNo(newArray);
-      }
-      // else {
+        console.log(checkedImageSeqNo);
 
-      // }
-      //   if (duplicate) return;
-      if (!duplicate)
+        // const newArray = checkedImageSeqNo.filter((item) => {
+        //   return listItem.seqNo !== item;
+        // });
+        // setCheckedImageSeqNo(newArray);
+      } else {
         setCheckedImageSeqNo([...checkedImageSeqNo, listItem.seqNo]);
+      }
     });
   }
   const addImage = async (e) => {
@@ -95,7 +91,6 @@ export default function GallaryModal() {
   };
 
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  console.log(checkedImageSeqNo);
 
   return (
     <Container sx={{ marginBottom: 5 }}>
@@ -154,7 +149,6 @@ export default function GallaryModal() {
               TabIndicatorProps={{ style: { backgroundColor: "transparent" } }}
             >
               {imageCategoryList.map((listItem) => {
-                console.log(listItem.id);
                 return (
                   <Tab
                     key={listItem.id}

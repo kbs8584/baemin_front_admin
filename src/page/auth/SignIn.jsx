@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "store/auth";
+import { checkUser, getUser } from "store/auth";
 
 import {
   Grid,
@@ -24,7 +24,7 @@ export default function SignIn() {
   const [checkIdAndPassword, setCheckIdAndPassword] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const [userInfo, setUserInfo] = useState(user);
+  const getUserStatus = useSelector((state) => state.auth.status);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -38,14 +38,11 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    setUserInfo(user);
-  });
-  useEffect(() => {
-    if (user.result === "success") {
+    if (user) {
+      sessionStorage.setItem("TOKEN", user.token);
       navigate("/");
-      window.localStorage.setItem("TOKEN", user.token);
     }
-  }, [userInfo]);
+  }, [user]);
 
   return (
     <Grid
@@ -85,7 +82,6 @@ export default function SignIn() {
             label="아이디"
             onChange={(e) => setUserId(e.target.value)}
             onKeyDown={(e) => {
-              console.log(e);
               if (e.key === "Enter") handleSubmit();
             }}
           />
@@ -102,7 +98,7 @@ export default function SignIn() {
             }}
           />
         </Box>
-        {checkIdAndPassword && user.result !== "success" && (
+        {checkIdAndPassword && !user && getUserStatus !== "loading" && (
           <Box pb={1}>
             <Typography sx={{ fontSize: "0.8rem", color: "primary.alert" }}>
               아이디와 비밀번호를 확인해주세요.

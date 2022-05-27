@@ -1,4 +1,5 @@
 import API from "api";
+import { setUser } from "store/auth";
 export const signUp = async (data) => {
   try {
     const response = await API.post("/api/v1/login/signUp", data);
@@ -58,7 +59,6 @@ export const getGalleryImage = async (category) => {
         mainCategory: category,
       },
     });
-    console.log("응답", response);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -83,28 +83,30 @@ export const deleteGalleryImage = async (seqNo) => {
 export const deleteCheckedGalleryImages = async (seqNo) => {
   try {
     const response = await API.patch(`/api/v1/image/deletes?seqNo=${seqNo}`);
-    return response.data;
+    // return response.data;
   } catch (error) {
     console.error(error);
   }
 };
 
-export const initPassword = async (storeId, storeEmail) => {
+export const initPassword = async (storeId, storeEmail, CMSId) => {
   try {
-    const response = await API.post(`/`, {
+    await API.post(`/api/v1/email`, {
       storeId: storeId,
-      storeEmail: storeEmail,
+      receiveMailAddr: storeEmail,
+      receiveName: CMSId,
     });
   } catch (error) {
     console.error(error);
   }
 };
-export const checkUser = async () => {
-  try {
-    const response = await API.get(`/api/v1/user/profile`);
+// export const checkUser = async () => {
+//   try {
+//     const response = await API.get(`/api/v1/user/profile`);
 
-    return response.data;
-  } catch (error) {
-    console.error(error);
-  }
-};
+//     return response.data;
+//   } catch (error) {
+//     // signOut
+//     sessionStorage.removeItem("TOKEN");
+//   }
+// };

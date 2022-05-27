@@ -8,13 +8,23 @@ import Gallery from "./page/gallery";
 import ManageStore from "./page/manageStore";
 import CreateId from "./page/createId";
 
-import { setUser } from "store/auth";
-import { checkUser } from "api/auth";
+import { checkUser, setUser } from "store/auth";
 import { useEffect } from "react";
 
 export default function App() {
   const dispatch = useDispatch();
-  useEffect(() => {}, []);
+  const user = useSelector((state) => state.auth.user);
+  const storage = sessionStorage;
+
+  // useEffect(() => {
+  //   (async function () {
+  //     const token = storage.getItem("TOKEN_AUTH");
+
+  //     if (!token) return;
+
+  //     await dispatch(validateProfile(token));
+  //   })();
+  // }, []);
 
   return (
     <Routes>
@@ -32,22 +42,8 @@ export default function App() {
 }
 
 const RequiredAuth = ({ redirectPath, children }) => {
-  const user = useSelector((state) => state.auth.user);
   let location = useLocation();
-  const dispatch = useDispatch();
-
-  const handleCheckUser = async () => {
-    const res = await checkUser();
-    // console.log(res);
-    if (res) {
-      dispatch(setUser(true));
-    } else {
-      dispatch(setUser(false));
-    }
-  };
-  useEffect(() => {
-    handleCheckUser();
-  }, []);
+  const user = useSelector((state) => state.auth.user);
 
   if (!user) {
     // redirect with memo current path
@@ -57,12 +53,12 @@ const RequiredAuth = ({ redirectPath, children }) => {
   return children ? children : <Outlet />;
 };
 
-export function CheckUser() {
-  const handleCheckUser = async () => {
-    const res = await checkUser();
-    console.log(res);
-  };
-  useEffect(() => {
-    handleCheckUser();
-  }, []);
-}
+// export function CheckUser() {
+//   const handleCheckUser = async () => {
+//     const res = await checkUser();
+//     console.log(res);
+//   };
+//   useEffect(() => {
+//     handleCheckUser();
+//   }, []);
+// }

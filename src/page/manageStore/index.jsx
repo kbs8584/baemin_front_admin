@@ -23,6 +23,7 @@ export default function ManageMember() {
   const storeDataFromDB = useSelector((state) => state.storeList.storeData);
   const [initialStoreData, setInitialStoreData] = useState([]);
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getStoreList());
   }, []);
@@ -36,14 +37,14 @@ export default function ManageMember() {
     setInitialStoreData(newArray);
   }, []);
 
-  // console.log("data", initialStoreData);
+  console.log("data", initialStoreData);
 
   const handleInitPassword = async (rowInfo) => {
     //emai주소, 회원id보내기
     const storeId = rowInfo.row.storeId;
     const storeEmail = rowInfo.row.storeEmail;
-    console.log(storeId, storeEmail);
-    // const res = await initPassword(storeId, storeEmail);
+    const CMSId = rowInfo.row.userId;
+    const res = await initPassword(storeId, storeEmail, CMSId);
   };
 
   function filterStore() {
@@ -66,9 +67,11 @@ export default function ManageMember() {
     }
     setStoreData(filteredStore);
   }
-  function redirectToUserSite() {
-    // window.location.href = `http://경로/?storeId=${storeId}&user=${token}`;
-    window.location.href = `http://naver.com/`;
+
+  function redirectToUserSite(params) {
+    const token = sessionStorage.getItem("TOKEN");
+    const storeId = params.row.storeId;
+    window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
   }
 
   // field를 받아온 데이터의 key와 동일하게 맞춰야 함
@@ -106,7 +109,11 @@ export default function ManageMember() {
       headerName: "CMS 보기",
       width: 170,
       renderCell: (params) => {
-        return <EditButton onClick={redirectToUserSite}>편집하기</EditButton>;
+        return (
+          <EditButton onClick={() => redirectToUserSite(params)}>
+            편집하기
+          </EditButton>
+        );
       },
       editable: false,
     },
