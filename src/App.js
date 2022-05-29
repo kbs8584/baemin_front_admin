@@ -8,23 +8,23 @@ import Gallery from "./page/gallery";
 import ManageStore from "./page/manageStore";
 import CreateId from "./page/createId";
 
-import { checkUser, setUser } from "store/auth";
+import { validateProfile } from "store/auth";
 import { useEffect } from "react";
 
 export default function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const storage = sessionStorage;
+  const TOKEN = "TOKEN";
 
-  // useEffect(() => {
-  //   (async function () {
-  //     const token = storage.getItem("TOKEN_AUTH");
+  useEffect(() => {
+    (async () => {
+      const token = sessionStorage.getItem(TOKEN);
 
-  //     if (!token) return;
+      if (!token) return;
 
-  //     await dispatch(validateProfile(token));
-  //   })();
-  // }, []);
+      dispatch(validateProfile(token));
+    })();
+  }, []);
 
   return (
     <Routes>
@@ -52,13 +52,3 @@ const RequiredAuth = ({ redirectPath, children }) => {
 
   return children ? children : <Outlet />;
 };
-
-// export function CheckUser() {
-//   const handleCheckUser = async () => {
-//     const res = await checkUser();
-//     console.log(res);
-//   };
-//   useEffect(() => {
-//     handleCheckUser();
-//   }, []);
-// }

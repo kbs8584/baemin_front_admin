@@ -7,33 +7,43 @@ const initialState = {
   user: null,
   error: null,
 };
-const AUTH_TOKEN = sessionStorage.getItem("TOKEN");
+const TOKEN = "TOKEN";
 
 export const getUser = createAsyncThunk("auth/getUser", async (data) => {
   const user = await signIn(data);
   return user;
 });
 
-export const checkUser = createAsyncThunk("auth/checkUser", (token) => {
-  API.get(`/api/v1/user/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((res) => {
-      console.log("res", res.data);
-      // sessionStorage.setItem("TOKEN", token);
-      return res.data;
+export const validateProfile = createAsyncThunk(
+  "auth/validateProfile",
+  async (token) => {
+    const user = await API.get("/api/v1/user/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
-    .catch(() => {
-      // sessionStorage.removeItem("TOKEN");
-    });
-});
+      .then((res) => {
+        API.setAuthInterceptor(token, authSlice.actions.autoSignOut);
+        sessionStorage.setItem(TOKEN, token);
+
+        return res.data;
+      })
+      .catch((error) => console.error(error));
+
+    return user;
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    autoSignOut: (state, action) => {
+      API.clearAuthInterceptors();
+      sessionStorage.removeItem(TOKEN);
+
+      state.user = null;
+    },
     setUser: (state, action) => {
       state.user = action.payload;
     },
@@ -50,14 +60,15 @@ export const authSlice = createSlice({
       .addCase(getUser.rejected, (state, action) => {
         state.error = action?.error.message;
       })
-      .addCase(checkUser.pending, (state, action) => {
+      .addCase(validateProfile.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(checkUser.fulfilled, (state, action) => {
+      .addCase(validateProfile.fulfilled, (state, action) => {
+        console.log("Fulfilled validateProfile", action.payload);
         state.status = "idle";
         state.user = action.payload;
       })
-      .addCase(checkUser.rejected, (state, action) => {
+      .addCase(validateProfile.rejected, (state, action) => {
         state.error = action?.error.message;
       });
   },
