@@ -26,41 +26,33 @@ import { imageCategoryList } from "constant/galleryCategory";
 export default function GallaryModal() {
   const INITIAL_VALUE = "1";
   const [value, setValue] = useState(INITIAL_VALUE);
-
+  const [initialImageList, setInitialImageList] = useState([]);
   const [imageList, setImageList] = useState([]);
   const [imageListUpdated, setImageListUpdated] = useState();
-  const [checkedImageSeqNo, setCheckedImageSeqNo] = useState([-1]);
 
   useEffect(() => {
-    getGalleryImage(value).then((data) => setImageList(data.list));
+    getGalleryImage(value).then((data) => {
+      setInitialImageList(data.list);
+    });
   }, [value, imageListUpdated]);
+  useEffect(() => {
+    const newArray = initialImageList.map((image) => ({
+      ...image,
+      checked: false,
+    }));
+    setImageList(newArray);
+  }, [initialImageList, imageListUpdated]);
 
   console.log("이미지리스트", imageList);
-  function deleteDummyData() {
-    const newArray = [...checkedImageSeqNo];
-    newArray.shift();
-    setCheckedImageSeqNo(newArray);
-  }
-  console.log("out", checkedImageSeqNo);
 
-  function addCheckedImageToDelete(listItem) {
-    checkedImageSeqNo.forEach((checked, index) => {
-      if (listItem.seqNo === checked) {
-        console.log("index", index);
-        let newArray = [...checkedImageSeqNo];
-        newArray.splice(index, 1);
-        setCheckedImageSeqNo(newArray);
-        console.log(checkedImageSeqNo);
-
-        // const newArray = checkedImageSeqNo.filter((item) => {
-        //   return listItem.seqNo !== item;
-        // });
-        // setCheckedImageSeqNo(newArray);
-      } else {
-        setCheckedImageSeqNo([...checkedImageSeqNo, listItem.seqNo]);
-      }
-    });
+  function toggleDeleteImageState(image) {
+    if (image.checked === false) {
+      image.checked = true;
+    } else {
+      image.checked = false;
+    }
   }
+
   const addImage = async (e) => {
     const currentFile = e.target.files[0];
     var imageFileData = new FormData();
@@ -75,19 +67,19 @@ export default function GallaryModal() {
     const res = await deleteGalleryImage(seqNo);
     setImageListUpdated(res);
   };
-  const deleteCheckedImages = async (seqNo) => {
-    const res = await deleteCheckedGalleryImages(seqNo);
+  const deleteCheckedImages = async () => {
+    const newArray = imageList.filter((image) => image.checked === true);
+    const seqNoArray = newArray.map((image) => image.seqNo);
+    const res = await deleteCheckedGalleryImages(seqNoArray);
     setImageListUpdated(res);
   };
 
   const handleValueChange = (e, value) => {
     setValue(value);
-    e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.scrollTo(
-      {
-        top: 0,
-        behavior: "smooth",
-      }
-    );
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -113,9 +105,7 @@ export default function GallaryModal() {
                 backgroundColor: "primary.alertBg",
               },
             }}
-            onClick={() => {
-              deleteCheckedImages(checkedImageSeqNo);
-            }}
+            onClick={deleteCheckedImages}
           >
             선택 삭제
           </Button>
@@ -254,7 +244,8 @@ export default function GallaryModal() {
                             },
                           }}
                           onClick={() => {
-                            addCheckedImageToDelete(listItem);
+                            // addCheckedImageToDelete(listItem);
+                            toggleDeleteImageState(listItem);
                           }}
                         />
                       }
