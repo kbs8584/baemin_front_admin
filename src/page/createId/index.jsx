@@ -8,11 +8,9 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
-import { inputValueArray } from "constant/inputValue";
 import { signUp, checkDuplicateId, getStoreIdAndEmail } from "api/auth";
 import { getStoreList } from "store/storeList";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentMenu } from "store/app";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -26,12 +24,6 @@ export default function CreateId() {
   const storeDataFromDB = useSelector((state) => state.storeList.storeData);
   const currentMenu = useSelector((state) => state.app.currentMenu);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   getStoreIdAndEmail().then((data) => {
-  //     console.log("배민데이터", data);
-  //   });
-  // }, []);
 
   useEffect(() => {
     dispatch(getStoreList());
@@ -80,18 +72,33 @@ export default function CreateId() {
     }
     setPasswordValue(randomPassword);
   }
-  function checkCMSId() {
+  function checkValuesBeforeSubmit() {
+    if (
+      storeIdValue === "" ||
+      storeNameValue === "" ||
+      CMSIdValue === "" ||
+      passwordValue === ""
+    ) {
+      alert("모든 입력란을 작성해주세요.");
+      return;
+    }
+    if (storeEmailValue === "") {
+      alert(
+        `등록된 이메일이 없습니다. 대표자 이메일 등록 후, CMS Id 생성이 가능합니다.`
+      );
+      return;
+    }
     if (!checkedCMSId) alert("아이디 중복검사를 해주세요.");
   }
   function handleSubmitButton() {
-    checkCMSId();
+    checkValuesBeforeSubmit();
     if (
       checkedCMSId &&
       storeIdValue !== "" &&
       storeNameValue !== "" &&
       storeEmailValue !== "" &&
       CMSIdValue !== "" &&
-      passwordValue !== null
+      passwordValue !== ""
     ) {
       createCMSId();
       setDialogOpen(true);
@@ -217,11 +224,9 @@ export default function CreateId() {
             >
               매장이메일
             </Typography>
-            <InputBase
-              placeholder=""
-              sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}
-              onChange={(e) => setInfoWithInputValue(e, setStoreEmailValue)}
-            ></InputBase>
+            <Typography sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}>
+              {storeEmailValue}
+            </Typography>
           </Grid>
         </Box>
         <Box mb={1.3}>
