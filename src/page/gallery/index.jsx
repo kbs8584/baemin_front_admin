@@ -23,7 +23,7 @@ import {
 } from "api/auth";
 import { imageCategoryList } from "constant/galleryCategory";
 
-export default function GallaryModal() {
+export default function Gallery() {
   const INITIAL_VALUE = "1";
   const [value, setValue] = useState(INITIAL_VALUE);
   const [initialImageList, setInitialImageList] = useState([]);

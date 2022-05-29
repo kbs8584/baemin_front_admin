@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getStoreList } from "store/storeList";
 import { initPassword } from "api/auth";
 
-export default function ManageMember() {
+export default function ManageStore() {
   const [inputValue, setInputValue] = useState("");
   const [selectValue, setSelectValue] = useState("all");
   const [storeData, setStoreData] = useState([]);
