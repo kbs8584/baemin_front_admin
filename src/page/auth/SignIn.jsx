@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { checkUser, getUser } from "store/auth";
+import { getUser, validateProfile } from "store/auth";
 
 import {
   Grid,
@@ -15,13 +15,14 @@ import {
 } from "@mui/material";
 import MainLogo from "assets/main_logo.png";
 import { useNavigate } from "react-router";
-import { setUser } from "store/auth";
-import { getUsersInfo } from "api/auth";
 
 export default function SignIn() {
+  const savedId = localStorage.getItem("USER_ID");
+  const [userIdInput, setUserIdInput] = useState(savedId ? savedId : "");
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [checkIdAndPassword, setCheckIdAndPassword] = useState(false);
+  const [saveId, setSaveId] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const getUserStatus = useSelector((state) => state.auth.status);
@@ -33,16 +34,30 @@ export default function SignIn() {
         userId,
         password,
       })
-    );
+    ).then((res) => {
+      dispatch(validateProfile(res?.payload.token));
+    });
     setCheckIdAndPassword(true);
   };
 
   useEffect(() => {
     if (user) {
-      sessionStorage.setItem("TOKEN", user.token);
       navigate("/");
+      localStorage.setItem("USER_ID", userId);
     }
   }, [user]);
+
+  function saveIdInLocalStorage() {
+    if (!saveId) {
+      setSaveId(true);
+    } else {
+      setSaveId(false);
+    }
+  }
+  function onChangeInput(e) {
+    const { value } = e.target;
+    setUserIdInput(value);
+  }
 
   return (
     <Grid
@@ -80,7 +95,11 @@ export default function SignIn() {
           <TextField
             fullWidth
             label="아이디"
-            onChange={(e) => setUserId(e.target.value)}
+            value={userIdInput}
+            onChange={(e) => {
+              onChangeInput(e);
+              setUserId(e.target.value);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSubmit();
             }}
@@ -112,7 +131,10 @@ export default function SignIn() {
           pb={3}
         >
           <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="아이디 저장" />
+            <FormControlLabel
+              control={<Checkbox onClick={saveIdInLocalStorage} />}
+              label="아이디 저장"
+            />
           </FormGroup>
         </Grid>
 

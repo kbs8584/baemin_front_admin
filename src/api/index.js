@@ -1,15 +1,24 @@
 import axios from "axios";
 
-const TOKEN = "TOKEN";
-const TOKEN_KEY = sessionStorage.getItem(TOKEN);
 const API = axios.create({
   baseURL:
     "http://baemin-admin-alb-1499343356.ap-northeast-2.elb.amazonaws.com",
-  withCredentials: true,
-  headers: { Authorization: `Bearer ${TOKEN_KEY}` },
+  // withCredentials: true,
+  // headers: { Authorization: `Bearer ${token}` },
 });
 
-// API.defaults.headers.common["Authorization"] = `Bearer ${TOKEN_KEY}`;
+API.interceptors.request.use(
+  (config) => {
+    if (!config.url.endsWith("/")) {
+      config.url = `${config.url}/`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 const authInterceptor = {};
 

@@ -22,7 +22,7 @@ export default function App() {
 
       if (!token) return;
 
-      dispatch(validateProfile(token));
+      await dispatch(validateProfile(token));
     })();
   }, []);
 

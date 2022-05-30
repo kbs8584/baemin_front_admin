@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Container,
   Typography,
@@ -13,8 +13,8 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { getStoreList } from "store/storeList";
-import { initPassword } from "api/auth";
+import { getAllStoreList } from "store/storeList";
+import { initPassword } from "api/user";
 
 export default function ManageStore() {
   const [inputValue, setInputValue] = useState("");
@@ -22,22 +22,19 @@ export default function ManageStore() {
   const [storeData, setStoreData] = useState([]);
   const storeDataFromDB = useSelector((state) => state.storeList.storeData);
   const [initialStoreData, setInitialStoreData] = useState([]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getStoreList());
+    dispatch(getAllStoreList());
   }, []);
+
   useEffect(() => {
     const newArray = storeDataFromDB.map((store, i) => {
-      return {
-        ...store,
-        id: i,
-      };
+      return { ...store, id: i };
     });
     setInitialStoreData(newArray);
   }, []);
-
-  console.log("data", initialStoreData);
 
   const handleInitPassword = async (rowInfo) => {
     //emai주소, 회원id보내기
@@ -86,7 +83,7 @@ export default function ManageStore() {
       headerClassName: "super-app-theme--header",
       field: "storeName",
       headerName: "매장명",
-      width: 244,
+      width: 200,
       editable: false,
     },
     {
@@ -100,7 +97,7 @@ export default function ManageStore() {
       headerClassName: "super-app-theme--header",
       field: "storeEmail",
       headerName: "이메일",
-      width: 300,
+      width: 200,
       editable: false,
     },
     {
@@ -186,6 +183,7 @@ export default function ManageStore() {
               <MenuItem value="all">전체</MenuItem>
               <MenuItem value="storeName">매장명</MenuItem>
               <MenuItem value="userId">회원ID</MenuItem>
+              {/* 변경필요 */}
               <MenuItem value="storeId">매장ID</MenuItem>
             </Select>
           </FormControl>
@@ -220,7 +218,7 @@ export default function ManageStore() {
                 borderRadius: "0 30px 30px 0",
                 color: "#000",
               }}
-              onClick={() => filterStore()}
+              onClick={filterStore}
             >
               검색
             </Button>
@@ -231,9 +229,10 @@ export default function ManageStore() {
         mb={5}
         sx={{
           width: "100%",
-          height: "631px",
+          height: "649px",
           "& .super-app-theme--header": {
             borderBottom: 3,
+            fontSize: "1rem",
           },
         }}
       >
@@ -241,10 +240,10 @@ export default function ManageStore() {
           components={{
             NoRowsOverlay: CustomNoRowsOverlay,
           }}
-          autoPageSize
+          pagination
           rows={storeData}
           columns={columns}
-          rowsPerPageOptions={[10]}
+          // rowsPerPageOptions={[10]}
           sx={{
             textAlign: "center",
             "& .MuiDataGrid-row:nth-of-type(2n)": {

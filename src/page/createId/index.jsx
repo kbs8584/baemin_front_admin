@@ -8,8 +8,9 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
-import { signUp, checkDuplicateId, getStoreIdAndEmail } from "api/auth";
-import { getStoreList } from "store/storeList";
+import { signUp } from "api/auth";
+import { checkDuplicateId } from "api/user";
+import { getAllStoreList } from "store/storeList";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function CreateId() {
@@ -26,7 +27,7 @@ export default function CreateId() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getStoreList());
+    dispatch(getAllStoreList());
   }, []);
 
   useEffect(() => {
@@ -38,7 +39,6 @@ export default function CreateId() {
       return e.target.value === store.storeId.toString();
     });
     setCheckedStoreId(checked);
-    console.log(checkedStoreId);
     setInfoWithInputValue(e, setStoreIdValue);
   };
   const handleCheckCMSIdButton = async (CMSIdValue) => {

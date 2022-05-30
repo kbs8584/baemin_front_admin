@@ -55,7 +55,9 @@ export const authSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload;
+        if (action?.payload.result === "success") {
+          state.user = action.payload;
+        }
       })
       .addCase(getUser.rejected, (state, action) => {
         state.error = action?.error.message;
@@ -64,7 +66,6 @@ export const authSlice = createSlice({
         state.status = "loading";
       })
       .addCase(validateProfile.fulfilled, (state, action) => {
-        console.log("Fulfilled validateProfile", action.payload);
         state.status = "idle";
         state.user = action.payload;
       })

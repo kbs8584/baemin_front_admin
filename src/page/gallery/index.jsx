@@ -20,7 +20,7 @@ import {
   addGalleryImage,
   deleteGalleryImage,
   deleteCheckedGalleryImages,
-} from "api/auth";
+} from "api/gallery";
 import { imageCategoryList } from "constant/galleryCategory";
 
 export default function Gallery() {
@@ -42,8 +42,6 @@ export default function Gallery() {
     }));
     setImageList(newArray);
   }, [initialImageList, imageListUpdated]);
-
-  console.log("이미지리스트", imageList);
 
   function toggleDeleteImageState(image) {
     if (image.checked === false) {

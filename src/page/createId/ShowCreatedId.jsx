@@ -11,6 +11,11 @@ export default function ShowCreatedId({
   storeEmail,
   password,
 }) {
+  function redirectToUserSite() {
+    const token = sessionStorage.getItem("TOKEN");
+    window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
+  }
+
   return (
     <Modal fullWidth dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
       <Box sx={{ padding: 3 }}>
@@ -191,7 +196,10 @@ export default function ShowCreatedId({
               fontSize: "bigButton.fontSize",
               fontWeight: "fontWeight",
             }}
-            onClick={() => setDialogOpen(false)}
+            onClick={() => {
+              setDialogOpen(false);
+              redirectToUserSite();
+            }}
           >
             해당 ID CMS 바로가기
           </Button>

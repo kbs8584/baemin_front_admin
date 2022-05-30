@@ -23,17 +23,12 @@ export default function Header() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
-  console.log("현재유저", user);
   // logout
   const handleSubmit = async (e) => {
     sessionStorage.removeItem("TOKEN");
     dispatch(setUser(null));
     const res = await signOut();
   };
-  //유저정보 조회
-  useEffect(() => {
-    const res = getUsersInfo().then((data) => {});
-  }, []);
 
   return (
     <Container>
