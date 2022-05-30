@@ -9,9 +9,9 @@ import {
 import { useEffect, useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
 import { signUp } from "api/auth";
-import { checkDuplicateId } from "api/user";
+import { checkDuplicateId, getStoreIdAndEmail } from "api/user";
 import { getAllStoreList } from "store/storeList";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -20,12 +20,17 @@ export default function CreateId() {
   const [passwordValue, setPasswordValue] = useState("");
   const [CMSIdValue, setCMSIdValue] = useState("");
   const [storeIdValue, setStoreIdValue] = useState("");
-  const [checkedStoreId, setCheckedStoreId] = useState([]);
+  const [availableId, setAvailableId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
-  const storeDataFromDB = useSelector((state) => state.storeList.storeData);
-  const currentMenu = useSelector((state) => state.app.currentMenu);
+  const [storeDataFromDB, setStoreDataFromDB] = useState([]);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    (async () => {
+      const res = await getStoreIdAndEmail(storeIdValue);
+      setStoreDataFromDB(res?.id);
+    })();
+  }, []);
   useEffect(() => {
     dispatch(getAllStoreList());
   }, []);
@@ -34,12 +39,15 @@ export default function CreateId() {
     setCheckedCMSId(false);
   }, []);
 
-  const checkStoreId = (e) => {
-    const checked = storeDataFromDB.filter((store) => {
-      return e.target.value === store.storeId.toString();
-    });
-    setCheckedStoreId(checked);
-    setInfoWithInputValue(e, setStoreIdValue);
+  const checkStoreId = async (e) => {
+    const res = await getStoreIdAndEmail(storeIdValue);
+    // console.log("data", res);
+
+    if (res !== undefined) {
+      setAvailableId(false);
+    } else {
+      setAvailableId(true);
+    }
   };
   const handleCheckCMSIdButton = async (CMSIdValue) => {
     const res = await checkDuplicateId(CMSIdValue);
@@ -161,9 +169,14 @@ export default function CreateId() {
                 fontSize: "0.9rem",
               }}
               onChange={(e) => {
-                checkStoreId(e);
                 setInfoWithInputValue(e, setStoreIdValue);
               }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  checkStoreId();
+                }
+              }}
+              onBlur={checkStoreId}
             ></InputBase>
           </Grid>
         </Box>
@@ -329,7 +342,7 @@ export default function CreateId() {
         <Button
           fullWidth
           variant="contained"
-          disabled={checkedStoreId.length !== 0 ? true : false}
+          disabled={availableId ? false : true}
           sx={{
             height: 45,
             padding: 4,
@@ -339,9 +352,9 @@ export default function CreateId() {
           }}
           onClick={handleSubmitButton}
         >
-          {checkedStoreId.length !== 0
-            ? "CMS에 이미 가입되어있는 매장입니다"
-            : "신규 CMS ID 생성"}
+          {availableId
+            ? "신규 CMS ID 생성"
+            : "CMS에 이미 가입되어있는 매장입니다"}
         </Button>
       </Box>
     </Container>

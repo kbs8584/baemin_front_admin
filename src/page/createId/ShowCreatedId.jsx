@@ -1,6 +1,7 @@
 import { Grid, Box, Typography, Button } from "@mui/material";
 import Modal from "components/Modal";
 import CloseIcon from "@mui/icons-material/Close";
+import { changeToken } from "api/user";
 
 export default function ShowCreatedId({
   dialogOpen,
@@ -11,10 +12,14 @@ export default function ShowCreatedId({
   storeEmail,
   password,
 }) {
-  function redirectToUserSite() {
-    const token = sessionStorage.getItem("TOKEN");
+  const redirectToUserSite = async () => {
+    const formdata = new FormData();
+    formdata.append("userId", CMSId);
+    const res = await changeToken(formdata);
+    const token = res.token;
+
     window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
-  }
+  };
 
   return (
     <Modal fullWidth dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>

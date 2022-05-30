@@ -19,7 +19,7 @@ import { useNavigate } from "react-router";
 export default function SignIn() {
   const savedId = localStorage.getItem("USER_ID");
   const [userIdInput, setUserIdInput] = useState(savedId ? savedId : "");
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(userIdInput);
   const [password, setPassword] = useState("");
   const [checkIdAndPassword, setCheckIdAndPassword] = useState(false);
   const [saveId, setSaveId] = useState(false);
@@ -43,10 +43,9 @@ export default function SignIn() {
   useEffect(() => {
     if (user) {
       navigate("/");
-      localStorage.setItem("USER_ID", userId);
+      if (userId !== "") localStorage.setItem("USER_ID", userId);
     }
   }, [user]);
-
   function saveIdInLocalStorage() {
     if (!saveId) {
       setSaveId(true);

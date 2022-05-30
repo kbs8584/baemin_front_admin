@@ -4,7 +4,6 @@ import {
   Button,
   Tabs,
   Tab,
-  Box,
   Container,
   ImageList,
   ImageListItem,
@@ -79,8 +78,6 @@ export default function Gallery() {
       behavior: "smooth",
     });
   };
-
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
   return (
     <Container sx={{ marginBottom: 5 }}>

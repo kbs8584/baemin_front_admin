@@ -28,7 +28,9 @@ export const validateProfile = createAsyncThunk(
 
         return res.data;
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+      });
 
     return user;
   }
