@@ -60,6 +60,7 @@ export default function Gallery() {
   };
 
   const deleteImage = async (listItem) => {
+    console.log("listItem", listItem);
     const seqNo = listItem.seqNo;
     const res = await deleteGalleryImage(seqNo);
     setImageListUpdated(res);
@@ -80,8 +81,8 @@ export default function Gallery() {
   };
 
   return (
-    <Container sx={{ marginBottom: 5 }}>
-      <Grid container pt={2} mb={4} sx={{ justifyContent: "space-between" }}>
+    <Container sx={{ marginBottom: 18 }}>
+      <Grid container mt={6} mb={4} sx={{ justifyContent: "space-between" }}>
         <Grid item component="h1" sx={{ fontSize: "subtitle1.fontSize" }}>
           배민 갤러리
         </Grid>
@@ -140,9 +141,11 @@ export default function Gallery() {
                     label={listItem.title}
                     value={listItem.id}
                     sx={{
+                      padding: 2.5,
                       border: 1,
                       borderColor: "grey.200",
                       bgcolor: "grey.50",
+                      fontWeight: "bold",
                       "&.Mui-selected": {
                         borderRadius: 1,
                         backgroundColor: "common.white",

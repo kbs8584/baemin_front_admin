@@ -56,13 +56,13 @@ export const getStoreIdAndEmail = async (storeId) => {
     });
     return response.data;
   } catch (error) {
+    if (error.response.status === 400) return;
     console.error(error);
   }
 };
 export const changeToken = async (data) => {
   try {
     const response = await API.post("/api/v1/user/change/token", data);
-    console.log("데이터!", response.data);
     return response.data;
   } catch (error) {
     console.error(error);

@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
-import { useSelector } from "react-redux";
 import { changeToken, initPassword } from "api/user";
 import { getStoreList } from "api/user";
 
@@ -35,6 +34,8 @@ export default function ManageStore() {
       rowCount !== undefined ? rowCount : prevRowCountState
     );
   }, [rowCount, setRowCountState]);
+
+  console.log(searchData);
 
   function filterStore(page) {
     setInitSearch(true);
@@ -65,9 +66,9 @@ export default function ManageStore() {
   const handleInitPassword = async (rowInfo) => {
     //emai주소, 회원id보내기
     const storeId = rowInfo.row.storeId;
-    const storeEmail = rowInfo.row.storeEmail;
+    const email = rowInfo.row.email;
     const CMSId = rowInfo.row.userId;
-    const res = await initPassword(storeId, storeEmail, CMSId);
+    const res = await initPassword(storeId, email, CMSId);
   };
 
   // field를 받아온 데이터의 key와 동일하게 맞춰야 함
@@ -77,6 +78,7 @@ export default function ManageStore() {
       field: "userId",
       headerName: "CMS ID",
       width: 244,
+      editable: false,
     },
     {
       headerClassName: "super-app-theme--header",
@@ -94,7 +96,7 @@ export default function ManageStore() {
     },
     {
       headerClassName: "super-app-theme--header",
-      field: "storeEmail",
+      field: "email",
       headerName: "이메일",
       width: 240,
       editable: false,
@@ -103,7 +105,9 @@ export default function ManageStore() {
       headerClassName: "super-app-theme--header",
       field: "checkCMS",
       headerName: "CMS 보기",
-      width: 170,
+      width: 150,
+      headerAlign: "center",
+      align: "center",
       renderCell: (params) => {
         return (
           <EditButton onClick={() => redirectToUserSite(params)}>
@@ -117,7 +121,9 @@ export default function ManageStore() {
       headerClassName: "super-app-theme--header",
       field: "initPassword",
       headerName: "비밀번호 초기화",
-      width: 130,
+      width: 150,
+      headerAlign: "center",
+      align: "center",
       renderCell: (params) => {
         return (
           <EditButton
@@ -199,7 +205,7 @@ export default function ManageStore() {
               borderRadius: "30px",
             }}
           >
-            <SearchIcon />
+            <SearchIcon sx={{ fontSize: "2rem" }} />
             <InputBase
               fullWidth
               autoFocus
@@ -230,8 +236,12 @@ export default function ManageStore() {
           width: "100%",
           height: "649px",
           "& .super-app-theme--header": {
-            borderBottom: 3,
+            borderBottom: 6,
             fontSize: "1rem",
+            fontWeight: "bold",
+          },
+          "& .super-app-theme--header:nth-of-type(1)": {
+            paddingLeft: 5,
           },
         }}
       >
@@ -250,6 +260,9 @@ export default function ManageStore() {
             textAlign: "center",
             "& .MuiDataGrid-row:nth-of-type(2n)": {
               backgroundColor: "grey.100",
+            },
+            "& .MuiDataGrid-cell:nth-of-type(1)": {
+              paddingLeft: 5,
             },
           }}
           onPageChange={(page) => {
