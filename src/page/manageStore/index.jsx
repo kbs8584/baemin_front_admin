@@ -12,29 +12,55 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllStoreList } from "store/storeList";
-import { initPassword } from "api/user";
+import { useSelector } from "react-redux";
+import { changeToken, initPassword } from "api/user";
+import { getStoreList } from "api/user";
 
 export default function ManageStore() {
   const [inputValue, setInputValue] = useState("");
-  const [selectValue, setSelectValue] = useState("all");
-  const [storeData, setStoreData] = useState([]);
-  const storeDataFromDB = useSelector((state) => state.storeList.storeData);
-  const [initialStoreData, setInitialStoreData] = useState([]);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllStoreList());
-  }, []);
+  const [selectValue, setSelectValue] = useState(0);
+  const [initSearch, setInitSearch] = useState(false);
+  const [initialSearchData, setInitialSearchData] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+  const [rowCount, setRowCount] = useState(initialSearchData?.allCount);
+  const [rowCountState, setRowCountState] = useState(rowCount);
 
   useEffect(() => {
-    const newArray = storeDataFromDB.map((store, i) => {
-      return { ...store, id: i };
+    if (!initSearch) return;
+    filterStore(0);
+  }, [selectValue]);
+
+  useEffect(() => {
+    setRowCountState((prevRowCountState) =>
+      rowCount !== undefined ? rowCount : prevRowCountState
+    );
+  }, [rowCount, setRowCountState]);
+
+  function filterStore(page) {
+    setInitSearch(true);
+    getStoreList(page + 1, inputValue, selectValue).then((data) => {
+      setInitialSearchData(data.list);
+      setRowCount(Number(data.allCount));
+      return data;
     });
-    setInitialStoreData(newArray);
-  }, []);
+  }
+  useEffect(() => {
+    const newArray = initialSearchData?.map((store, i) => ({
+      ...store,
+      id: i,
+    }));
+    setSearchData(newArray);
+  }, [initialSearchData]);
+
+  const redirectToUserSite = async (params) => {
+    const formdata = new FormData();
+    formdata.append("userId", params.row.userId);
+    const res = await changeToken(formdata);
+    const token = res.token;
+
+    const storeId = params.row.storeId;
+    window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
+  };
 
   const handleInitPassword = async (rowInfo) => {
     //emai주소, 회원id보내기
@@ -44,60 +70,33 @@ export default function ManageStore() {
     const res = await initPassword(storeId, storeEmail, CMSId);
   };
 
-  function filterStore() {
-    let filteredStore = [];
-    if (selectValue === "all") {
-      filteredStore = initialStoreData.filter((store, i) => {
-        const storeWithNoId = { ...store };
-        delete storeWithNoId.id;
-        const values = Object.values(storeWithNoId);
-        const matched = values.filter((value) => {
-          return value.toString().match(inputValue);
-        });
-        return matched.length !== 0;
-      });
-    } else {
-      filteredStore = initialStoreData.filter((store) => {
-        const matched = store[selectValue].toString().match(inputValue);
-        return matched !== null;
-      });
-    }
-    setStoreData(filteredStore);
-  }
-
-  function redirectToUserSite(params) {
-    const token = sessionStorage.getItem("TOKEN");
-    const storeId = params.row.storeId;
-    window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
-  }
-
   // field를 받아온 데이터의 key와 동일하게 맞춰야 함
   const columns = [
     {
       headerClassName: "super-app-theme--header",
       field: "userId",
       headerName: "CMS ID",
-      width: 200,
+      width: 244,
     },
     {
       headerClassName: "super-app-theme--header",
       field: "storeName",
       headerName: "매장명",
-      width: 200,
+      width: 244,
       editable: false,
     },
     {
       headerClassName: "super-app-theme--header",
       field: "storeId",
       headerName: "매장ID",
-      width: 100,
+      width: 120,
       editable: false,
     },
     {
       headerClassName: "super-app-theme--header",
       field: "storeEmail",
       headerName: "이메일",
-      width: 200,
+      width: 240,
       editable: false,
     },
     {
@@ -180,11 +179,11 @@ export default function ManageStore() {
                 setSelectValue(e.target.value);
               }}
             >
-              <MenuItem value="all">전체</MenuItem>
-              <MenuItem value="storeName">매장명</MenuItem>
-              <MenuItem value="userId">회원ID</MenuItem>
+              <MenuItem value={0}>전체</MenuItem>
+              <MenuItem value={2}>매장명</MenuItem>
+              <MenuItem value={1}>회원ID</MenuItem>
               {/* 변경필요 */}
-              <MenuItem value="storeId">매장ID</MenuItem>
+              <MenuItem value={1}>매장ID</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -208,7 +207,7 @@ export default function ManageStore() {
                 setInputValue(e.target.value);
               }}
               onKeyDown={(e) => {
-                if (e.key === "Enter") filterStore();
+                if (e.key === "Enter") filterStore(0);
               }}
             ></InputBase>
             <Button
@@ -218,7 +217,7 @@ export default function ManageStore() {
                 borderRadius: "0 30px 30px 0",
                 color: "#000",
               }}
-              onClick={filterStore}
+              onClick={() => filterStore(0)}
             >
               검색
             </Button>
@@ -236,21 +235,28 @@ export default function ManageStore() {
           },
         }}
       >
+        {/* {searchData && ( */}
         <DataGrid
           components={{
             NoRowsOverlay: CustomNoRowsOverlay,
           }}
-          pagination
-          rows={storeData}
+          rowsPerPageOptions={[10]}
+          rows={searchData}
           columns={columns}
-          // rowsPerPageOptions={[10]}
+          paginationMode="server"
+          pageSize={10}
+          rowCount={rowCountState}
           sx={{
             textAlign: "center",
             "& .MuiDataGrid-row:nth-of-type(2n)": {
               backgroundColor: "grey.100",
             },
           }}
-        ></DataGrid>
+          onPageChange={(page) => {
+            filterStore(page);
+          }}
+        />
+        {/* )} */}
       </Box>
     </Container>
   );
