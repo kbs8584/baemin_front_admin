@@ -1,7 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getUsersInfo } from "api/auth";
 
 const initialState = {
   currentMenu: "/",
+  storeList: [],
 };
 
 export const appSlice = createSlice({

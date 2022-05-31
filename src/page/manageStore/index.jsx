@@ -1,7 +1,4 @@
-import { useState } from "react";
-import parse from "html-react-parser";
-import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "store/auth";
+import { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -15,62 +12,113 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
-import stores from "data/stores";
+import { changeToken, initPassword } from "api/user";
+import { getStoreList } from "api/user";
+import Main from "components/layout/Main";
 
-export default function ManageMember() {
-  const dispatch = useDispatch();
-  const status = useSelector((state) => state.auth.user);
+export default function ManageStore() {
   const [inputValue, setInputValue] = useState("");
-  const [selectValue, setSelectValue] = useState("all");
-  const [storeData, setStoreData] = useState(stores);
+  const [selectValue, setSelectValue] = useState(0);
+  const [initSearch, setInitSearch] = useState(false);
+  const [initialSearchData, setInitialSearchData] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+  const [rowCount, setRowCount] = useState(initialSearchData?.allCount);
+  const [rowCountState, setRowCountState] = useState(rowCount);
 
-  function filterStore() {
-    let filteredStore = [];
-    if (selectValue === "all") {
-      // Object.keys(stores[0]).forEach((key) => {
-      //   const preFilteredStore = filteredStore;
-      //   console.log("preFli", preFilteredStore);
-      //   filteredStore = stores.filter((store) => {
-      //     return store[key] === inputValue;
-      //   });
-      //   setStoreData([...preFilteredStore, filteredStore]);
-      // });
-    } else {
-      filteredStore = stores.filter(
-        (store) => store[selectValue] === inputValue
-      );
-    }
-    setStoreData(filteredStore);
+  useEffect(() => {
+    // 검색이 시작되지 않으면 데이터를 불러오지 않는다
+    if (!initSearch) return;
+    filterStore(0);
+  }, [selectValue]);
+
+  useEffect(() => {
+    setRowCountState((prevRowCountState) =>
+      rowCount !== undefined ? rowCount : prevRowCountState
+    );
+  }, [rowCount, setRowCountState]);
+
+  function filterStore(page) {
+    setInitSearch(true);
+    getStoreList(page + 1, inputValue, selectValue).then((data) => {
+      setInitialSearchData(data.list);
+      setRowCount(Number(data.allCount));
+      return data;
+    });
   }
+  useEffect(() => {
+    const newArray = initialSearchData?.map((store, i) => ({
+      ...store,
+      id: i,
+    }));
+    setSearchData(newArray);
+  }, [initialSearchData]);
 
+  const redirectToUserSite = async (params) => {
+    const formdata = new FormData();
+    formdata.append("userId", params.row.userId);
+    const res = await changeToken(formdata);
+    const token = res.token;
+
+    const storeId = params.row.storeId;
+    window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
+  };
+
+  const handleInitPassword = async (rowInfo) => {
+    //emai주소, 회원id보내기
+    const storeId = rowInfo.row.storeId;
+    const email = rowInfo.row.email;
+    const CMSId = rowInfo.row.userId;
+    await initPassword(storeId, email, CMSId);
+  };
+
+  // field를 받아온 데이터의 key와 동일하게 맞춰야 함
   const columns = [
     {
       headerClassName: "super-app-theme--header",
-      field: "CMSId",
+      field: "userId",
       headerName: "CMS ID",
-      width: 200,
-    },
-    {
-      headerClassName: "super-app-theme--header",
-      field: "storeName",
-      headerName: "매장명(매장ID)",
-      width: 344,
+      width: 234,
       editable: false,
     },
     {
       headerClassName: "super-app-theme--header",
-      field: "storeEmail",
+      field: "storeName",
+      headerName: "매장명",
+      width: 240,
+      editable: false,
+    },
+    {
+      headerClassName: "super-app-theme--header",
+      field: "storeId",
+      headerName: "매장ID",
+      width: 120,
+      editable: false,
+    },
+    {
+      headerClassName: "super-app-theme--header",
+      field: "email",
       headerName: "이메일",
-      width: 300,
+      width: 240,
       editable: false,
     },
     {
       headerClassName: "super-app-theme--header",
       field: "checkCMS",
       headerName: "CMS 보기",
-      width: 170,
+      width: 150,
+      headerAlign: "center",
+      align: "center",
       renderCell: (params) => {
-        return <EditButton>편집하기</EditButton>;
+        return (
+          <EditButton
+            onClick={() => redirectToUserSite(params)}
+            sx={{
+              backgroundColor: "common.white",
+            }}
+          >
+            편집하기
+          </EditButton>
+        );
       },
       editable: false,
     },
@@ -78,18 +126,22 @@ export default function ManageMember() {
       headerClassName: "super-app-theme--header",
       field: "initPassword",
       headerName: "비밀번호 초기화",
-      width: 130,
+      width: 150,
+      headerAlign: "center",
+      align: "center",
       renderCell: (params) => {
         return (
           <EditButton
             sx={{
               borderColor: "primary.alert",
+              backgroundColor: "common.white",
               color: "primary.alert",
               "&:hover": {
                 backgroundColor: "primary.alertBg",
                 borderColor: "red",
               },
             }}
+            onClick={() => handleInitPassword(params)}
           >
             초기화
           </EditButton>
@@ -100,7 +152,7 @@ export default function ManageMember() {
   ];
 
   return (
-    <Container sx={{ width: "100%", minHeight: "100vh" }}>
+    <Main>
       <Typography
         variant="h1"
         mt={6}
@@ -139,16 +191,16 @@ export default function ManageMember() {
                 setSelectValue(e.target.value);
               }}
             >
-              <MenuItem value="all">전체</MenuItem>
-              <MenuItem value="storeName">매장명</MenuItem>
-              <MenuItem value="CMSId">회원ID</MenuItem>
-              <MenuItem value="storeId">매장ID</MenuItem>
+              <MenuItem value={0}>전체</MenuItem>
+              <MenuItem value={2}>매장명</MenuItem>
+              <MenuItem value={1}>회원ID</MenuItem>
+              {/* 현재 매장ID로 검색하는 기능이 없음 */}
+              <MenuItem value={1}>매장ID</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item xs={10} md={10} sx={{ height: 1 }}>
           <Grid
-            // component="form"
             pl={2}
             sx={{
               height: 1,
@@ -159,12 +211,15 @@ export default function ManageMember() {
               borderRadius: "30px",
             }}
           >
-            <SearchIcon />
+            <SearchIcon sx={{ fontSize: "2rem" }} />
             <InputBase
               fullWidth
+              autoFocus
               onChange={(e) => {
                 setInputValue(e.target.value);
-                // filterStore();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") filterStore(0);
               }}
             ></InputBase>
             <Button
@@ -174,7 +229,7 @@ export default function ManageMember() {
                 borderRadius: "0 30px 30px 0",
                 color: "#000",
               }}
-              onClick={() => filterStore()}
+              onClick={() => filterStore(0)}
             >
               검색
             </Button>
@@ -185,9 +240,13 @@ export default function ManageMember() {
         mb={5}
         sx={{
           width: "100%",
-          height: "631px",
+          height: "649px",
           "& .super-app-theme--header": {
-            borderBottom: 3,
+            borderBottom: 6,
+            fontSize: "1rem",
+          },
+          "& .super-app-theme--header:nth-of-type(1)": {
+            paddingLeft: 5,
           },
         }}
       >
@@ -195,22 +254,37 @@ export default function ManageMember() {
           components={{
             NoRowsOverlay: CustomNoRowsOverlay,
           }}
-          autoPageSize
-          rows={storeData}
-          columns={columns}
           rowsPerPageOptions={[10]}
+          rows={searchData}
+          columns={columns}
+          paginationMode="server"
+          pageSize={10}
+          rowCount={rowCountState}
           sx={{
+            borderRadius: 3,
             textAlign: "center",
-            // "& .MuiDataGrid-row": {
-            //   border: "1px solid transparent",
-            // },
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: "bold",
+            },
             "& .MuiDataGrid-row:nth-of-type(2n)": {
               backgroundColor: "grey.100",
             },
+            "& .MuiDataGrid-cell:nth-of-type(1)": {
+              paddingLeft: 5,
+            },
+            "& .MuiDataGrid-cell": {
+              border: 0,
+            },
+            "& .MuiDataGrid-columnSeparator--sideRight": {
+              display: "none",
+            },
           }}
-        ></DataGrid>
+          onPageChange={(page) => {
+            filterStore(page);
+          }}
+        />
       </Box>
-    </Container>
+    </Main>
   );
 }
 function CustomNoRowsOverlay() {

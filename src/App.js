@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Layout from "components/layout/index";
 
@@ -8,7 +8,24 @@ import Gallery from "./page/gallery";
 import ManageStore from "./page/manageStore";
 import CreateId from "./page/createId";
 
+import { validateProfile } from "store/auth";
+import { useEffect } from "react";
+
 export default function App() {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const TOKEN = "TOKEN";
+
+  useEffect(() => {
+    (async () => {
+      const token = sessionStorage.getItem(TOKEN);
+
+      if (!token) return;
+
+      await dispatch(validateProfile(token));
+    })();
+  }, []);
+
   return (
     <Routes>
       <Route element={<RequiredAuth redirectPath="/sign-in" />}>
@@ -25,8 +42,8 @@ export default function App() {
 }
 
 const RequiredAuth = ({ redirectPath, children }) => {
-  const user = useSelector((state) => state.auth.user);
   let location = useLocation();
+  const user = useSelector((state) => state.auth.user);
 
   if (!user) {
     // redirect with memo current path

@@ -9,212 +9,90 @@ import {
   ImageListItem,
   FormControlLabel,
   Checkbox,
+  Input,
 } from "@mui/material";
 import { TabContext, TabPanel } from "@mui/lab";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import ClearIcon from "@mui/icons-material/Clear";
-import axios from "axios";
+import {
+  getGalleryImage,
+  addGalleryImage,
+  deleteGalleryImage,
+  deleteCheckedGalleryImages,
+} from "api/gallery";
+import { imageCategoryList } from "constant/galleryCategory";
+import Main from "components/layout/Main";
 
-const BASE_URL = "http://localhost:8080";
-
-export default function GallaryModal() {
+export default function Gallery() {
   const INITIAL_VALUE = "1";
-  const INITIAL_SUB_VALUE = "1";
   const [value, setValue] = useState(INITIAL_VALUE);
-  const [subValue, setSubValue] = useState(INITIAL_SUB_VALUE);
-
-  const createData = (id, name, image) => ({
-    id,
-    name,
-    image,
-  });
-
-  const [imageCategoryList, setImageCategoryList] = useState([
-    createData("1", "시즌", [
-      {
-        imageId: "1",
-        imageName: "생일01",
-        imageURL:
-          "https://i.pinimg.com/originals/dc/0e/a3/dc0ea333ec91b82a0b706dd977d84906.jpg",
-      },
-      {
-        imageId: "2",
-        imageName: "생일02",
-        imageURL:
-          "https://d3kxs6kpbh59hp.cloudfront.net/community/COMMUNITY/cc687c9133ff431d99d7ba5cc252ae4b/580deb542be4476eba319e2f19d31b06_1649592109.jpg",
-      },
-      {
-        imageId: "3",
-        imageName: "생일03",
-        imageURL:
-          "https://d3kxs6kpbh59hp.cloudfront.net/community/COMMUNITY/eb89e2fa38834e61abf0cd45f7f5d590/289149d4b7704985a93f78663834fe64_1649248695.png",
-      },
-      {
-        imageId: "4",
-        imageName: "생일04",
-        imageURL:
-          "https://cdn.crowdpic.net/detail-thumb/thumb_d_7E318A19CF49E428F7D458A803F5311C.jpg",
-      },
-      {
-        imageId: "5",
-        imageName: "생일05",
-        imageURL:
-          "https://vrthumb.imagetoday.co.kr/2015/03/25/tid114t000407.jpg",
-      },
-    ]),
-    createData("2", "돈가스/회/일식", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("3", "중식", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("4", "치킨", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("5", "백반/죽/국수", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("6", "카페/디저트", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("7", "분식", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("8", "찜/탕/찌개", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("9", "피자", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("10", "양식", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("11", "고기/구이", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("12", "족발/보쌈", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("13", "아시안", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("14", "패스트푸드", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("15", "야식", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-    createData("16", "도시락", [
-      {
-        imageId: "1",
-        imageName: "상황01",
-        imageURL:
-          "https://previews.123rf.com/images/pa3x/pa3x1604/pa3x160400738/56373471-welcome-inscription-greeting-card-with-calligraphy-hand-drawn-lettering-design-photo-overlay-typogra.jpg",
-      },
-    ]),
-  ]);
-
-  const handleValueChange = (e, value) => {
-    setSubValue(INITIAL_SUB_VALUE);
-    setValue(value);
-    e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.scrollTo(
-      {
-        top: 0,
-        behavior: "smooth",
-      }
-    );
-  };
-
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
+  const [initialImageList, setInitialImageList] = useState([]);
+  const [imageList, setImageList] = useState([]);
+  const [imageListUpdated, setImageListUpdated] = useState();
 
   useEffect(() => {
-    (async () => {
-      const res = await axios.post(`${BASE_URL}/posts`, {
-        // author: 'jy',
-        title: "axios22",
-      });
-      const result = await res.data;
-      console.log(result);
-    })();
-  }, []);
+    getGalleryImage(value).then((data) => {
+      setInitialImageList(data.list);
+    });
+  }, [value, imageListUpdated]);
+  useEffect(() => {
+    const newArray = initialImageList.map((image) => ({
+      ...image,
+      checked: false,
+    }));
+    setImageList(newArray);
+  }, [initialImageList, imageListUpdated]);
+
+  function toggleDeleteImageState(image) {
+    if (image.checked === false) {
+      image.checked = true;
+    } else {
+      image.checked = false;
+    }
+  }
+
+  const addImage = async (e) => {
+    const currentFile = e.target.files[0];
+    var imageFileData = new FormData();
+    imageFileData.append("file", currentFile);
+    imageFileData.append("mainCategory", value);
+    const res = await addGalleryImage(imageFileData);
+    setImageListUpdated(res);
+  };
+
+  const deleteImage = async (listItem) => {
+    const seqNo = listItem.seqNo;
+    const res = await deleteGalleryImage(seqNo);
+    setImageListUpdated(res);
+  };
+  const deleteCheckedImages = async () => {
+    const newArray = imageList.filter((image) => image.checked === true);
+    const seqNoArray = newArray.map((image) => image.seqNo);
+    const res = await deleteCheckedGalleryImages(seqNoArray);
+    setImageListUpdated(res);
+  };
+
+  const handleValueChange = (e, value) => {
+    setValue(value);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
-    <Container>
-      <Grid container pt={2} mb={4} sx={{ justifyContent: "space-between" }}>
-        <Grid item component="h1" sx={{ fontSize: "subtitle1.fontSize" }}>
+    <Main>
+      <Grid container sx={{ justifyContent: "space-between" }}>
+        <Grid
+          item
+          mt={6}
+          mb={4}
+          component="h1"
+          sx={{ fontSize: "subtitle1.fontSize" }}
+        >
           배민 갤러리
         </Grid>
-        <Grid>
+        <Grid mt={6}>
           <Button
             variant="outlined"
             sx={{
@@ -229,15 +107,27 @@ export default function GallaryModal() {
                 backgroundColor: "primary.alertBg",
               },
             }}
+            onClick={deleteCheckedImages}
           >
             선택 삭제
           </Button>
-          <Button
-            variant="contained"
-            sx={{ height: "28px", padding: 3, fontWeight: "fontWeight" }}
-          >
-            이미지 추가
-          </Button>
+          <label htmlFor="contained-button-file">
+            <Input
+              accept="image/*"
+              id="contained-button-file"
+              multiple
+              type="file"
+              sx={{ display: "none" }}
+              onChange={addImage}
+            />
+            <Button
+              variant="contained"
+              component="span"
+              sx={{ height: "28px", padding: 3, fontWeight: "fontWeight" }}
+            >
+              이미지 추가
+            </Button>
+          </label>
         </Grid>
       </Grid>
       <TabContext value={value}>
@@ -245,27 +135,31 @@ export default function GallaryModal() {
           <Grid item xs={2} md={2}>
             <Tabs
               onChange={handleValueChange}
-              aria-label="lab API tabs example"
+              aria-label="category-tabs"
               orientation="vertical"
               value={value}
               TabIndicatorProps={{ style: { backgroundColor: "transparent" } }}
             >
-              {imageCategoryList.map((listItem) => (
-                <Tab
-                  key={listItem.id}
-                  label={listItem.name}
-                  value={listItem.id}
-                  sx={{
-                    border: 1,
-                    borderColor: "grey.200",
-                    bgcolor: "grey.50",
-                    "&.Mui-selected": {
-                      borderRadius: 1,
-                      backgroundColor: "common.white",
-                    },
-                  }}
-                />
-              ))}
+              {imageCategoryList.map((listItem) => {
+                return (
+                  <Tab
+                    key={listItem.id}
+                    label={listItem.title}
+                    value={listItem.id}
+                    sx={{
+                      padding: 2.5,
+                      border: 1,
+                      borderColor: "grey.200",
+                      bgcolor: "grey.50",
+                      fontWeight: "bold",
+                      "&.Mui-selected": {
+                        borderRadius: 1,
+                        backgroundColor: "common.white",
+                      },
+                    }}
+                  />
+                );
+              })}
             </Tabs>
           </Grid>
           <Grid item xs={10} md={10}>
@@ -279,95 +173,93 @@ export default function GallaryModal() {
                 cols={4}
                 gap={10}
               >
-                {imageCategoryList[value - 1].image.map((listItem) => (
-                  <FormControlLabel
-                    key={`${value}${listItem.imageId}`}
-                    sx={{
-                      position: "relative",
-                      margin: "auto",
-                      alignItems: "start",
-                    }}
-                    label={
-                      <>
-                        <ImageListItem
-                          component="div"
-                          value={listItem.imageName}
-                          sx={{
-                            position: "relative",
-                            border: 3,
-                            borderRadius: "10px",
-                            borderColor: "grey.100",
-                            aspectRatio: "1/1",
-                          }}
-                        >
-                          <img
-                            label="haha"
-                            src={listItem.imageURL}
-                            alt={listItem.imageId}
-                            loading="lazy"
-                            style={{
-                              display: "block",
-                              width: "100%",
-                              height: "100%",
+                {imageList &&
+                  imageList.map((listItem) => (
+                    <FormControlLabel
+                      key={`${value}${listItem.seqNo}`}
+                      sx={{
+                        width: "100%",
+                        position: "relative",
+                        margin: "auto",
+                        alignItems: "start",
+                        "span:nth-of-type(2)": {
+                          width: "100%",
+                        },
+                      }}
+                      label={
+                        <>
+                          <ImageListItem
+                            component="div"
+                            value={listItem.seqNo}
+                            sx={{
+                              grid: 1,
+                              position: "relative",
+                              border: 3,
                               borderRadius: "10px",
-                              objectFit: "contain",
+                              borderColor: "grey.100",
+                              aspectRatio: "1/1",
                             }}
+                          >
+                            <img
+                              src={listItem.fullUrl}
+                              alt={listItem.seqNo}
+                              loading="lazy"
+                              style={{
+                                display: "block",
+                                width: "100%",
+                                height: "100%",
+                                borderRadius: "10px",
+                                objectFit: "contain",
+                              }}
+                            />
+                          </ImageListItem>
+                          <ClearIcon
+                            sx={{
+                              position: "absolute",
+                              top: "10px",
+                              right: "10px",
+                              zIndex: 2,
+                              width: "20px",
+                              height: "auto",
+                              borderRadius: "100%",
+                              backgroundColor: "common.black",
+                              color: "common.white",
+                            }}
+                            onClick={() => deleteImage(listItem)}
                           />
-                        </ImageListItem>
-                        <ClearIcon
+                        </>
+                      }
+                      control={
+                        <Checkbox
+                          icon={<CheckBoxOutlineBlankIcon />}
+                          checkedIcon={<CheckBoxOutlineBlankIcon />}
+                          id="haha"
                           sx={{
-                            position: "absolute",
+                            width: "10px",
+                            height: "10px",
+                            position: "relative",
+                            zIndex: "1",
                             top: "10px",
-                            right: "10px",
-                            zIndex: 2,
-                            width: "20px",
-                            height: "auto",
-                            borderRadius: "100%",
-                            backgroundColor: "common.black",
-                            color: "common.white",
+                            left: "30px",
+                            color: "primary.main",
+                            "&.Mui-checked": {
+                              borderRadius: 1,
+                              backgroundColor: "primary.main",
+                            },
                           }}
                           onClick={() => {
-                            const newCategory = imageCategoryList[
-                              value - 1
-                            ].image.filter(
-                              (item) => item.imageId !== listItem.imageId
-                            );
-                            // console.log(newCategory);
-                            // setImageCategoryList(imageCategoryList[value-1]를 newCategory);
+                            // addCheckedImageToDelete(listItem);
+                            toggleDeleteImageState(listItem);
                           }}
                         />
-                      </>
-                    }
-                    control={
-                      <Checkbox
-                        icon={<CheckBoxOutlineBlankIcon />}
-                        checkedIcon={<CheckBoxOutlineBlankIcon />}
-                        id="haha"
-                        sx={{
-                          width: "10px",
-                          height: "10px",
-                          position: "relative",
-                          zIndex: "1",
-                          top: "10px",
-                          left: "30px",
-                          color: "primary.main",
-                          "&.Mui-checked": {
-                            borderRadius: 1,
-                            backgroundColor: "primary.main",
-                          },
-                        }}
-                        onClick={() => {
-                          // console.log(listItem);
-                        }}
-                      />
-                    }
-                  />
-                ))}
+                      }
+                    />
+                  ))}
               </ImageList>
             </TabPanel>
           </Grid>
         </Grid>
       </TabContext>
-    </Container>
+    </Main>
   );
 }

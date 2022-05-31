@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUser } from "store/auth";
+import { getUser, validateProfile } from "store/auth";
+
 import {
   Grid,
   Box,
@@ -13,39 +14,49 @@ import {
   Button,
 } from "@mui/material";
 import MainLogo from "assets/main_logo.png";
-import API from "api";
-import { signIn } from "api/auth";
+import { useNavigate } from "react-router";
 
 export default function SignIn() {
-  const [userId, setUserId] = useState("");
+  const savedId = localStorage.getItem("USER_ID");
+  const [userIdInput, setUserIdInput] = useState(savedId ? savedId : "");
+  const [userId, setUserId] = useState(userIdInput);
   const [password, setPassword] = useState("");
+  const [checkIdAndPassword, setCheckIdAndPassword] = useState(false);
+  const [saveId, setSaveId] = useState(false);
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
+  const getUserStatus = useSelector((state) => state.auth.status);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const res = await signIn({
-      userId,
-      password,
-    });
-
-    console.log(res);
-
-    window.localStorage.setItem("access_token", res.token);
-
-    if (status === "succeeded") {
-      // 인증된 상태로 메인화면 이동
-      alert("인증됨");
-    }
-
-    await dispatch(
+  const handleSubmit = (e) => {
+    dispatch(
       getUser({
-        userId: userId,
-        password: password,
+        userId,
+        password,
       })
-    );
+    ).then((res) => {
+      dispatch(validateProfile(res?.payload.token));
+    });
+    setCheckIdAndPassword(true);
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+      if (userId !== "") localStorage.setItem("USER_ID", userId);
+    }
+  }, [user]);
+  function saveIdInLocalStorage() {
+    if (!saveId) {
+      setSaveId(true);
+    } else {
+      setSaveId(false);
+    }
+  }
+  function onChangeInput(e) {
+    const { value } = e.target;
+    setUserIdInput(value);
+  }
 
   return (
     <Grid
@@ -83,7 +94,14 @@ export default function SignIn() {
           <TextField
             fullWidth
             label="아이디"
-            onChange={(e) => setUserId(e.target.value)}
+            value={userIdInput}
+            onChange={(e) => {
+              onChangeInput(e);
+              setUserId(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSubmit();
+            }}
           />
         </Box>
 
@@ -93,9 +111,18 @@ export default function SignIn() {
             type="password"
             label="비밀번호"
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSubmit();
+            }}
           />
         </Box>
-
+        {checkIdAndPassword && !user && getUserStatus !== "loading" && (
+          <Box pb={1}>
+            <Typography sx={{ fontSize: "0.8rem", color: "primary.alert" }}>
+              아이디와 비밀번호를 확인해주세요.
+            </Typography>
+          </Box>
+        )}
         <Grid
           container
           justifyContent="space-between"
@@ -103,7 +130,10 @@ export default function SignIn() {
           pb={3}
         >
           <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="아이디 저장" />
+            <FormControlLabel
+              control={<Checkbox onClick={saveIdInLocalStorage} />}
+              label="아이디 저장"
+            />
           </FormGroup>
         </Grid>
 

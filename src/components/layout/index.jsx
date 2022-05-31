@@ -11,8 +11,6 @@ export default function Layout() {
     <>
       {!isSignInPage && <Header />}
 
-      <Divider />
-
       <Outlet />
 
       <Divider />

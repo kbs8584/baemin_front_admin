@@ -16,35 +16,23 @@ import { HOME_ROUTE_BUTTONS } from "constant";
 import MainLogo from "assets/main_logo.png";
 import { setCurrentMenu } from "store/app";
 import { setUser } from "store/auth";
-import { getUserInfo, signOut } from "api/auth";
-
-// (e) => {
-//   dispatch(setUser(false));
-//   handleSubmit(e);
-
-// }
+import { getUsersInfo, signOut } from "api/auth";
 
 export default function Header() {
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
+  // logout
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const token = window.localStorage.getItem("access_token");
+    sessionStorage.removeItem("TOKEN");
+    dispatch(setUser(null));
     const res = await signOut();
-    // console.log(res);
   };
-
-  // useEffect(() => {
-  //   const res = getUserInfo().then((data) => {
-  //     console.log(data);
-  //   });
-  // }, []);
 
   return (
     <Container>
-      <Grid container p={3}>
+      <Grid container p={3} pl={1}>
         <CardMedia
           component="img"
           src={MainLogo}
@@ -90,7 +78,7 @@ export default function Header() {
                 <Grid item>
                   <Typography>
                     <Typography component="span" fontWeight={900}>
-                      배민 관리자
+                      관리자
                     </Typography>{" "}
                     님
                   </Typography>
