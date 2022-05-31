@@ -95,7 +95,7 @@ export default function Gallery() {
         >
           배민 갤러리
         </Grid>
-        <Grid>
+        <Grid mt={6}>
           <Button
             variant="outlined"
             sx={{
