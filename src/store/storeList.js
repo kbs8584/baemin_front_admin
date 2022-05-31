@@ -7,29 +7,6 @@ const initialState = {
 const TOKEN = "TOKEN";
 const TOKEN_KEY = sessionStorage.getItem(TOKEN);
 
-// export const getStoreList = createAsyncThunk(
-//   "storeList/getStoreList",
-//   async (page, input, mode) => {
-//     try {
-//       const response = await API.get("/api/v1/user/search", {
-//         params: {
-//           cpage: page,
-//           rowItem: 10,
-//           sortMode: 1,
-//           searchInput: input,
-//           searchMode: mode,
-//           orderMode: false,
-//         },
-//         headers: { Authorization: `Bearer ${TOKEN_KEY}` },
-//       });
-//       console.log("searchg", response.data);
-//       return response.data;
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
-// );
-
 export const getAllStoreList = createAsyncThunk(
   "storeList/getAllStoreList",
   async () => {
@@ -56,9 +33,6 @@ export const storeListSlice = createSlice({
   initialState,
   redcuer: {},
   extraReducers: (builder) => {
-    // builder.addCase(getStoreList.fulfilled, (state, action) => {
-    //   state.storeData = action.payload;
-    // });
     builder.addCase(getAllStoreList.fulfilled, (state, action) => {
       state.storeData = action.payload;
     });

@@ -26,6 +26,7 @@ export default function ManageStore() {
   const [rowCountState, setRowCountState] = useState(rowCount);
 
   useEffect(() => {
+    // 검색이 시작되지 않으면 데이터를 불러오지 않는다
     if (!initSearch) return;
     filterStore(0);
   }, [selectValue]);
@@ -67,7 +68,7 @@ export default function ManageStore() {
     const storeId = rowInfo.row.storeId;
     const email = rowInfo.row.email;
     const CMSId = rowInfo.row.userId;
-    const res = await initPassword(storeId, email, CMSId);
+    await initPassword(storeId, email, CMSId);
   };
 
   // field를 받아온 데이터의 key와 동일하게 맞춰야 함
@@ -109,7 +110,12 @@ export default function ManageStore() {
       align: "center",
       renderCell: (params) => {
         return (
-          <EditButton onClick={() => redirectToUserSite(params)}>
+          <EditButton
+            onClick={() => redirectToUserSite(params)}
+            sx={{
+              backgroundColor: "common.white",
+            }}
+          >
             편집하기
           </EditButton>
         );
@@ -128,6 +134,7 @@ export default function ManageStore() {
           <EditButton
             sx={{
               borderColor: "primary.alert",
+              backgroundColor: "common.white",
               color: "primary.alert",
               "&:hover": {
                 backgroundColor: "primary.alertBg",
@@ -187,7 +194,7 @@ export default function ManageStore() {
               <MenuItem value={0}>전체</MenuItem>
               <MenuItem value={2}>매장명</MenuItem>
               <MenuItem value={1}>회원ID</MenuItem>
-              {/* 변경필요 */}
+              {/* 현재 매장ID로 검색하는 기능이 없음 */}
               <MenuItem value={1}>매장ID</MenuItem>
             </Select>
           </FormControl>
@@ -237,14 +244,12 @@ export default function ManageStore() {
           "& .super-app-theme--header": {
             borderBottom: 6,
             fontSize: "1rem",
-            fontWeight: "bold",
           },
           "& .super-app-theme--header:nth-of-type(1)": {
             paddingLeft: 5,
           },
         }}
       >
-        {/* {searchData && ( */}
         <DataGrid
           components={{
             NoRowsOverlay: CustomNoRowsOverlay,
@@ -256,19 +261,28 @@ export default function ManageStore() {
           pageSize={10}
           rowCount={rowCountState}
           sx={{
+            borderRadius: 3,
             textAlign: "center",
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: "bold",
+            },
             "& .MuiDataGrid-row:nth-of-type(2n)": {
               backgroundColor: "grey.100",
             },
             "& .MuiDataGrid-cell:nth-of-type(1)": {
               paddingLeft: 5,
             },
+            "& .MuiDataGrid-cell": {
+              border: 0,
+            },
+            "& .MuiDataGrid-columnSeparator--sideRight": {
+              display: "none",
+            },
           }}
           onPageChange={(page) => {
             filterStore(page);
           }}
         />
-        {/* )} */}
       </Box>
     </Main>
   );

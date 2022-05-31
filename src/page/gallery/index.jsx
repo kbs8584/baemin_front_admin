@@ -30,7 +30,6 @@ export default function Gallery() {
   const [imageList, setImageList] = useState([]);
   const [imageListUpdated, setImageListUpdated] = useState();
 
-  console.log("imageList", imageList);
   useEffect(() => {
     getGalleryImage(value).then((data) => {
       setInitialImageList(data.list);
@@ -62,9 +61,7 @@ export default function Gallery() {
   };
 
   const deleteImage = async (listItem) => {
-    console.log("listItem", listItem);
     const seqNo = listItem.seqNo;
-    console.log("seqNo", seqNo);
     const res = await deleteGalleryImage(seqNo);
     setImageListUpdated(res);
   };
@@ -138,7 +135,7 @@ export default function Gallery() {
           <Grid item xs={2} md={2}>
             <Tabs
               onChange={handleValueChange}
-              aria-label="lab API tabs example"
+              aria-label="category-tabs"
               orientation="vertical"
               value={value}
               TabIndicatorProps={{ style: { backgroundColor: "transparent" } }}

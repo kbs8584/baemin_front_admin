@@ -24,7 +24,7 @@ export const initPassword = async (storeId, storeEmail, CMSId) => {
       receiveMailAddr: storeEmail,
       receiveName: CMSId,
     });
-    if (res.code === 0) alert("비밀번호 초기화 이메일이 발송되었습니다.");
+    if (res.status === 200) alert("비밀번호 초기화 이메일이 발송되었습니다.");
   } catch (error) {
     console.error(error);
   }

@@ -1,11 +1,4 @@
-import {
-  Container,
-  Grid,
-  Box,
-  Typography,
-  Button,
-  InputBase,
-} from "@mui/material";
+import { Grid, Box, Typography, Button, InputBase } from "@mui/material";
 import { useEffect, useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
 import { signUp } from "api/auth";
@@ -23,7 +16,6 @@ export default function CreateId() {
   const [storeIdValue, setStoreIdValue] = useState("");
   const [availableId, setAvailableId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
-  const [storeDataFromDB, setStoreDataFromDB] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
