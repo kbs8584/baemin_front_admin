@@ -83,7 +83,7 @@ export default function ManageStore() {
       headerClassName: "super-app-theme--header",
       field: "storeName",
       headerName: "매장명",
-      width: 244,
+      width: 240,
       editable: false,
     },
     {
