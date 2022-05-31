@@ -14,6 +14,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import { changeToken, initPassword } from "api/user";
 import { getStoreList } from "api/user";
+import Main from "components/layout/Main";
 
 export default function ManageStore() {
   const [inputValue, setInputValue] = useState("");
@@ -34,8 +35,6 @@ export default function ManageStore() {
       rowCount !== undefined ? rowCount : prevRowCountState
     );
   }, [rowCount, setRowCountState]);
-
-  console.log(searchData);
 
   function filterStore(page) {
     setInitSearch(true);
@@ -77,7 +76,7 @@ export default function ManageStore() {
       headerClassName: "super-app-theme--header",
       field: "userId",
       headerName: "CMS ID",
-      width: 244,
+      width: 234,
       editable: false,
     },
     {
@@ -146,7 +145,7 @@ export default function ManageStore() {
   ];
 
   return (
-    <Container sx={{ width: "100%", minHeight: "100vh" }}>
+    <Main>
       <Typography
         variant="h1"
         mt={6}
@@ -271,7 +270,7 @@ export default function ManageStore() {
         />
         {/* )} */}
       </Box>
-    </Container>
+    </Main>
   );
 }
 function CustomNoRowsOverlay() {

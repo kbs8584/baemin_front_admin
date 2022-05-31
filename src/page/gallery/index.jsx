@@ -21,6 +21,7 @@ import {
   deleteCheckedGalleryImages,
 } from "api/gallery";
 import { imageCategoryList } from "constant/galleryCategory";
+import Main from "components/layout/Main";
 
 export default function Gallery() {
   const INITIAL_VALUE = "1";
@@ -29,6 +30,7 @@ export default function Gallery() {
   const [imageList, setImageList] = useState([]);
   const [imageListUpdated, setImageListUpdated] = useState();
 
+  console.log("imageList", imageList);
   useEffect(() => {
     getGalleryImage(value).then((data) => {
       setInitialImageList(data.list);
@@ -62,6 +64,7 @@ export default function Gallery() {
   const deleteImage = async (listItem) => {
     console.log("listItem", listItem);
     const seqNo = listItem.seqNo;
+    console.log("seqNo", seqNo);
     const res = await deleteGalleryImage(seqNo);
     setImageListUpdated(res);
   };
@@ -81,9 +84,15 @@ export default function Gallery() {
   };
 
   return (
-    <Container sx={{ marginBottom: 18 }}>
-      <Grid container mt={6} mb={4} sx={{ justifyContent: "space-between" }}>
-        <Grid item component="h1" sx={{ fontSize: "subtitle1.fontSize" }}>
+    <Main>
+      <Grid container sx={{ justifyContent: "space-between" }}>
+        <Grid
+          item
+          mt={6}
+          mb={4}
+          component="h1"
+          sx={{ fontSize: "subtitle1.fontSize" }}
+        >
           배민 갤러리
         </Grid>
         <Grid>
@@ -254,6 +263,6 @@ export default function Gallery() {
           </Grid>
         </Grid>
       </TabContext>
-    </Container>
+    </Main>
   );
 }

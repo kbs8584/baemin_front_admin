@@ -12,6 +12,7 @@ import { signUp } from "api/auth";
 import { checkDuplicateId, getStoreIdAndEmail } from "api/user";
 import { getAllStoreList } from "store/storeList";
 import { useDispatch } from "react-redux";
+import Main from "components/layout/Main";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -25,12 +26,6 @@ export default function CreateId() {
   const [storeDataFromDB, setStoreDataFromDB] = useState([]);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    (async () => {
-      const res = await getStoreIdAndEmail(storeIdValue);
-      setStoreDataFromDB(res?.id);
-    })();
-  }, []);
   useEffect(() => {
     dispatch(getAllStoreList());
   }, []);
@@ -117,7 +112,7 @@ export default function CreateId() {
   }
 
   return (
-    <Container sx={{ marginBottom: 18 }}>
+    <Main>
       <ShowCreatedId
         dialogOpen={dialogOpen}
         setDialogOpen={setDialogOpen}
@@ -357,6 +352,6 @@ export default function CreateId() {
             : "CMS에 이미 가입되어있는 매장입니다"}
         </Button>
       </Box>
-    </Container>
+    </Main>
   );
 }

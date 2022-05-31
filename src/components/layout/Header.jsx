@@ -32,7 +32,7 @@ export default function Header() {
 
   return (
     <Container>
-      <Grid container p={3}>
+      <Grid container p={3} pl={1}>
         <CardMedia
           component="img"
           src={MainLogo}
