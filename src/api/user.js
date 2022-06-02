@@ -56,7 +56,12 @@ export const getStoreIdAndEmail = async (storeId) => {
     });
     return response.data;
   } catch (error) {
-    if (error.response.status === 400) return;
+    if (
+      error.response.status === 400 &&
+      error.response.data.message === "가입된 매장 입니다."
+    ) {
+      return error.response.data.message;
+    }
     console.error(error);
   }
 };
