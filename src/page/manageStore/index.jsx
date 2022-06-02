@@ -194,8 +194,7 @@ export default function ManageStore() {
               <MenuItem value={0}>전체</MenuItem>
               <MenuItem value={2}>매장명</MenuItem>
               <MenuItem value={1}>회원ID</MenuItem>
-              {/* 현재 매장ID로 검색하는 기능이 없음 */}
-              <MenuItem value={1}>매장ID</MenuItem>
+              <MenuItem value={3}>매장ID</MenuItem>
             </Select>
           </FormControl>
         </Grid>
