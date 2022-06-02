@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
 import { signUp } from "api/auth";
 import { checkDuplicateId, getStoreIdAndEmail } from "api/user";
-import { getAllStoreList } from "store/storeList";
 import { useDispatch } from "react-redux";
 import Main from "components/layout/Main";
 
@@ -19,21 +18,23 @@ export default function CreateId() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllStoreList());
-  }, []);
-
-  useEffect(() => {
     setCheckedCMSId(false);
   }, []);
 
   const checkStoreId = async (e) => {
     const res = await getStoreIdAndEmail(storeIdValue);
-    // console.log("data", res);
 
-    if (res !== undefined) {
+    if (res === undefined) {
+      // 등록되지 않은 매장ID
+      setStoreIdValue("");
+      setAvailableId(true);
+    } else if (res === "가입된 매장 입니다.") {
+      // 등록된 매장ID이며, 이미 CMS ID를 가지고 있는 매장
       setAvailableId(false);
     } else {
+      // 등록된 매장ID이며, CMS ID를 가지고 있지 않은 매장
       setAvailableId(true);
+      setStoreEmailValue(res.officePhone);
     }
   };
   const handleCheckCMSIdButton = async (CMSIdValue) => {
@@ -150,6 +151,7 @@ export default function CreateId() {
             </Typography>
             <InputBase
               placeholder="매장 ID를 입력후 키보드의 엔터키를 입력해주세요"
+              value={storeIdValue}
               sx={{
                 width: "calc(100% - 410px)",
                 paddingLeft: 3,
