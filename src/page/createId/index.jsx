@@ -23,7 +23,6 @@ export default function CreateId() {
 
   const checkStoreId = async (e) => {
     const res = await getStoreIdAndEmail(storeIdValue);
-    console.log("data", res);
 
     if (res === undefined) {
       // 등록되지 않은 매장ID
