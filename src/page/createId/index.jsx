@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ShowCreatedId from "./ShowCreatedId";
 import { signUp } from "api/auth";
 import { checkDuplicateId, getStoreIdAndEmail } from "api/user";
-import { useDispatch } from "react-redux";
 import Main from "components/layout/Main";
 
 export default function CreateId() {
@@ -15,7 +14,6 @@ export default function CreateId() {
   const [storeIdValue, setStoreIdValue] = useState("");
   const [availableId, setAvailableId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setCheckedCMSId(false);
@@ -23,18 +21,23 @@ export default function CreateId() {
 
   const checkStoreId = async (e) => {
     const res = await getStoreIdAndEmail(storeIdValue);
-
     if (res === undefined) {
       // 등록되지 않은 매장ID
       setStoreIdValue("");
       setAvailableId(true);
+      setStoreNameValue("");
+      setStoreEmailValue("");
     } else if (res === "가입된 매장 입니다.") {
       // 등록된 매장ID이며, 이미 CMS ID를 가지고 있는 매장
       setAvailableId(false);
+      setStoreNameValue("");
+      setStoreEmailValue("");
     } else {
       // 등록된 매장ID이며, CMS ID를 가지고 있지 않은 매장
       setAvailableId(true);
+      // ** 받아온 데이터의 email로 변경 필요
       setStoreEmailValue(res.officePhone);
+      setStoreNameValue(res.name);
     }
   };
   const handleCheckCMSIdButton = async (CMSIdValue) => {
@@ -71,6 +74,7 @@ export default function CreateId() {
   function checkValuesBeforeSubmit() {
     if (
       storeIdValue === "" ||
+      storeEmailValue === "" ||
       storeNameValue === "" ||
       CMSIdValue === "" ||
       passwordValue === ""
@@ -194,11 +198,12 @@ export default function CreateId() {
             >
               매장명
             </Typography>
-            <InputBase
-              placeholder=""
+            <Typography
               sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}
-              onChange={(e) => setInfoWithInputValue(e, setStoreNameValue)}
-            ></InputBase>
+              // onChange={(e) => setInfoWithInputValue(e, setStoreNameValue)}
+            >
+              {storeNameValue}
+            </Typography>
           </Grid>
         </Box>
         <Box mb={1.3}>
