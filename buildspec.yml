@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+    commands:
+      # - $(aws ecr get-login --no-include-email --region ap-northeast-2)
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 965522962451.dkr.ecr.ap-northeast-2.amazonaws.com/baemin/front/admin
+      - REPOSITORY_URI=965522962451.dkr.ecr.ap-northeast-2.amazonaws.com/baemin/front/admin
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - docker build -t baemin/front/admin .
+  post_build:
+    commands:
+      - docker tag baemin/front/admin:latest $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"baemin/front/admin","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
