@@ -133,7 +133,7 @@ const RouteButton = ({ children, to }) => {
       sx={{
         color:
           currentMenu === to ? "#000000" : (theme) => theme.palette.grey[400],
-        fontWeight: 900,
+        fontWeight: currentMenu === to ? "900" : "inherit",
       }}
       onClick={handleChangeMode}
     >

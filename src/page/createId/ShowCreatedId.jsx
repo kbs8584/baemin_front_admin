@@ -2,6 +2,8 @@ import { Grid, Box, Typography, Button } from "@mui/material";
 import Modal from "components/Modal";
 import CloseIcon from "@mui/icons-material/Close";
 import { changeToken } from "api/user";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function ShowCreatedId({
   dialogOpen,
@@ -11,7 +13,14 @@ export default function ShowCreatedId({
   storeName,
   storeEmail,
   password,
+  setStoreIdValue,
+  newIdCreated,
 }) {
+  useEffect(() => {
+    if (newIdCreated === true && dialogOpen === false) {
+      setStoreIdValue("");
+    }
+  }, [dialogOpen]);
   const redirectToUserSite = async () => {
     const formdata = new FormData();
     formdata.append("userId", CMSId);

@@ -4,6 +4,7 @@ import ShowCreatedId from "./ShowCreatedId";
 import { signUp } from "api/auth";
 import { checkDuplicateId, getStoreIdAndEmail } from "api/user";
 import Main from "components/layout/Main";
+import { useNavigate } from "react-router";
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -14,6 +15,7 @@ export default function CreateId() {
   const [storeIdValue, setStoreIdValue] = useState("");
   const [availableId, setAvailableId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
+  const [newIdCreated, setNewIdCreated] = useState(false);
 
   useEffect(() => {
     setCheckedCMSId(false);
@@ -36,7 +38,7 @@ export default function CreateId() {
       // 등록된 매장ID이며, CMS ID를 가지고 있지 않은 매장
       setAvailableId(true);
       // ** 받아온 데이터의 email로 변경 필요
-      setStoreEmailValue(res.officePhone);
+      // setStoreEmailValue("");
       setStoreNameValue(res.name);
     }
   };
@@ -75,6 +77,8 @@ export default function CreateId() {
     if (
       storeIdValue === "" ||
       storeEmailValue === "" ||
+      storeEmailValue === null ||
+      storeEmailValue === undefined ||
       storeNameValue === "" ||
       CMSIdValue === "" ||
       passwordValue === ""
@@ -97,13 +101,18 @@ export default function CreateId() {
       storeIdValue !== "" &&
       storeNameValue !== "" &&
       storeEmailValue !== "" &&
+      storeEmailValue !== null &&
+      storeEmailValue !== undefined &&
       CMSIdValue !== "" &&
       passwordValue !== ""
     ) {
       createCMSId();
+      setCheckedCMSId(false);
       setDialogOpen(true);
+      setNewIdCreated(true);
     }
   }
+
   function setInfoWithInputValue(e, setFunc) {
     setFunc(e.target.value);
   }
@@ -118,6 +127,8 @@ export default function CreateId() {
         storeName={storeNameValue}
         storeEmail={storeEmailValue}
         password={passwordValue}
+        setStoreIdValue={setStoreIdValue}
+        newIdCreated={newIdCreated}
       />
       <Typography
         variant="h1"
@@ -231,9 +242,20 @@ export default function CreateId() {
             >
               매장이메일
             </Typography>
-            <Typography sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}>
+            <InputBase
+              placeholder=""
+              value={storeEmailValue}
+              sx={{
+                width: "calc(100% - 410px)",
+                paddingLeft: 3,
+                fontSize: "0.9rem",
+              }}
+              onChange={(e) => setInfoWithInputValue(e, setStoreEmailValue)}
+            ></InputBase>
+
+            {/* <Typography sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}>
               {storeEmailValue}
-            </Typography>
+            </Typography> */}
           </Grid>
         </Box>
         <Box mb={1.3}>
