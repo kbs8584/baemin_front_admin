@@ -60,7 +60,7 @@ export default function ManageStore() {
     const token = res.token;
 
     const storeId = params.row.storeId;
-    window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
+    window.location.href = `http://baemin-front-alb-750110321.ap-northeast-2.elb.amazonaws.com/?storeId=${storeId}&user=${token}`;
   };
 
   const handleInitPassword = async (rowInfo) => {

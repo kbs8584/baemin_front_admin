@@ -27,7 +27,7 @@ export default function ShowCreatedId({
     const res = await changeToken(formdata);
     const token = res.token;
 
-    window.location.href = `http://localhost:3000/?storeId=${storeId}&user=${token}`;
+    window.location.href = `http://baemin-front-alb-750110321.ap-northeast-2.elb.amazonaws.com/?storeId=${storeId}&user=${token}`;
   };
 
   return (
