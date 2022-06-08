@@ -56,13 +56,15 @@ export const getStoreIdAndEmail = async (storeId) => {
     });
     return response.data;
   } catch (error) {
-    if (
-      error.response.status === 400 &&
-      error.response.data.message === "가입된 매장 입니다."
-    ) {
-      return error.response.data.message;
+    if (error.response.status === 400) {
+      if (error.response.data.message === "가입된 매장 입니다.") {
+        return error.response.data.message;
+      } else {
+        return "등록되지 않은 매장 ID입니다";
+      }
+    } else {
+      console.error(error);
     }
-    console.error(error);
   }
 };
 export const changeToken = async (data) => {
