@@ -16,26 +16,30 @@ export default function CreateId() {
   const [availableId, setAvailableId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
   const [newIdCreated, setNewIdCreated] = useState(false);
+  const [notFoundStoreId, setNotFoundStoreId] = useState(false);
 
   useEffect(() => {
     setCheckedCMSId(false);
   }, []);
-
+  console.log(CMSIdValue);
   const checkStoreId = async (e) => {
     const res = await getStoreIdAndEmail(storeIdValue);
-    if (res === undefined) {
+    if (storeIdValue !== "" && res === "등록되지 않은 매장 ID입니다") {
       // 등록되지 않은 매장ID
+      setNotFoundStoreId(true);
       setStoreIdValue("");
       setAvailableId(true);
       setStoreNameValue("");
       setStoreEmailValue("");
     } else if (res === "가입된 매장 입니다.") {
       // 등록된 매장ID이며, 이미 CMS ID를 가지고 있는 매장
+      setNotFoundStoreId(false);
       setAvailableId(false);
       setStoreNameValue("");
       setStoreEmailValue("");
     } else {
       // 등록된 매장ID이며, CMS ID를 가지고 있지 않은 매장
+      setNotFoundStoreId(false);
       setAvailableId(true);
       // ** 받아온 데이터의 email로 변경 필요
       // setStoreEmailValue("");
@@ -182,8 +186,20 @@ export default function CreateId() {
               }}
               onBlur={checkStoreId}
             ></InputBase>
+            {notFoundStoreId && (
+              <Typography
+                mb={1}
+                mt={0.6}
+                ml={2}
+                fontSize="0.8rem"
+                color="primary.alert"
+              >
+                등록되지 않은 매장ID입니다.
+              </Typography>
+            )}
           </Grid>
         </Box>
+
         <Box mb={1.3}>
           <Grid
             container
