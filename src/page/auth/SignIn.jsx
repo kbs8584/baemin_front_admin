@@ -35,7 +35,9 @@ export default function SignIn() {
         password,
       })
     ).then((res) => {
-      dispatch(validateProfile(res?.payload.token));
+      if (res.payload.result === "success") {
+        dispatch(validateProfile(res?.payload.token));
+      }
     });
     setCheckIdAndPassword(true);
   };

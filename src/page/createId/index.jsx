@@ -16,39 +16,57 @@ export default function CreateId() {
   const [availableId, setAvailableId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
   const [newIdCreated, setNewIdCreated] = useState(false);
-  const [notFoundStoreId, setNotFoundStoreId] = useState(false);
+  const [msg, setMsg] = useState("");
 
   useEffect(() => {
     setCheckedCMSId(false);
   }, []);
-  console.log(CMSIdValue);
+
+  const filterKey = (e, filter) => {
+    const filteredKey = new RegExp(/[a-z0-9]/g);
+    if (!filteredKey.test(filter)) {
+      e.preventDefault();
+      alert("CMS ID는 영문 소문자와 숫자만 입력가능합니다.");
+    }
+    if (filter === CMSIdValue) {
+      if (filter.split("").length !== filter.match(filteredKey).length) {
+        e.preventDefault();
+        alert("CMS ID는 영문 소문자와 숫자만 입력가능합니다.");
+      } else {
+        handleCheckCMSIdButton(CMSIdValue);
+      }
+    }
+  };
   const checkStoreId = async (e) => {
     const res = await getStoreIdAndEmail(storeIdValue);
-    if (storeIdValue !== "" && res === "등록되지 않은 매장 ID입니다") {
+    console.log("매장", res);
+    if (storeIdValue === "") return;
+    if (res === "등록되지 않은 매장 ID입니다") {
       // 등록되지 않은 매장ID
-      setNotFoundStoreId(true);
       setStoreIdValue("");
       setAvailableId(true);
       setStoreNameValue("");
       setStoreEmailValue("");
+      setMsg("입력하신 매장이 없습니다. ID를 확인 후 다시 입력해 주세요");
     } else if (res === "가입된 매장 입니다.") {
       // 등록된 매장ID이며, 이미 CMS ID를 가지고 있는 매장
-      setNotFoundStoreId(false);
       setAvailableId(false);
       setStoreNameValue("");
       setStoreEmailValue("");
+      setMsg("이미 가입된 매장 입니다.");
     } else {
       // 등록된 매장ID이며, CMS ID를 가지고 있지 않은 매장
-      setNotFoundStoreId(false);
       setAvailableId(true);
       // ** 받아온 데이터의 email로 변경 필요
       // setStoreEmailValue("");
       setStoreNameValue(res.name);
+      setMsg("");
     }
   };
   const handleCheckCMSIdButton = async (CMSIdValue) => {
     const res = await checkDuplicateId(CMSIdValue);
     const checked = res.idCheck;
+
     if (checked && CMSIdValue !== "") {
       setCheckedCMSId(true);
       alert("사용할 수 있는 아이디입니다.");
@@ -171,10 +189,15 @@ export default function CreateId() {
             <InputBase
               placeholder="매장 ID를 입력후 키보드의 엔터키를 입력해주세요"
               value={storeIdValue}
+              type="number"
               sx={{
                 width: "calc(100% - 410px)",
                 paddingLeft: 3,
                 fontSize: "0.9rem",
+                "input::-webkit-inner-spin-button": {
+                  "-webkit-appearance": "none",
+                  margin: 0,
+                },
               }}
               onChange={(e) => {
                 setInfoWithInputValue(e, setStoreIdValue);
@@ -186,20 +209,29 @@ export default function CreateId() {
               }}
               onBlur={checkStoreId}
             ></InputBase>
-            {notFoundStoreId && (
-              <Typography
-                mb={1}
-                mt={0.6}
-                ml={2}
-                fontSize="0.8rem"
-                color="primary.alert"
-              >
-                등록되지 않은 매장ID입니다.
-              </Typography>
-            )}
+            <Button
+              variant="outlined"
+              sx={{
+                width: "110px",
+                marginRight: 3,
+                marginLeft: "auto",
+                border: "2px solid",
+              }}
+              onClick={checkStoreId}
+            >
+              확인
+            </Button>
           </Grid>
         </Box>
-
+        <Typography
+          mb={1}
+          mt={0.6}
+          ml={2}
+          fontSize="0.8rem"
+          color="primary.alert"
+        >
+          {msg}
+        </Typography>
         <Box mb={1.3}>
           <Grid
             container
@@ -301,12 +333,16 @@ export default function CreateId() {
             </Typography>
             <InputBase
               placeholder="ID를 입력해주세요"
+              type="text"
               sx={{
                 width: "calc(100% - 410px)",
                 paddingLeft: 3,
                 fontSize: "0.9rem",
               }}
-              onChange={(e) => setInfoWithInputValue(e, setCMSIdValue)}
+              onChange={(e) => {
+                setInfoWithInputValue(e, setCMSIdValue);
+              }}
+              onKeyDown={(e) => filterKey(e, e.key)}
             ></InputBase>
             <Button
               variant="outlined"
@@ -316,7 +352,9 @@ export default function CreateId() {
                 marginLeft: "auto",
                 border: "2px solid",
               }}
-              onClick={() => handleCheckCMSIdButton(CMSIdValue)}
+              onClick={(e) => {
+                filterKey(e, CMSIdValue);
+              }}
             >
               중복검사
             </Button>
