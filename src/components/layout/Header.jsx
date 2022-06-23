@@ -119,21 +119,28 @@ const RouteButtonContainer = ({ children }) => (
 );
 
 const RouteButton = ({ children, to }) => {
-  const currentMenu = useSelector((state) => state.app.currentMenu);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const currentLocation = window.location.pathname;
+  const currentPath = () => {
+    let path = currentLocation;
+    if (currentLocation === "/") return path;
+    path = currentLocation.substring(1);
+    return path;
+  };
 
   const handleChangeMode = () => {
     dispatch(setCurrentMenu(to));
-    navigate(to);
+
+    navigate(to, { replace: true });
   };
+
   return (
     <Button
       sx={{
         color:
-          currentMenu === to ? "#000000" : (theme) => theme.palette.grey[400],
-        fontWeight: currentMenu === to ? "900" : "inherit",
+          to === currentPath() ? "#000000" : (theme) => theme.palette.grey[400],
+        fontWeight: to === currentPath() ? "900" : "inherit",
       }}
       onClick={handleChangeMode}
     >
