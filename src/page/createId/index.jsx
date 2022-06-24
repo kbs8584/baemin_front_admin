@@ -17,6 +17,9 @@ export default function CreateId() {
   const [checkedCMSId, setCheckedCMSId] = useState(false);
   const [newIdCreated, setNewIdCreated] = useState(false);
   const [msg, setMsg] = useState("");
+  const [emailMsgOn, setEmailMsgOn] = useState(false);
+  const NO_EMAIL_MSG =
+    "등록된 이메일이 없습니다. 매장 대표자 이메일 등록 후, CMS아이디 생성이 가능합니다.";
 
   useEffect(() => {
     setCheckedCMSId(false);
@@ -37,9 +40,11 @@ export default function CreateId() {
       }
     }
   };
+
   const checkStoreId = async (e) => {
     const res = await getStoreIdAndEmail(storeIdValue);
-    console.log("매장", res);
+    setEmailMsgOn(false);
+
     if (storeIdValue === "") return;
     if (res === "등록되지 않은 매장 ID입니다") {
       // 등록되지 않은 매장ID
@@ -48,20 +53,27 @@ export default function CreateId() {
       setStoreNameValue("");
       setStoreEmailValue("");
       setMsg("입력하신 매장이 없습니다. ID를 확인 후 다시 입력해 주세요");
-    } else if (res === "가입된 매장 입니다.") {
+      return;
+    }
+    if (res === "가입된 매장 입니다.") {
       // 등록된 매장ID이며, 이미 CMS ID를 가지고 있는 매장
       setAvailableId(false);
       setStoreNameValue("");
       setStoreEmailValue("");
       setMsg("이미 가입된 매장 입니다.");
-    } else {
-      // 등록된 매장ID이며, CMS ID를 가지고 있지 않은 매장
-      setAvailableId(true);
-      // ** 받아온 데이터의 email로 변경 필요
-      // setStoreEmailValue("");
-      setStoreNameValue(res.name);
-      setMsg("");
+      return;
     }
+
+    // 등록된 매장ID이며, CMS ID를 가지고 있지 않은 매장
+    setAvailableId(true);
+    setStoreNameValue(res.name);
+    setMsg("");
+    // But, Email등록이 안 되어있을때
+    if (!res.email) {
+      setEmailMsgOn(true);
+      return;
+    }
+    setStoreEmailValue(res.email);
   };
   const handleCheckCMSIdButton = async (CMSIdValue) => {
     const res = await checkDuplicateId(CMSIdValue);
@@ -108,10 +120,8 @@ export default function CreateId() {
       alert("모든 입력란을 작성해주세요.");
       return;
     }
-    if (storeEmailValue === "") {
-      alert(
-        `등록된 이메일이 없습니다. 대표자 이메일 등록 후, CMS Id 생성이 가능합니다.`
-      );
+    if (storeEmailValue) {
+      alert(NO_EMAIL_MSG);
       return;
     }
     if (!checkedCMSId) alert("아이디 중복검사를 해주세요.");
@@ -125,7 +135,7 @@ export default function CreateId() {
       storeEmailValue !== "" &&
       storeEmailValue !== null &&
       storeEmailValue !== undefined &&
-      CMSIdValue !== "" &&
+      (storeEmailValue !== CMSIdValue) !== "" &&
       passwordValue !== ""
     ) {
       createCMSId();
@@ -195,7 +205,7 @@ export default function CreateId() {
                 paddingLeft: 3,
                 fontSize: "0.9rem",
                 "input::-webkit-inner-spin-button": {
-                  "-webkit-appearance": "none",
+                  WebkitAppearance: "none",
                   margin: 0,
                 },
               }}
@@ -292,18 +302,21 @@ export default function CreateId() {
             </Typography>
             <InputBase
               placeholder=""
-              value={storeEmailValue}
+              value={emailMsgOn ? NO_EMAIL_MSG : storeEmailValue}
+              disabled
               sx={{
-                width: "calc(100% - 410px)",
+                width: "calc(100% - 210px)",
                 paddingLeft: 3,
                 fontSize: "0.9rem",
+                "& .Mui-disabled": {
+                  WebkitTextFillColor: emailMsgOn
+                    ? "#e03131"
+                    : "rgba(0,0,0,0.87)",
+                  fontSize: emailMsgOn && "0.8rem",
+                },
               }}
               onChange={(e) => setInfoWithInputValue(e, setStoreEmailValue)}
             ></InputBase>
-
-            {/* <Typography sx={{ width: "calc(100% - 410px)", paddingLeft: 3 }}>
-              {storeEmailValue}
-            </Typography> */}
           </Grid>
         </Box>
         <Box mb={1.3}>
