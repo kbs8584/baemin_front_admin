@@ -195,7 +195,7 @@ export default function CreateId() {
                 paddingLeft: 3,
                 fontSize: "0.9rem",
                 "input::-webkit-inner-spin-button": {
-                  "-webkit-appearance": "none",
+                  WebkitAppearance: "none",
                   margin: 0,
                 },
               }}
