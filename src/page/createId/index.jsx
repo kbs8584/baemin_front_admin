@@ -41,7 +41,6 @@ export default function CreateId() {
     }
   };
 
-  console.log(storeEmailValue, "storeEmailValue");
   const checkStoreId = async (e) => {
     const res = await getStoreIdAndEmail(storeIdValue);
     setEmailMsgOn(false);
@@ -121,7 +120,7 @@ export default function CreateId() {
       alert("모든 입력란을 작성해주세요.");
       return;
     }
-    if (!storeEmailValue) {
+    if (storeEmailValue) {
       alert(NO_EMAIL_MSG);
       return;
     }
