@@ -1,29 +1,28 @@
-import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route, useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Layout from "components/layout/index";
+import Layout from 'components/layout/index';
 
-import SignIn from "page/auth/SignIn";
-import Gallery from "./page/gallery";
-import ManageStore from "./page/manageStore";
-import CreateId from "./page/createId";
+import SignIn from 'page/auth/SignIn';
+import Gallery from 'page/gallery';
+import ManageStore from 'page/manageStore';
+import CreateId from 'page/createId';
+import MiddleAdmin from 'page/MiddleAdmin';
 
-import { validateProfile } from "store/auth";
-import { useEffect } from "react";
+import { validateProfile } from 'store/auth';
+import { useEffect } from 'react';
+
+const TOKEN = 'TOKEN';
 
 export default function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
-  const TOKEN = "TOKEN";
 
   useEffect(() => {
-    (async () => {
-      const token = sessionStorage.getItem(TOKEN);
+    const token = sessionStorage.getItem(TOKEN);
 
-      if (!token) return;
+    if (!token) return;
 
-      await dispatch(validateProfile(token));
-    })();
+    dispatch(validateProfile(token));
   }, []);
 
   return (
@@ -33,6 +32,7 @@ export default function App() {
           <Route index element={<ManageStore />} />
           <Route path="create-id" element={<CreateId />} />
           <Route path="gallery" element={<Gallery />} />
+          <Route path="middle-admin" element={<MiddleAdmin />} />
         </Route>
       </Route>
       <Route path="sign-in" element={<SignIn />} />
@@ -42,13 +42,11 @@ export default function App() {
 }
 
 const RequiredAuth = ({ redirectPath, children }) => {
+  const user = useSelector(state => state.auth.user);
   let location = useLocation();
-  const user = useSelector((state) => state.auth.user);
 
-  if (!user) {
-    // redirect with memo current path
+  if (!user)
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
-  }
 
   return children ? children : <Outlet />;
 };

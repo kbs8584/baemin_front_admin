@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
@@ -9,15 +9,15 @@ import {
   Button,
   Box,
   MenuItem,
-} from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import SearchIcon from "@mui/icons-material/Search";
-import { changeToken, initPassword } from "api/user";
-import { getStoreList } from "api/user";
-import Main from "components/layout/Main";
+} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import SearchIcon from '@mui/icons-material/Search';
+import { changeToken, initPassword } from 'api/user';
+import { getStoreList } from 'api/user';
+import Main from 'components/layout/Main';
 
 export default function ManageStore() {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [selectValue, setSelectValue] = useState(0);
   const [initSearch, setInitSearch] = useState(false);
   const [initialSearchData, setInitialSearchData] = useState([]);
@@ -32,14 +32,14 @@ export default function ManageStore() {
   }, [selectValue]);
 
   useEffect(() => {
-    setRowCountState((prevRowCountState) =>
-      rowCount !== undefined ? rowCount : prevRowCountState
+    setRowCountState(prevRowCountState =>
+      rowCount !== undefined ? rowCount : prevRowCountState,
     );
   }, [rowCount, setRowCountState]);
 
   function filterStore(page) {
     setInitSearch(true);
-    getStoreList(page + 1, inputValue, selectValue).then((data) => {
+    getStoreList(page + 1, inputValue, selectValue).then(data => {
       setInitialSearchData(data.list);
       setRowCount(Number(data.allCount));
       return data;
@@ -53,9 +53,9 @@ export default function ManageStore() {
     setSearchData(newArray);
   }, [initialSearchData]);
 
-  const redirectToUserSite = async (params) => {
+  const redirectToUserSite = async params => {
     const formdata = new FormData();
-    formdata.append("userId", params.row.userId);
+    formdata.append('userId', params.row.userId);
     const res = await changeToken(formdata);
     const token = res.token;
 
@@ -63,7 +63,7 @@ export default function ManageStore() {
     window.location.href = `http://baemin-front-alb-750110321.ap-northeast-2.elb.amazonaws.com/?storeId=${storeId}&user=${token}`;
   };
 
-  const handleInitPassword = async (rowInfo) => {
+  const handleInitPassword = async rowInfo => {
     //emai주소, 회원id보내기
     const storeId = rowInfo.row.storeId;
     const email = rowInfo.row.email;
@@ -74,46 +74,46 @@ export default function ManageStore() {
   // field를 받아온 데이터의 key와 동일하게 맞춰야 함
   const columns = [
     {
-      headerClassName: "super-app-theme--header",
-      field: "userId",
-      headerName: "CMS ID",
+      headerClassName: 'super-app-theme--header',
+      field: 'userId',
+      headerName: 'CMS ID',
       width: 234,
       editable: false,
     },
     {
-      headerClassName: "super-app-theme--header",
-      field: "storeName",
-      headerName: "매장명",
+      headerClassName: 'super-app-theme--header',
+      field: 'storeName',
+      headerName: '매장명',
       width: 240,
       editable: false,
     },
     {
-      headerClassName: "super-app-theme--header",
-      field: "storeId",
-      headerName: "매장ID",
+      headerClassName: 'super-app-theme--header',
+      field: 'storeId',
+      headerName: '매장ID',
       width: 120,
       editable: false,
     },
     {
-      headerClassName: "super-app-theme--header",
-      field: "email",
-      headerName: "이메일",
+      headerClassName: 'super-app-theme--header',
+      field: 'email',
+      headerName: '이메일',
       width: 240,
       editable: false,
     },
     {
-      headerClassName: "super-app-theme--header",
-      field: "checkCMS",
-      headerName: "CMS 보기",
+      headerClassName: 'super-app-theme--header',
+      field: 'checkCMS',
+      headerName: 'CMS 보기',
       width: 150,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params) => {
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: params => {
         return (
           <EditButton
             onClick={() => redirectToUserSite(params)}
             sx={{
-              backgroundColor: "common.white",
+              backgroundColor: 'common.white',
             }}
           >
             편집하기
@@ -123,22 +123,22 @@ export default function ManageStore() {
       editable: false,
     },
     {
-      headerClassName: "super-app-theme--header",
-      field: "initPassword",
-      headerName: "비밀번호 초기화",
+      headerClassName: 'super-app-theme--header',
+      field: 'initPassword',
+      headerName: '비밀번호 초기화',
       width: 150,
-      headerAlign: "center",
-      align: "center",
-      renderCell: (params) => {
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: params => {
         return (
           <EditButton
             sx={{
-              borderColor: "primary.alert",
-              backgroundColor: "common.white",
-              color: "primary.alert",
-              "&:hover": {
-                backgroundColor: "primary.alertBg",
-                borderColor: "red",
+              borderColor: 'primary.alert',
+              backgroundColor: 'common.white',
+              color: 'primary.alert',
+              '&:hover': {
+                backgroundColor: 'primary.alertBg',
+                borderColor: 'red',
               },
             }}
             onClick={() => handleInitPassword(params)}
@@ -157,7 +157,7 @@ export default function ManageStore() {
         variant="h1"
         mt={6}
         mb={5}
-        sx={{ fontSize: "subtitle1.fontSize" }}
+        sx={{ fontSize: 'subtitle1.fontSize' }}
       >
         매장관리
       </Typography>
@@ -174,8 +174,8 @@ export default function ManageStore() {
             fullWidth
             sx={{
               height: 1,
-              backgroundColor: "grey.100",
-              borderRadius: "30px",
+              backgroundColor: 'grey.100',
+              borderRadius: '30px',
             }}
           >
             <Select
@@ -184,10 +184,10 @@ export default function ManageStore() {
               id="category-select"
               sx={{
                 height: 1,
-                borderRadius: "30px",
-                textAlign: "center",
+                borderRadius: '30px',
+                textAlign: 'center',
               }}
-              onChange={(e) => {
+              onChange={e => {
                 setSelectValue(e.target.value);
               }}
             >
@@ -203,30 +203,30 @@ export default function ManageStore() {
             pl={2}
             sx={{
               height: 1,
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid",
-              borderColor: "grey.200",
-              borderRadius: "30px",
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid',
+              borderColor: 'grey.200',
+              borderRadius: '30px',
             }}
           >
-            <SearchIcon sx={{ fontSize: "2rem" }} />
+            <SearchIcon sx={{ fontSize: '2rem' }} />
             <InputBase
               fullWidth
               autoFocus
-              onChange={(e) => {
+              onChange={e => {
                 setInputValue(e.target.value);
               }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") filterStore(0);
+              onKeyDown={e => {
+                if (e.key === 'Enter') filterStore(0);
               }}
             ></InputBase>
             <Button
               sx={{
                 height: 1,
-                backgroundColor: "grey.200",
-                borderRadius: "0 30px 30px 0",
-                color: "#000",
+                backgroundColor: 'grey.200',
+                borderRadius: '0 30px 30px 0',
+                color: '#000',
               }}
               onClick={() => filterStore(0)}
             >
@@ -238,13 +238,13 @@ export default function ManageStore() {
       <Box
         mb={5}
         sx={{
-          width: "100%",
-          height: "649px",
-          "& .super-app-theme--header": {
+          width: '100%',
+          height: '649px',
+          '& .super-app-theme--header': {
             borderBottom: 6,
-            fontSize: "1rem",
+            fontSize: '1rem',
           },
-          "& .super-app-theme--header:nth-of-type(1)": {
+          '& .super-app-theme--header:nth-of-type(1)': {
             paddingLeft: 5,
           },
         }}
@@ -261,24 +261,24 @@ export default function ManageStore() {
           rowCount={rowCountState}
           sx={{
             borderRadius: 3,
-            textAlign: "center",
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "bold",
+            textAlign: 'center',
+            '& .MuiDataGrid-columnHeaderTitle': {
+              fontWeight: 'bold',
             },
-            "& .MuiDataGrid-row:nth-of-type(2n)": {
-              backgroundColor: "grey.100",
+            '& .MuiDataGrid-row:nth-of-type(2n)': {
+              backgroundColor: 'grey.100',
             },
-            "& .MuiDataGrid-cell:nth-of-type(1)": {
+            '& .MuiDataGrid-cell:nth-of-type(1)': {
               paddingLeft: 5,
             },
-            "& .MuiDataGrid-cell": {
+            '& .MuiDataGrid-cell': {
               border: 0,
             },
-            "& .MuiDataGrid-columnSeparator--sideRight": {
-              display: "none",
+            '& .MuiDataGrid-columnSeparator--sideRight': {
+              display: 'none',
             },
           }}
-          onPageChange={(page) => {
+          onPageChange={page => {
             filterStore(page);
           }}
         />
@@ -292,7 +292,7 @@ function CustomNoRowsOverlay() {
       container
       bgcolor="grey.100"
       height="100%"
-      sx={{ justifyContent: "center", alignItems: "center" }}
+      sx={{ justifyContent: 'center', alignItems: 'center' }}
     >
       검색 결과가 없습니다.
     </Grid>

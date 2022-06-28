@@ -1,31 +1,29 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  Box,
   Button,
   CardMedia,
   Container,
   Grid,
   Avatar,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
-import { HOME_ROUTE_BUTTONS } from "constant";
-import MainLogo from "assets/main_logo.png";
-import { setCurrentMenu } from "store/app";
-import { setUser } from "store/auth";
-import { getUsersInfo, signOut } from "api/auth";
+import { HOME_ROUTE_BUTTONS } from 'constant';
+import MainLogo from 'assets/main_logo.png';
+import { setCurrentMenu } from 'store/app';
+import { setUser } from 'store/auth';
+import { signOut } from 'api/auth';
 
 export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector(state => state.auth.user);
 
   // logout
-  const handleSubmit = async (e) => {
-    sessionStorage.removeItem("TOKEN");
+  const handleSubmit = async e => {
+    sessionStorage.removeItem('TOKEN');
     dispatch(setUser(null));
     const res = await signOut();
   };
@@ -37,22 +35,22 @@ export default function Header() {
           component="img"
           src={MainLogo}
           onClick={() => {
-            navigate("/");
-            dispatch(setCurrentMenu("/"));
+            navigate('/');
+            dispatch(setCurrentMenu('/'));
           }}
           sx={{
-            maxWidth: "172px",
-            objectFit: "contain",
-            "&:hover": {
-              cursor: "pointer",
+            maxWidth: '172px',
+            objectFit: 'contain',
+            '&:hover': {
+              cursor: 'pointer',
             },
           }}
         />
         <Typography
           ml={2}
           sx={{
-            fontSize: "subtitle1.fontSize",
-            fontWeight: "h1.fontWeight",
+            fontSize: 'subtitle1.fontSize',
+            fontWeight: 'h1.fontWeight',
           }}
         >
           어드민
@@ -60,7 +58,7 @@ export default function Header() {
       </Grid>
       <RouteButtonContainer>
         <Grid item>
-          {HOME_ROUTE_BUTTONS.map((button) => (
+          {HOME_ROUTE_BUTTONS.map(button => (
             <RouteButton key={button.name} to={button.path}>
               {button.name}
             </RouteButton>
@@ -79,7 +77,7 @@ export default function Header() {
                   <Typography>
                     <Typography component="span" fontWeight={900}>
                       관리자
-                    </Typography>{" "}
+                    </Typography>{' '}
                     님
                   </Typography>
                 </Grid>
@@ -98,7 +96,7 @@ export default function Header() {
               ) : (
                 <Button
                   variant="outlined"
-                  onClick={() => navigate("sign-in")}
+                  onClick={() => navigate('sign-in')}
                   sx={{ borderRadius: 2 }}
                 >
                   로그인
@@ -124,7 +122,7 @@ const RouteButton = ({ children, to }) => {
   const currentLocation = window.location.pathname;
   const currentPath = () => {
     let path = currentLocation;
-    if (currentLocation === "/") return path;
+    if (currentLocation === '/') return path;
     path = currentLocation.substring(1);
     return path;
   };
@@ -139,8 +137,8 @@ const RouteButton = ({ children, to }) => {
     <Button
       sx={{
         color:
-          to === currentPath() ? "#000000" : (theme) => theme.palette.grey[400],
-        fontWeight: to === currentPath() ? "900" : "inherit",
+          to === currentPath() ? '#000000' : theme => theme.palette.grey[400],
+        fontWeight: to === currentPath() ? '900' : 'inherit',
       }}
       onClick={handleChangeMode}
     >
