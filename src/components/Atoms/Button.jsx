@@ -1,8 +1,8 @@
 import { Button as BaseButton } from '@mui/material';
 
-export default function Button({ children, ...rest }) {
+export default function Button({ disabled = false, children, ...rest }) {
   return (
-    <BaseButton fullWidth {...rest}>
+    <BaseButton disabled={disabled} fullWidth {...rest}>
       {children}
     </BaseButton>
   );
