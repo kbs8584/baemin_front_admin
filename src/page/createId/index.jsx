@@ -1,10 +1,13 @@
-import { Grid, Box, Typography, Button, InputBase } from '@mui/material';
+import { Grid, Box, Typography, InputBase } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ShowCreatedId from './ShowCreatedId';
 import { signUp } from 'api/auth';
 import { checkDuplicateId, getStoreIdAndEmail } from 'api/user';
 import Main from 'components/layout/Main';
 import { useNavigate } from 'react-router';
+
+import { Button } from 'components/Atoms';
+import { InputField } from 'components/Molecules';
 
 export default function CreateId() {
   const [dialogOpen, setDialogOpen] = useState(true);
@@ -162,6 +165,7 @@ export default function CreateId() {
         setStoreIdValue={setStoreIdValue}
         newIdCreated={newIdCreated}
       />
+
       <Typography
         variant="h1"
         mt={6}
@@ -170,111 +174,76 @@ export default function CreateId() {
       >
         CMS ID 생성
       </Typography>
-      <Box width="80%">
-        <Box mb={1.3}>
-          <Grid
-            container
-            height={75}
-            sx={{
-              alignItems: 'center',
-              border: '1px solid',
-              borderColor: 'grey.200',
-              borderRadius: '5px',
-            }}
+
+      <Grid container xs={9}>
+        <Grid item xs={12} pb={1}>
+          <InputField
+            type="number"
+            title="매장 ID"
+            placeholder="매장 ID를 입력후 키보드의 엔터키를 입력해주세요."
+            hasButton
+            buttonName="확인"
+            onChangeInput={e => setInfoWithInputValue(e, setStoreIdValue)}
+            onClickButton={checkStoreId}
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <InputField
+            title="매장명"
+            defaultInputValue={storeNameValue}
+            disabled
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <InputField
+            title="매장이메일"
+            defaultInputValue={emailMsgOn ? NO_EMAIL_MSG : storeEmailValue}
+            disabled
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <InputField
+            title="CMS ID"
+            placeholder="ID를 입력해주세요."
+            hasButton
+            buttonName="중복검사"
+            onChangeInput={e => setInfoWithInputValue(e, setStoreEmailValue)}
+            onClickButton={e => filterKey(e, CMSIdValue)}
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <InputField
+            type="password"
+            title="비밀번호"
+            value={passwordValue}
+            placeholder="비밀번호를 입력해주세요."
+            hasButton
+            buttonName="자동생성"
+            onChangeInput={e => setInfoWithInputValue(e, setPasswordValue)}
+            onClickButton={createRandomPassword}
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <Button
+            variant="contained"
+            onClick={handleSubmitButton}
+            disabled={!availableId}
           >
-            <Typography
-              bgcolor="grey.100"
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '200px',
-                height: 1,
-                fontWeight: 'fontWeight',
-                borderRadius: '5px 0 0 5px',
-              }}
-            >
-              매장 ID
+            <Typography py={1}>
+              {availableId
+                ? '신규 CMS ID 생성'
+                : 'CMS에 이미 가입되어있는 매장입니다'}
             </Typography>
-            <InputBase
-              placeholder="매장 ID를 입력후 키보드의 엔터키를 입력해주세요"
-              value={storeIdValue}
-              type="number"
-              sx={{
-                width: 'calc(100% - 410px)',
-                paddingLeft: 3,
-                fontSize: '0.9rem',
-                'input::-webkit-inner-spin-button': {
-                  WebkitAppearance: 'none',
-                  margin: 0,
-                },
-              }}
-              onChange={e => {
-                setInfoWithInputValue(e, setStoreIdValue);
-              }}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  checkStoreId();
-                }
-              }}
-              onBlur={checkStoreId}
-            ></InputBase>
-            <Button
-              variant="outlined"
-              sx={{
-                width: '110px',
-                marginRight: 3,
-                marginLeft: 'auto',
-                border: '2px solid',
-              }}
-              onClick={checkStoreId}
-            >
-              확인
-            </Button>
-          </Grid>
-        </Box>
-        <Typography
-          mb={1}
-          mt={0.6}
-          ml={2}
-          fontSize="0.8rem"
-          color="primary.alert"
-        >
-          {msg}
-        </Typography>
-        <Box mb={1.3}>
-          <Grid
-            container
-            height={75}
-            sx={{
-              alignItems: 'center',
-              border: '1px solid',
-              borderColor: 'grey.200',
-              borderRadius: '5px',
-            }}
-          >
-            <Typography
-              bgcolor="grey.100"
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '200px',
-                height: 1,
-                fontWeight: 'fontWeight',
-                borderRadius: '5px 0 0 5px',
-              }}
-            >
-              매장명
-            </Typography>
-            <Typography
-              sx={{ width: 'calc(100% - 410px)', paddingLeft: 3 }}
-              // onChange={(e) => setInfoWithInputValue(e, setStoreNameValue)}
-            >
-              {storeNameValue}
-            </Typography>
-          </Grid>
-        </Box>
+          </Button>
+        </Grid>
+      </Grid>
+
+      <Box>
         <Box mb={1.3}>
           <Grid
             container
@@ -316,9 +285,10 @@ export default function CreateId() {
                 },
               }}
               onChange={e => setInfoWithInputValue(e, setStoreEmailValue)}
-            ></InputBase>
+            />
           </Grid>
         </Box>
+
         <Box mb={1.3}>
           <Grid
             container
@@ -356,7 +326,7 @@ export default function CreateId() {
                 setInfoWithInputValue(e, setCMSIdValue);
               }}
               onKeyDown={e => filterKey(e, e.key)}
-            ></InputBase>
+            />
             <Button
               variant="outlined"
               sx={{
@@ -373,6 +343,7 @@ export default function CreateId() {
             </Button>
           </Grid>
         </Box>
+
         <Box mb={1.3}>
           <Grid
             container
@@ -407,7 +378,7 @@ export default function CreateId() {
               }}
               value={passwordValue}
               onChange={e => setInfoWithInputValue(e, setPasswordValue)}
-            ></InputBase>
+            />
             <Button
               variant="outlined"
               sx={{
@@ -422,6 +393,7 @@ export default function CreateId() {
             </Button>
           </Grid>
         </Box>
+
         <Button
           fullWidth
           variant="contained"
