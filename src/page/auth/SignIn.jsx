@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getUser, validateProfile } from "store/auth";
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUser, validateProfile } from 'store/auth';
 
 import {
   Grid,
@@ -12,30 +12,30 @@ import {
   FormControlLabel,
   FormGroup,
   Button,
-} from "@mui/material";
-import MainLogo from "assets/main_logo.png";
-import { useNavigate } from "react-router";
+} from '@mui/material';
+import MainLogo from 'assets/main_logo.png';
+import { useNavigate } from 'react-router';
 
 export default function SignIn() {
-  const savedId = localStorage.getItem("USER_ID");
-  const [userIdInput, setUserIdInput] = useState(savedId ? savedId : "");
+  const savedId = localStorage.getItem('USER_ID');
+  const [userIdInput, setUserIdInput] = useState(savedId ? savedId : '');
   const [userId, setUserId] = useState(userIdInput);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [checkIdAndPassword, setCheckIdAndPassword] = useState(false);
   const [saveId, setSaveId] = useState(false);
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
-  const getUserStatus = useSelector((state) => state.auth.status);
+  const user = useSelector(state => state.auth.user);
+  const getUserStatus = useSelector(state => state.auth.status);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     dispatch(
       getUser({
         userId,
         password,
-      })
-    ).then((res) => {
-      if (res.payload.result === "success") {
+      }),
+    ).then(res => {
+      if (res.payload.result === 'success') {
         dispatch(validateProfile(res?.payload.token));
       }
     });
@@ -44,10 +44,11 @@ export default function SignIn() {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
-      if (userId !== "") localStorage.setItem("USER_ID", userId);
+      navigate('/');
+      if (userId !== '') localStorage.setItem('USER_ID', userId);
     }
   }, [user]);
+
   function saveIdInLocalStorage() {
     if (!saveId) {
       setSaveId(true);
@@ -66,24 +67,24 @@ export default function SignIn() {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      sx={{ height: "100vh" }}
+      sx={{ height: '100vh' }}
     >
       <Grid
         item
         borderRadius="borderRadius"
-        sx={{ border: "1px solid #DDDDDD" }}
+        sx={{ border: '1px solid #DDDDDD' }}
         p={3}
       >
         <Grid container justifyContent="center">
           <CardMedia
             component="img"
             src={MainLogo}
-            sx={{ maxWidth: "150px" }}
+            sx={{ maxWidth: '150px' }}
           />
         </Grid>
 
         <Typography
-          sx={{ color: "#222222" }}
+          sx={{ color: '#222222' }}
           align="center"
           pt={3}
           pb={1}
@@ -92,17 +93,17 @@ export default function SignIn() {
         >
           S로봇 관리자 페이지 어드민
         </Typography>
-        <Box pt={4} pb={2} sx={{ borderRadius: "borderRadius" }}>
+        <Box pt={4} pb={2} sx={{ borderRadius: 'borderRadius' }}>
           <TextField
             fullWidth
             label="아이디"
             value={userIdInput}
-            onChange={(e) => {
+            onChange={e => {
               onChangeInput(e);
               setUserId(e.target.value);
             }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSubmit();
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleSubmit();
             }}
           />
         </Box>
@@ -112,15 +113,15 @@ export default function SignIn() {
             fullWidth
             type="password"
             label="비밀번호"
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSubmit();
+            onChange={e => setPassword(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleSubmit();
             }}
           />
         </Box>
-        {checkIdAndPassword && !user && getUserStatus !== "loading" && (
+        {checkIdAndPassword && !user && getUserStatus !== 'loading' && (
           <Box pb={1}>
-            <Typography sx={{ fontSize: "0.8rem", color: "primary.alert" }}>
+            <Typography sx={{ fontSize: '0.8rem', color: 'primary.alert' }}>
               아이디와 비밀번호를 확인해주세요.
             </Typography>
           </Box>
@@ -144,14 +145,14 @@ export default function SignIn() {
             variant="contained"
             fullWidth
             size="large"
-            sx={{ height: 50, bgcolor: "#1A7CFF" }}
+            sx={{ height: 50, bgcolor: '#1A7CFF' }}
             onClick={handleSubmit}
           >
             로그인
           </Button>
         </Box>
 
-        <Typography sx={{ color: "#777777" }} fontSize="12px" align="center">
+        <Typography sx={{ color: '#777777' }} fontSize="12px" align="center">
           © Woowa Brothers Crop.
         </Typography>
       </Grid>

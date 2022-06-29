@@ -1,9 +1,9 @@
-import { Grid, Box, Typography, Button } from "@mui/material";
-import Modal from "components/Modal";
-import CloseIcon from "@mui/icons-material/Close";
-import { changeToken } from "api/user";
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { Grid, Box, Typography, Button } from '@mui/material';
+import Modal from 'components/Atoms/Dialog';
+import CloseIcon from '@mui/icons-material/Close';
+import { changeToken } from 'api/user';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function ShowCreatedId({
   dialogOpen,
@@ -18,12 +18,12 @@ export default function ShowCreatedId({
 }) {
   useEffect(() => {
     if (newIdCreated === true && dialogOpen === false) {
-      setStoreIdValue("");
+      setStoreIdValue('');
     }
   }, [dialogOpen]);
   const redirectToUserSite = async () => {
     const formdata = new FormData();
-    formdata.append("userId", CMSId);
+    formdata.append('userId', CMSId);
     const res = await changeToken(formdata);
     const token = res.token;
 
@@ -33,13 +33,13 @@ export default function ShowCreatedId({
   return (
     <Modal fullWidth dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
       <Box sx={{ padding: 3 }}>
-        <Grid container sx={{ justifyContent: "space-between" }}>
-          <Grid item component="h1" mb={4} sx={{ fontSize: "1.3rem" }}>
+        <Grid container sx={{ justifyContent: 'space-between' }}>
+          <Grid item component="h1" mb={4} sx={{ fontSize: '1.3rem' }}>
             아래 정보로 신규 ID 생성이 완료되었습니다.
           </Grid>
           <Grid item>
             <CloseIcon
-              sx={{ fontSize: "2rem", cursor: "pointer" }}
+              sx={{ fontSize: '2rem', cursor: 'pointer' }}
               onClick={() => {
                 setDialogOpen(false);
               }}
@@ -53,27 +53,27 @@ export default function ShowCreatedId({
               container
               height={75}
               sx={{
-                alignItems: "center",
-                border: "1px solid",
-                borderColor: "grey.200",
-                borderRadius: "5px",
+                alignItems: 'center',
+                border: '1px solid',
+                borderColor: 'grey.200',
+                borderRadius: '5px',
               }}
             >
               <Typography
                 bgcolor="grey.100"
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   width: 140,
                   height: 1,
-                  fontWeight: "fontWeight",
-                  borderRadius: "5px 0 0 5px",
+                  fontWeight: 'fontWeight',
+                  borderRadius: '5px 0 0 5px',
                 }}
               >
                 매장 ID
               </Typography>
-              <Typography sx={{ paddingLeft: 3, fontSize: "0.9rem" }}>
+              <Typography sx={{ paddingLeft: 3, fontSize: '0.9rem' }}>
                 {} {storeId}
               </Typography>
             </Grid>
@@ -83,22 +83,22 @@ export default function ShowCreatedId({
               container
               height={75}
               sx={{
-                alignItems: "center",
-                border: "1px solid",
-                borderColor: "grey.200",
-                borderRadius: "5px",
+                alignItems: 'center',
+                border: '1px solid',
+                borderColor: 'grey.200',
+                borderRadius: '5px',
               }}
             >
               <Typography
                 bgcolor="grey.100"
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   width: 140,
                   height: 1,
-                  fontWeight: "fontWeight",
-                  borderRadius: "5px 0 0 5px",
+                  fontWeight: 'fontWeight',
+                  borderRadius: '5px 0 0 5px',
                 }}
               >
                 매장명
@@ -114,22 +114,22 @@ export default function ShowCreatedId({
               container
               height={75}
               sx={{
-                alignItems: "center",
-                border: "1px solid",
-                borderColor: "grey.200",
-                borderRadius: "5px",
+                alignItems: 'center',
+                border: '1px solid',
+                borderColor: 'grey.200',
+                borderRadius: '5px',
               }}
             >
               <Typography
                 bgcolor="grey.100"
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   width: 140,
                   height: 1,
-                  fontWeight: "fontWeight",
-                  borderRadius: "5px 0 0 5px",
+                  fontWeight: 'fontWeight',
+                  borderRadius: '5px 0 0 5px',
                 }}
               >
                 매장이메일
@@ -145,27 +145,27 @@ export default function ShowCreatedId({
               container
               height={75}
               sx={{
-                alignItems: "center",
-                border: "1px solid",
-                borderColor: "grey.200",
-                borderRadius: "5px",
+                alignItems: 'center',
+                border: '1px solid',
+                borderColor: 'grey.200',
+                borderRadius: '5px',
               }}
             >
               <Typography
                 bgcolor="grey.100"
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   width: 140,
                   height: 1,
-                  fontWeight: "fontWeight",
-                  borderRadius: "5px 0 0 5px",
+                  fontWeight: 'fontWeight',
+                  borderRadius: '5px 0 0 5px',
                 }}
               >
                 CMS ID
               </Typography>
-              <Typography sx={{ paddingLeft: 3, fontSize: "0.9rem" }}>
+              <Typography sx={{ paddingLeft: 3, fontSize: '0.9rem' }}>
                 {} {CMSId}
               </Typography>
             </Grid>
@@ -175,27 +175,27 @@ export default function ShowCreatedId({
               container
               height={75}
               sx={{
-                alignItems: "center",
-                border: "1px solid",
-                borderColor: "grey.200",
-                borderRadius: "5px",
+                alignItems: 'center',
+                border: '1px solid',
+                borderColor: 'grey.200',
+                borderRadius: '5px',
               }}
             >
               <Typography
                 bgcolor="grey.100"
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   width: 140,
                   height: 1,
-                  fontWeight: "fontWeight",
-                  borderRadius: "5px 0 0 5px",
+                  fontWeight: 'fontWeight',
+                  borderRadius: '5px 0 0 5px',
                 }}
               >
                 패스워드
               </Typography>
-              <Typography sx={{ paddingLeft: 3, fontSize: "0.9rem" }}>
+              <Typography sx={{ paddingLeft: 3, fontSize: '0.9rem' }}>
                 {} {password}
               </Typography>
             </Grid>
@@ -207,8 +207,8 @@ export default function ShowCreatedId({
               height: 45,
               padding: 4,
               marginTop: 1,
-              fontSize: "bigButton.fontSize",
-              fontWeight: "fontWeight",
+              fontSize: 'bigButton.fontSize',
+              fontWeight: 'fontWeight',
             }}
             onClick={() => {
               setDialogOpen(false);
