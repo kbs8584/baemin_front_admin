@@ -1,53 +1,74 @@
-import { Grid, IconButton, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Grid, Typography } from '@mui/material';
 import { Button, Input } from 'components/Atoms';
 
 export default function InputField({
+  type = 'text',
   title,
-  placeholder,
-  hasButton,
+  value,
+  placeholder = '',
+  defaultInputValue,
+  disabled = false,
+  hasButton = false,
   buttonName,
+  onClickButton,
+  onChangeInput,
 }) {
   return (
     <Grid container>
-      <Grid
-        item
-        alignSelf="center"
-        xs={3}
-        p={3}
-        sx={{
-          bgcolor: 'grey.100',
-          border: '1px solid',
-          borderRight: 'none',
-          borderColor: 'grey.200',
-          borderRadius: '5px 0 0 5px',
-        }}
-      >
+      <StyledTitleGrid item alignSelf="center" xs={3} p={3}>
         <Typography align="center">{title}</Typography>
-      </Grid>
+      </StyledTitleGrid>
 
-      <Grid
-        item
-        xs
-        p={2}
-        sx={{
-          border: '1px solid',
-          borderLeft: 'none',
-          borderColor: 'grey.200',
-          borderRadius: '0 5px 5px 0',
-        }}
-      >
+      <StyledInputFieldGrid item xs p={2}>
         <Grid container justifyContent="space-between" alignItems="center">
           <Grid item xs>
-            <Input placeholder={placeholder} fullWidth />
+            <Input
+              // TODO: put type
+              value={value}
+              defaultValue={defaultInputValue}
+              onChange={onChangeInput}
+              placeholder={placeholder}
+              disabled={disabled}
+              fullWidth
+            />
           </Grid>
 
           {hasButton ? (
             <Grid item>
-              <Button variant="outlined">{buttonName}</Button>
+              <Button variant="outlined" onClick={onClickButton}>
+                {buttonName}
+              </Button>
             </Grid>
           ) : null}
         </Grid>
-      </Grid>
+      </StyledInputFieldGrid>
     </Grid>
   );
 }
+
+const StyledTitleGrid = styled(Grid)(({ theme }) => ({
+  backgroundColor: theme.palette.grey['100'],
+  border: '1px solid',
+  borderRight: 'none',
+  borderColor: theme.palette.grey['200'],
+  borderRadius: '5px 0 0 5px',
+}));
+
+const StyledInputFieldGrid = styled(Grid)(({ theme }) => ({
+  border: '1px solid',
+  borderLeft: 'none',
+  borderColor: theme.palette.grey['200'],
+  borderRadius: '0 5px 5px 0',
+}));
+
+/*
+  Delete number type input default arrows
+  'input::-webkit-inner-spin-button': {
+     WebkitAppearance: 'none',
+     margin: 0,
+  }
+
+  Q) What is onBlur in InputBase
+  Q) how to describe initialize function when getting with parameter
+ */
