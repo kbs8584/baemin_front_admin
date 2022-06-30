@@ -8,6 +8,7 @@ import Gallery from 'page/gallery';
 import ManageStore from 'page/manageStore';
 import CreateId from 'page/createId';
 import MiddleAdmin from 'page/MiddleAdmin';
+import MiddleAdminAccount from 'page/MiddleAdminAccount';
 
 import { validateProfile } from 'store/auth';
 import { useEffect } from 'react';
@@ -17,24 +18,26 @@ const TOKEN = 'TOKEN';
 export default function App() {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const token = sessionStorage.getItem(TOKEN);
-
-    if (!token) return;
-
-    dispatch(validateProfile(token));
-  }, []);
+  // useEffect(() => {
+  //   const token = sessionStorage.getItem(TOKEN);
+  //
+  //   if (!token) return;
+  //
+  //   dispatch(validateProfile(token));
+  // }, []);
 
   return (
     <Routes>
-      <Route element={<RequiredAuth redirectPath="/sign-in" />}>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<ManageStore />} />
-          <Route path="create-id" element={<CreateId />} />
-          <Route path="gallery" element={<Gallery />} />
-          <Route path="middle-admin" element={<MiddleAdmin />} />
+      {/*<Route element={<RequiredAuth redirectPath="/sign-in" />}>*/}
+      <Route path="/" element={<Layout />}>
+        <Route index element={<ManageStore />} />
+        <Route path="create-id" element={<CreateId />} />
+        <Route path="gallery" element={<Gallery />} />
+        <Route path="middle-admin" element={<MiddleAdmin />}>
+          <Route path="create-id" element={<MiddleAdminAccount />} />
         </Route>
       </Route>
+      {/*</Route>*/}
       <Route path="sign-in" element={<SignIn />} />
       <Route path="*" element={<SignIn />} />
     </Routes>

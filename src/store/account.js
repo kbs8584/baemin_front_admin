@@ -20,6 +20,8 @@ const initialState = {
     status: 'idle',
     error: '',
   },
+
+  isAvailable: false,
 };
 
 export const fetchStoreNameAndEmail = createAsyncThunk(
@@ -29,9 +31,7 @@ export const fetchStoreNameAndEmail = createAsyncThunk(
       params: { storeId: id },
     });
 
-    console.log('=>(account.js:28) response.data', response.data);
-
-    return response;
+    return response.data;
   },
 );
 
@@ -51,15 +51,22 @@ export const accountSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchStoreNameAndEmail.pending, ({ cmsAdmin }) => {})
+      .addCase(fetchStoreNameAndEmail.pending, ({ cmsAdmin }) => {
+        cmsAdmin.status = 'loading';
+      })
       .addCase(
         fetchStoreNameAndEmail.fulfilled,
         ({ cmsAdmin }, { payload }) => {
-          console.log('fullfilled', payload);
+          cmsAdmin.status = 'success';
+          // cmsAdmin.storeName = payload
+          // 어후 열받아
+
+          console.log(payload);
         },
       )
       .addCase(fetchStoreNameAndEmail.rejected, ({ cmsAdmin }, { error }) => {
-        console.log('rejected', error);
+        cmsAdmin.status = 'fail';
+        cmsAdmin.error = '가입된 매장입니다.';
       });
   },
 });

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -16,14 +17,13 @@ import { DataGrid } from '@mui/x-data-grid';
 
 import SearchIcon from '@mui/icons-material/Search';
 
-import Main from 'components/layout/Main';
 import { Button } from 'components/Atoms';
 import { InputField } from 'components/Molecules';
 import Dialog from 'components/Atoms/Dialog';
 
 import { setIsOpenDialog } from 'store/app';
 
-export default function MiddleAdmin() {
+export default function MiddleAdmin({ children }) {
   const [searchMenuIndex, setSearchMenuIndex] = useState(0);
 
   useEffect(() => {}, []);
@@ -73,7 +73,9 @@ export default function MiddleAdmin() {
   };
 
   return (
-    <Main>
+    <>
+      <Outlet />
+
       <IsuueAccountResultDialog />
 
       <Grid container justifyContent="space-between" alignItems="center" py={4}>
@@ -209,7 +211,7 @@ export default function MiddleAdmin() {
       <Grid item xs={12}>
         {/*<DataGrid columns={columns} rows={} />*/}
       </Grid>
-    </Main>
+    </>
   );
 }
 

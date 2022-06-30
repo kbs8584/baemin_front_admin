@@ -14,7 +14,6 @@ import { DataGrid } from '@mui/x-data-grid';
 import SearchIcon from '@mui/icons-material/Search';
 import { changeToken, initPassword } from 'api/user';
 import { getStoreList } from 'api/user';
-import Main from 'components/layout/Main';
 
 export default function ManageStore() {
   const [inputValue, setInputValue] = useState('');
@@ -152,7 +151,7 @@ export default function ManageStore() {
   ];
 
   return (
-    <Main>
+    <>
       <Typography
         variant="h1"
         mt={6}
@@ -283,7 +282,7 @@ export default function ManageStore() {
           }}
         />
       </Box>
-    </Main>
+    </>
   );
 }
 function CustomNoRowsOverlay() {

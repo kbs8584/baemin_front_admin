@@ -1,17 +1,22 @@
-import { Outlet, useLocation } from "react-router-dom";
-import { Divider } from "@mui/material";
+import { Outlet, useLocation } from 'react-router-dom';
 
-import Header from "components/layout/Header";
-import Footer from "components/layout/Footer";
+import { Container, Divider, Box } from '@mui/material';
+
+import Header from 'components/layout/Header';
+import Footer from 'components/layout/Footer';
 
 export default function Layout() {
-  const isSignInPage = useLocation().pathname === "/sign-in";
+  const isSignInPage = useLocation().pathname === '/sign-in';
 
   return (
     <>
       {!isSignInPage && <Header />}
 
-      <Outlet />
+      <Container sx={{ mb: 18 }}>
+        <Box px={1}>
+          <Outlet />
+        </Box>
+      </Container>
 
       <Divider />
 

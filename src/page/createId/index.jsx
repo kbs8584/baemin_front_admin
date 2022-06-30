@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import ShowCreatedId from './ShowCreatedId';
 import { signUp } from 'api/auth';
 import { checkDuplicateId, getStoreIdAndEmail } from 'api/user';
-import Main from 'components/layout/Main';
 import { useNavigate } from 'react-router';
 
 import { Button } from 'components/Atoms';
@@ -198,8 +197,8 @@ export default function CreateId() {
   };
 
   return (
-    <Main>
-      {/* 
+    <>
+      {/*
           <ShowCreatedId
             dialogOpen={dialogOpen}
             setDialogOpen={setDialogOpen}
@@ -460,6 +459,6 @@ export default function CreateId() {
             : 'CMS에 이미 가입되어있는 매장입니다'}
         </Button>
       </Box>
-    </Main>
+    </>
   );
 }
