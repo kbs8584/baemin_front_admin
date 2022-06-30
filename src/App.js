@@ -33,7 +33,9 @@ export default function App() {
         <Route index element={<ManageStore />} />
         <Route path="create-id" element={<CreateId />} />
         <Route path="gallery" element={<Gallery />} />
-        <Route path="middle-admin" element={<MiddleAdmin />}>
+
+        <Route path="middle-admin">
+          <Route index element={<MiddleAdmin />} />
           <Route path="create-id" element={<MiddleAdminAccount />} />
         </Route>
       </Route>
