@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Box, Typography, InputBase } from '@mui/material';
 import { useEffect, useState } from 'react';
 import ShowCreatedId from './ShowCreatedId';
@@ -8,19 +9,26 @@ import { useNavigate } from 'react-router';
 
 import { Button } from 'components/Atoms';
 import { InputField } from 'components/Molecules';
+import { fetchStoreNameAndEmail, setCMSInputValue } from 'store/account';
 
 export default function CreateId() {
+  const cmsAdmin = useSelector(state => state.account.cmsAdmin);
+
   const [dialogOpen, setDialogOpen] = useState(true);
   const [storeNameValue, setStoreNameValue] = useState('');
   const [storeEmailValue, setStoreEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [CMSIdValue, setCMSIdValue] = useState('');
   const [storeIdValue, setStoreIdValue] = useState('');
+
   const [availableId, setAvailableId] = useState([]);
   const [checkedCMSId, setCheckedCMSId] = useState(false);
   const [newIdCreated, setNewIdCreated] = useState(false);
   const [msg, setMsg] = useState('');
   const [emailMsgOn, setEmailMsgOn] = useState(false);
+
+  const dispatch = useDispatch();
+
   const NO_EMAIL_MSG =
     '등록된 이메일이 없습니다. 매장 대표자 이메일 등록 후, CMS아이디 생성이 가능합니다.';
 
@@ -30,6 +38,7 @@ export default function CreateId() {
 
   const filterKey = (e, filter) => {
     const filteredKey = new RegExp(/[a-z0-9]/g);
+
     if (!filteredKey.test(filter)) {
       e.preventDefault();
       alert('CMS ID는 영문 소문자와 숫자만 입력가능합니다.');
@@ -46,9 +55,11 @@ export default function CreateId() {
 
   const checkStoreId = async e => {
     const res = await getStoreIdAndEmail(storeIdValue);
+
     setEmailMsgOn(false);
 
-    if (storeIdValue === '') return;
+    if (storeIdValue === '') return; // required
+
     if (res === '등록되지 않은 매장 ID입니다') {
       // 등록되지 않은 매장ID
       setStoreIdValue('');
@@ -56,14 +67,17 @@ export default function CreateId() {
       setStoreNameValue('');
       setStoreEmailValue('');
       setMsg('입력하신 매장이 없습니다. ID를 확인 후 다시 입력해 주세요');
+
       return;
     }
+
     if (res === '가입된 매장 입니다.') {
       // 등록된 매장ID이며, 이미 CMS ID를 가지고 있는 매장
       setAvailableId(false);
       setStoreNameValue('');
       setStoreEmailValue('');
       setMsg('이미 가입된 매장 입니다.');
+
       return;
     }
 
@@ -71,13 +85,16 @@ export default function CreateId() {
     setAvailableId(true);
     setStoreNameValue(res.name);
     setMsg('');
+
     // But, Email등록이 안 되어있을때
     if (!res.email) {
       setEmailMsgOn(true);
       return;
     }
+
     setStoreEmailValue(res.email);
   };
+
   const handleCheckCMSIdButton = async CMSIdValue => {
     const res = await checkDuplicateId(CMSIdValue);
     const checked = res.idCheck;
@@ -88,6 +105,7 @@ export default function CreateId() {
     }
     if (!checked) alert('이미 등록된 아이디입니다.');
   };
+
   const createCMSId = async () => {
     const formdata = new FormData();
     formdata.append('userId', CMSIdValue);
@@ -98,18 +116,22 @@ export default function CreateId() {
     formdata.append('role', '0');
     await signUp(formdata);
   };
+
   function createRandomPassword() {
     // 자동생성 비밀번호에 조합될 문자열
     const chars =
       '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const passwordLength = 8;
     let randomPassword = '';
+
     for (let i = 0; i < passwordLength; i++) {
       const randomNumber = Math.floor(Math.random() * chars.length);
       randomPassword += chars.substring(randomNumber, randomNumber + 1);
     }
-    setPasswordValue(randomPassword);
+
+    setPasswordValue(randomPassword); // 암묵적 출력
   }
+
   function checkValuesBeforeSubmit() {
     if (
       storeIdValue === '' ||
@@ -129,8 +151,10 @@ export default function CreateId() {
     }
     if (!checkedCMSId) alert('아이디 중복검사를 해주세요.');
   }
+
   function handleSubmitButton() {
     checkValuesBeforeSubmit();
+
     if (
       checkedCMSId &&
       storeIdValue !== '' &&
@@ -152,19 +176,42 @@ export default function CreateId() {
     setFunc(e.target.value);
   }
 
+  const handleChangeInput = e => {
+    const { name, value } = e.target;
+
+    dispatch(
+      setCMSInputValue({
+        name: name,
+        value: value,
+      }),
+    );
+  };
+
+  const handleCheckHasStoreAccount = () => {
+    if (!cmsAdmin.storeId) {
+      alert('매장 ID를 입력해주세요.');
+
+      return;
+    }
+
+    dispatch(fetchStoreNameAndEmail(cmsAdmin.storeId));
+  };
+
   return (
     <Main>
-      <ShowCreatedId
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        storeId={storeIdValue}
-        CMSId={CMSIdValue}
-        storeName={storeNameValue}
-        storeEmail={storeEmailValue}
-        password={passwordValue}
-        setStoreIdValue={setStoreIdValue}
-        newIdCreated={newIdCreated}
-      />
+      {/* 
+          <ShowCreatedId
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+            storeId={storeIdValue}
+            CMSId={CMSIdValue}
+            storeName={storeNameValue}
+            storeEmail={storeEmailValue}
+            password={passwordValue}
+            setStoreIdValue={setStoreIdValue}
+            newIdCreated={newIdCreated}
+          />
+        */}
 
       <Typography
         variant="h1"
@@ -180,11 +227,12 @@ export default function CreateId() {
           <InputField
             type="number"
             title="매장 ID"
+            name="storeId"
             placeholder="매장 ID를 입력후 키보드의 엔터키를 입력해주세요."
             hasButton
             buttonName="확인"
-            onChangeInput={e => setInfoWithInputValue(e, setStoreIdValue)}
-            onClickButton={checkStoreId}
+            onChangeInput={handleChangeInput}
+            onClickButton={handleCheckHasStoreAccount}
           />
         </Grid>
 
