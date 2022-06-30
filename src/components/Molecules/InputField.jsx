@@ -5,6 +5,7 @@ import { Button, Input } from 'components/Atoms';
 export default function InputField({
   type = 'text',
   title,
+  name,
   value,
   placeholder = '',
   defaultInputValue,
@@ -24,7 +25,8 @@ export default function InputField({
         <Grid container justifyContent="space-between" alignItems="center">
           <Grid item xs>
             <Input
-              // TODO: put type
+              type={type}
+              name={name}
               value={value}
               defaultValue={defaultInputValue}
               onChange={onChangeInput}
