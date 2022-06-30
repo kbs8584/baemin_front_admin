@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -23,11 +23,10 @@ import Dialog from 'components/Atoms/Dialog';
 
 import { setIsOpenDialog } from 'store/app';
 
-import { MIDDLE_ADMIN_INPUTFIELD } from 'constant';
-
 export default function MiddleAdmin() {
   const [searchMenuIndex, setSearchMenuIndex] = useState(0);
-  const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {}, []);
 
   const dispatch = useDispatch();
 
@@ -76,6 +75,7 @@ export default function MiddleAdmin() {
   return (
     <Main>
       <IsuueAccountResultDialog />
+
       <Grid container justifyContent="space-between" alignItems="center" py={4}>
         <Grid item>
           <Typography fontSize="32px" fontWeight={700}>
@@ -161,16 +161,41 @@ export default function MiddleAdmin() {
       </Grid>
 
       <Grid container xs={9}>
-        {MIDDLE_ADMIN_INPUTFIELD.map(({ title, placeholder, button }) => (
-          <Grid item xs={12} pb={1} key={title}>
-            <InputField
-              title={title}
-              placeholder={placeholder}
-              hasButton={button.has}
-              buttonName={button.name}
-            />
-          </Grid>
-        ))}
+        <Grid item xs={12} pb={1}>
+          <InputField
+            title="중간관리자 ID"
+            placeholder="ID를 입력해주세요"
+            hasButton
+            buttonName="중복검사"
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <InputField
+            title="관리자명"
+            placeholder="관리자명을 입력해주세요."
+            hasButton
+            buttonName="중복검사"
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <InputField
+            title="이메일"
+            placeholder="대표이메일을 입력해주세요."
+            hasButton
+            buttonName="중복검사"
+          />
+        </Grid>
+
+        <Grid item xs={12} pb={1}>
+          <InputField
+            title="비밀번호"
+            placeholder="비밀번호를 입력해주세요."
+            hasButton
+            buttonName="자동생성"
+          />
+        </Grid>
 
         <Grid item xs={12}>
           <Button variant="contained" onClick={handleOpenDialog}>
@@ -179,6 +204,10 @@ export default function MiddleAdmin() {
             </Typography>
           </Button>
         </Grid>
+      </Grid>
+
+      <Grid item xs={12}>
+        {/*<DataGrid columns={columns} rows={} />*/}
       </Grid>
     </Main>
   );
@@ -226,11 +255,13 @@ const IsuueAccountResultDialog = () => {
           </IconButton>
         </Grid>
 
+        {/*
         {MIDDLE_ADMIN_INPUTFIELD.map(({ title, placeholder }) => (
           <Grid item xs={12} pb={1} key={title}>
             <InputField title={title} placeholder={placeholder} />
           </Grid>
         ))}
+        */}
 
         <Button variant="contained">
           <Typography fontWeight={900} py={1}>

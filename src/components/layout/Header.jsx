@@ -10,7 +10,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import { HOME_ROUTE_BUTTONS } from 'constant';
 import MainLogo from 'assets/main_logo.png';
 import { setCurrentMenu } from 'store/app';
 import { setUser } from 'store/auth';
@@ -58,11 +57,10 @@ export default function Header() {
       </Grid>
       <RouteButtonContainer>
         <Grid item>
-          {HOME_ROUTE_BUTTONS.map(button => (
-            <RouteButton key={button.name} to={button.path}>
-              {button.name}
-            </RouteButton>
-          ))}
+          <RouteButton to="/">매장관리</RouteButton>
+          <RouteButton to="/create-id">매장아이디 생성</RouteButton>
+          <RouteButton to="/gallery">배민갤러리</RouteButton>
+          <RouteButton to="/middle-admin">중간관리자</RouteButton>
         </Grid>
         <Grid item xs={5}>
           <Grid container justifyContent="end" alignItems="center" spacing={2}>
