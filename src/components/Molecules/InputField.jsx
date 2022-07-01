@@ -14,6 +14,7 @@ export default function InputField({
   buttonName,
   onClickButton,
   onChangeInput,
+  error,
 }) {
   return (
     <Grid container>

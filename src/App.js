@@ -18,28 +18,28 @@ const TOKEN = 'TOKEN';
 export default function App() {
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const token = sessionStorage.getItem(TOKEN);
-  //
-  //   if (!token) return;
-  //
-  //   dispatch(validateProfile(token));
-  // }, []);
+  useEffect(() => {
+    const token = sessionStorage.getItem(TOKEN);
+
+    if (!token) return;
+
+    dispatch(validateProfile(token));
+  }, []);
 
   return (
     <Routes>
-      {/*<Route element={<RequiredAuth redirectPath="/sign-in" />}>*/}
-      <Route path="/" element={<Layout />}>
-        <Route index element={<ManageStore />} />
-        <Route path="create-id" element={<CreateId />} />
-        <Route path="gallery" element={<Gallery />} />
+      <Route element={<RequiredAuth redirectPath="/sign-in" />}>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<ManageStore />} />
+          <Route path="create-id" element={<CreateId />} />
+          <Route path="gallery" element={<Gallery />} />
 
-        <Route path="middle-admin">
-          <Route index element={<MiddleAdmin />} />
-          <Route path="create-id" element={<MiddleAdminAccount />} />
+          <Route path="middle-admin">
+            <Route index element={<MiddleAdmin />} />
+            <Route path="create-id" element={<MiddleAdminAccount />} />
+          </Route>
         </Route>
       </Route>
-      {/*</Route>*/}
       <Route path="sign-in" element={<SignIn />} />
       <Route path="*" element={<SignIn />} />
     </Routes>

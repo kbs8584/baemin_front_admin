@@ -59,8 +59,8 @@ export default function MiddleAdminAccount() {
         </Grid>
       </Grid>
 
-      <Grid container xs={9}>
-        <Grid item xs={12} pb={1}>
+      <Grid container>
+        <Grid item xs={9} pb={1}>
           <InputField
             title="중간관리자 ID"
             placeholder="ID를 입력해주세요"
@@ -69,7 +69,7 @@ export default function MiddleAdminAccount() {
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <InputField
             title="관리자명"
             placeholder="관리자명을 입력해주세요."
@@ -78,7 +78,7 @@ export default function MiddleAdminAccount() {
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <InputField
             title="이메일"
             placeholder="대표이메일을 입력해주세요."
@@ -87,7 +87,7 @@ export default function MiddleAdminAccount() {
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <InputField
             title="비밀번호"
             placeholder="비밀번호를 입력해주세요."
@@ -96,7 +96,7 @@ export default function MiddleAdminAccount() {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={9}>
           <Button variant="contained" onClick={handleOpenDialog}>
             <Typography fontWeight={900} py={1}>
               신규 중간관리자 ID 생성

@@ -35,21 +35,25 @@ export default function CreateId() {
     setCheckedCMSId(false);
   }, []);
 
-  const filterKey = (e, filter) => {
+  const filerKey = string => {
     const filteredKey = new RegExp(/[a-z0-9]/g);
 
-    if (!filteredKey.test(filter)) {
-      e.preventDefault();
-      alert('CMS ID는 영문 소문자와 숫자만 입력가능합니다.');
-    }
-    if (filter === CMSIdValue) {
-      if (filter.split('').length !== filter.match(filteredKey).length) {
-        e.preventDefault();
-        alert('CMS ID는 영문 소문자와 숫자만 입력가능합니다.');
-      } else {
-        handleCheckCMSIdButton(CMSIdValue);
-      }
-    }
+    console.log(!filteredKey.exec(string));
+
+    return string.split('').length !== string.match(filteredKey).length;
+
+    // if (!filteredKey.test(filter)) {
+    //   e.preventDefault();
+    //   alert('CMS ID는 영문 소문자와 숫자만 입력가능합니다.');
+    // }
+    // if (filter === CMSIdValue) {
+    //   if (filter.split('').length !== filter.match(filteredKey).length) {
+    //     e.preventDefault();
+    //     alert('CMS ID는 영문 소문자와 숫자만 입력가능합니다.');
+    //   } else {
+    //     handleCheckCMSIdButton(CMSIdValue);
+    //   }
+    // }
   };
 
   const checkStoreId = async e => {
@@ -116,8 +120,7 @@ export default function CreateId() {
     await signUp(formdata);
   };
 
-  function createRandomPassword() {
-    // 자동생성 비밀번호에 조합될 문자열
+  const getRandomPassword = () => {
     const chars =
       '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const passwordLength = 8;
@@ -128,8 +131,8 @@ export default function CreateId() {
       randomPassword += chars.substring(randomNumber, randomNumber + 1);
     }
 
-    setPasswordValue(randomPassword); // 암묵적 출력
-  }
+    return randomPassword;
+  };
 
   function checkValuesBeforeSubmit() {
     if (
@@ -175,8 +178,36 @@ export default function CreateId() {
     setFunc(e.target.value);
   }
 
+  const handleGenerateRandomPassword = () => {
+    dispatch(
+      setCMSInputValue({
+        name: 'password',
+        value: getRandomPassword(),
+      }),
+    );
+  };
+
+  const inspectCMSAccountId = str => {
+    /////////// 영어 소문자, 숫자만 가능 /////////////
+    console.log(str);
+
+    const filter = new RegExp(/^[a-z0-9]*$/);
+
+    // console.log(str.search(/[a-z][0-9]/g));
+
+    console.log('Test', filter.test(str));
+
+    // return filter.exec(str);
+  };
+
   const handleChangeInput = e => {
     const { name, value } = e.target;
+
+    console.log(inspectCMSAccountId(value));
+
+    // if (name === 'id' && inspectCMSAccountId(value)) {
+    //   alert('ID는 영어소문자, 숫자만 가능합니다.');
+    // }
 
     dispatch(
       setCMSInputValue({
@@ -221,8 +252,8 @@ export default function CreateId() {
         CMS ID 생성
       </Typography>
 
-      <Grid container xs={9}>
-        <Grid item xs={12} pb={1}>
+      <Grid container>
+        <Grid item xs={9} pb={1}>
           <InputField
             type="number"
             title="매장 ID"
@@ -235,7 +266,7 @@ export default function CreateId() {
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <InputField
             title="매장명"
             defaultInputValue={storeNameValue}
@@ -243,7 +274,7 @@ export default function CreateId() {
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <InputField
             title="매장이메일"
             defaultInputValue={emailMsgOn ? NO_EMAIL_MSG : storeEmailValue}
@@ -251,31 +282,32 @@ export default function CreateId() {
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <InputField
             title="CMS ID"
+            name="id"
             placeholder="ID를 입력해주세요."
             hasButton
             buttonName="중복검사"
-            onChangeInput={e => setInfoWithInputValue(e, setStoreEmailValue)}
-            onClickButton={e => filterKey(e, CMSIdValue)}
+            onChangeInput={handleChangeInput}
+            // onClickButton={e => filterKey(e, CMSIdValue)}
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <InputField
             type="password"
             title="비밀번호"
-            value={passwordValue}
+            value={cmsAdmin.password}
             placeholder="비밀번호를 입력해주세요."
             hasButton
             buttonName="자동생성"
             onChangeInput={e => setInfoWithInputValue(e, setPasswordValue)}
-            onClickButton={createRandomPassword}
+            onClickButton={handleGenerateRandomPassword}
           />
         </Grid>
 
-        <Grid item xs={12} pb={1}>
+        <Grid item xs={9} pb={1}>
           <Button
             variant="contained"
             onClick={handleSubmitButton}
@@ -372,7 +404,7 @@ export default function CreateId() {
               onChange={e => {
                 setInfoWithInputValue(e, setCMSIdValue);
               }}
-              onKeyDown={e => filterKey(e, e.key)}
+              // onKeyDown={e => filterKey(e, e.key)}
             />
             <Button
               variant="outlined"
@@ -382,9 +414,9 @@ export default function CreateId() {
                 marginLeft: 'auto',
                 border: '2px solid',
               }}
-              onClick={e => {
-                filterKey(e, CMSIdValue);
-              }}
+              // onClick={e => {
+              //   filterKey(e, CMSIdValue);
+              // }}
             >
               중복검사
             </Button>
@@ -434,7 +466,7 @@ export default function CreateId() {
                 marginLeft: 'auto',
                 border: '2px solid',
               }}
-              onClick={createRandomPassword}
+              // onClick={createRandomPassword}
             >
               자동생성
             </Button>

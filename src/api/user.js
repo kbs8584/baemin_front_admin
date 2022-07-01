@@ -60,7 +60,9 @@ export const getStoreIdAndEmail = async storeId => {
       params: { storeId: storeId },
     });
 
-    console.log(response.data);
+    // 1. 매장 아이디가 있고 CMS 계정이 만들어져있는 경우 -> 400 error -> 가입된 매장입니다.
+    // 2. 매장 아이디가 있고 CMS 계정이 없는 경우 -> 200 ->
+    // 3. 매장 아이디가 없는 경우 -> 400 -> '가입된 매장입니다'라는 값이 없으면 -> '등록되지 않는 매장 ID'
 
     return response.data;
   } catch (error) {
