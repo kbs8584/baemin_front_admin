@@ -1,14 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  Button,
-  CardMedia,
-  Container,
-  Grid,
-  Avatar,
-  Typography,
-} from '@mui/material';
+import { Button, CardMedia, Container, Grid, Typography } from '@mui/material';
 
 import MainLogo from 'assets/main_logo.png';
 import { setCurrentMenu } from 'store/app';
@@ -65,21 +58,14 @@ export default function Header() {
         <Grid item xs={5}>
           <Grid container justifyContent="end" alignItems="center" spacing={2}>
             {Boolean(user) && (
-              <>
-                <Grid item>
-                  <Avatar
-                  // src={TempAvatar}
-                  />
-                </Grid>
-                <Grid item>
-                  <Typography>
-                    <Typography component="span" fontWeight={900}>
-                      관리자
-                    </Typography>{' '}
-                    님
-                  </Typography>
-                </Grid>
-              </>
+              <Grid item>
+                <Typography>
+                  <Typography component="span" fontWeight={900}>
+                    관리자
+                  </Typography>{' '}
+                  님
+                </Typography>
+              </Grid>
             )}
             <Grid item>
               {Boolean(user) ? (
@@ -117,11 +103,13 @@ const RouteButtonContainer = ({ children }) => (
 const RouteButton = ({ children, to }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentLocation = window.location.pathname;
+  const currentLocation = useLocation().pathname;
+
   const currentPath = () => {
     let path = currentLocation;
-    if (currentLocation === '/') return path;
-    path = currentLocation.substring(1);
+
+    if (currentLocation === '/') return '/';
+
     return path;
   };
 

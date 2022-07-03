@@ -31,7 +31,7 @@ export const initPassword = async (storeId, storeEmail, CMSId) => {
   }
 };
 
-export const getStoreList = async (page, input, mode) => {
+export const getStoreList = async (page, input, mode, role) => {
   try {
     const response = await API.get('/api/v1/user/search', {
       params: {
@@ -41,9 +41,9 @@ export const getStoreList = async (page, input, mode) => {
         searchInput: input,
         searchMode: mode,
         orderMode: false,
-        role: 1,
+        role: role,
       },
-      headers: { Authorization: `Bearer ${TOKEN_KEY}` },
+      // headers: { Authorization: `Bearer ${TOKEN_KEY}` },
     });
 
     console.log(response.data);

@@ -24,6 +24,8 @@ export default function ManageStore() {
   const [rowCount, setRowCount] = useState(initialSearchData?.allCount);
   const [rowCountState, setRowCountState] = useState(rowCount);
 
+  console.log('searchData', searchData);
+
   useEffect(() => {
     // 검색이 시작되지 않으면 데이터를 불러오지 않는다
     if (!initSearch) return;
@@ -38,7 +40,7 @@ export default function ManageStore() {
 
   function filterStore(page) {
     setInitSearch(true);
-    getStoreList(page + 1, inputValue, selectValue).then(data => {
+    getStoreList(page + 1, inputValue, selectValue, 1).then(data => {
       setInitialSearchData(data.list);
       setRowCount(Number(data.allCount));
       return data;
@@ -152,12 +154,7 @@ export default function ManageStore() {
 
   return (
     <>
-      <Typography
-        variant="h1"
-        mt={6}
-        mb={5}
-        sx={{ fontSize: 'subtitle1.fontSize' }}
-      >
+      <Typography variant="h1" py={5} fontSize="32px" fontWeight={700}>
         매장관리
       </Typography>
       <Grid
@@ -219,7 +216,7 @@ export default function ManageStore() {
               onKeyDown={e => {
                 if (e.key === 'Enter') filterStore(0);
               }}
-            ></InputBase>
+            />
             <Button
               sx={{
                 height: 1,
@@ -255,9 +252,8 @@ export default function ManageStore() {
           rowsPerPageOptions={[10]}
           rows={searchData}
           columns={columns}
-          paginationMode="server"
           pageSize={10}
-          rowCount={rowCountState}
+          // rowCount={rowCountState}
           sx={{
             borderRadius: 3,
             textAlign: 'center',

@@ -12,6 +12,8 @@ export default function Layout() {
     <>
       {!isSignInPage && <Header />}
 
+      <Divider />
+
       <Container sx={{ mb: 18 }}>
         <Box px={1}>
           <Outlet />

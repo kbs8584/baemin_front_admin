@@ -33,13 +33,12 @@ export default function InputField({
               onChange={onChangeInput}
               placeholder={placeholder}
               disabled={disabled}
-              fullWidth
             />
           </Grid>
 
           {hasButton ? (
             <Grid item>
-              <Button variant="outlined" onClick={onClickButton}>
+              <Button name={name} variant="outlined" onClick={onClickButton}>
                 {buttonName}
               </Button>
             </Grid>
