@@ -24,8 +24,6 @@ export default function ManageStore() {
   const [rowCount, setRowCount] = useState(initialSearchData?.allCount);
   const [rowCountState, setRowCountState] = useState(rowCount);
 
-  console.log('searchData', searchData);
-
   useEffect(() => {
     // 검색이 시작되지 않으면 데이터를 불러오지 않는다
     if (!initSearch) return;

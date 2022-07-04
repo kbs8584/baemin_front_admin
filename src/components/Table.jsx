@@ -50,7 +50,7 @@ const TableContainer = ({ children }) => (
     mb={5}
     sx={{
       width: 1,
-      height: '630px',
+      height: '631px',
 
       '& .super-app-theme--header:nth-of-type(1)': {
         paddingLeft: 5,

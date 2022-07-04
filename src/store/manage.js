@@ -10,14 +10,38 @@ const initialState = {
     currentSelectedStoreList: [],
     allCount: null,
     list: [],
+    linkedList: [],
+    /*
+      {
+        allCount: String,
+        list: Array,
+        totalPage: String
+      }
+    */
     availableList: [],
-    // canLinkStoreList
+
     totalPage: null,
     error: null,
   },
 };
 
-export const linkStoreLink
+export const linkStoreToMiddleAccount = createAsyncThunk(
+  'manage/linkStoreToMiddleAccount',
+  async rawData => {
+    const response = await API.post('/api/v1/middle', rawData);
+
+    return response.data;
+  },
+);
+
+export const unlinkStoreToMiddleAccount = createAsyncThunk(
+  'manage/unlinkStoreToMiddleAccount',
+  async rawData => {
+    const response = await API.patch('/api/v1/middle', rawData);
+
+    return response.data;
+  },
+);
 
 export const fetchNotLinkedAccountList = createAsyncThunk(
   'manage/fetchNotLinkedAccountList',
@@ -41,40 +65,26 @@ export const fetchLinkedAccountList = createAsyncThunk(
       },
     });
 
-    console.log(response.data);
+    return response.data;
   },
 );
 
 export const fetchAccountList = createAsyncThunk(
   'manage/fetchAccountList',
   async data => {
-    /*
-     searchMode
-     0: 전체 검색
-     1: 아이디 검색
-     2: 매장명 검색
-     */
-
     const response = await API.get('/api/v1/user/search', {
       params: {
-        cpage: data.cpage,
-        rowItem: data.rowItem,
-        sortMode: data.sortMode,
-        searchInput: data.searchInput,
-        searchMode: data.searchMode,
-        orderMode: data.orderMode,
-        role: data.role,
+        cpage: data?.cpage,
+        rowItem: data?.rowItem,
+        sortMode: data?.sortMode,
+        searchInput: data?.searchInput,
+        searchMode: data?.searchMode,
+        orderMode: data?.orderMode,
+        role: data?.role,
       },
     });
 
     return response.data;
-    /*
-      {
-        allCount: String,
-        list: Array,
-        totalPage: String
-      }
-     */
   },
 );
 
@@ -87,6 +97,9 @@ export const manageSlice = createSlice({
     },
     setCurrentUserSeq: ({ middleAdmin }, { payload }) => {
       middleAdmin.currentUserSeq = payload;
+    },
+    setCurrentSelectedStoreList: ({ middleAdmin }, { payload }) => {
+      middleAdmin.currentSelectedStoreList = payload;
     },
   },
   extraReducers: builder => {
@@ -125,9 +138,71 @@ export const manageSlice = createSlice({
           middleAdmin.status = 'fail';
           // middleAdmin.error
         },
+      )
+      .addCase(
+        fetchLinkedAccountList.pending,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'loading';
+        },
+      )
+      .addCase(
+        fetchLinkedAccountList.fulfilled,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'success';
+
+          middleAdmin.linkedList = payload.content;
+          middleAdmin.totalPage = payload.totalPages;
+          middleAdmin.allCount = payload.totalElements;
+        },
+      )
+      .addCase(
+        fetchLinkedAccountList.rejected,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'fail';
+          // middleAdmin.error
+        },
+      )
+      .addCase(linkStoreToMiddleAccount.pending, ({ middleAdmin }) => {
+        middleAdmin.status = 'loading';
+      })
+      .addCase(
+        linkStoreToMiddleAccount.fulfilled,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'success';
+
+          if (payload.msg === 'Complete') {
+            alert('연동되었습니다.');
+          }
+        },
+      )
+      .addCase(
+        linkStoreToMiddleAccount.rejected,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'fail';
+        },
+      )
+      .addCase(unlinkStoreToMiddleAccount.pending, ({ middleAdmin }) => {
+        middleAdmin.status = 'loading';
+      })
+      .addCase(
+        unlinkStoreToMiddleAccount.fulfilled,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'success';
+
+          if (payload.msg === 'Complete') {
+            alert('연동이 해제되었습니다.');
+          }
+        },
+      )
+      .addCase(
+        unlinkStoreToMiddleAccount.rejected,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'fail';
+        },
       );
   },
 });
 
-export const { setSearchText, setCurrentUserSeq } = manageSlice.actions;
+export const { setSearchText, setCurrentUserSeq, setCurrentSelectedStoreList } =
+  manageSlice.actions;
 export default manageSlice.reducer;

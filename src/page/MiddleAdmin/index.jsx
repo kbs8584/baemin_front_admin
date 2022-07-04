@@ -121,7 +121,7 @@ export default function MiddleAdmin() {
   }, []);
 
   const handleRowClick = ({ row }) => {
-    console.log(row);
+    navigate('linked-store');
 
     dispatch(fetchLinkedAccountList(row.userSeq));
   };
