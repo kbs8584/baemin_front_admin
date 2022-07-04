@@ -2,20 +2,18 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  Typography,
-  Select,
-  MenuItem,
-  Grid,
-  Box,
-  FormControl,
-} from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 
 import { Button } from 'components/Atoms';
-import { SearchBar } from 'components/Molecules';
+import { SearchBar, SearchSelect } from 'components/Molecules';
 import Table from 'components/Table';
 
-import { fetchNotLinkedAccountList, setSearchText } from 'store/manage';
+import {
+  fetchLinkedAccountList,
+  fetchNotLinkedAccountList,
+  setSearchText,
+  setCurrentUserSeq,
+} from 'store/manage';
 
 export default function MiddleAdmin() {
   const middleAdmin = useSelector(state => state.manage.middleAdmin);
@@ -122,18 +120,31 @@ export default function MiddleAdmin() {
     dispatch(setSearchText(''));
   }, []);
 
+  const handleRowClick = ({ row }) => {
+    console.log(row);
+
+    dispatch(fetchLinkedAccountList(row.userSeq));
+  };
+
   const handleMoveIssueAccount = () => {
     navigate('create-id');
   };
 
   const handleAddStoreClick = e => {
+    navigate('link-store');
+
+    dispatch(setCurrentUserSeq(parseInt(e.target.id)));
     dispatch(fetchNotLinkedAccountList(e.target.id));
+  };
+
+  const handleChangeSelect = e => {
+    setSearchMenuIndex(e.target.value);
   };
 
   return (
     <>
       <Grid container justifyContent="space-between" alignItems="center" py={5}>
-        <Grid item>
+        <Grid item xs>
           <Typography fontSize="32px" fontWeight={700}>
             중간관리자
           </Typography>
@@ -148,28 +159,11 @@ export default function MiddleAdmin() {
 
       <Grid container alignItems="center" columnSpacing={3} mb={4}>
         <Grid item xs={2}>
-          <FormControl fullWidth>
-            <Select
-              variant="outlined"
-              value={searchMenuIndex}
-              onChange={e => setSearchMenuIndex(e.target.value)}
-              fullWidth
-              sx={{
-                bgcolor: 'grey.100',
-                borderRadius: '30px',
-                textAlign: 'center',
-
-                '& .MuiSelect-outlined': {
-                  p: 1,
-                },
-              }}
-            >
-              <MenuItem value={0}>전체</MenuItem>
-              <MenuItem value={1}>CMS ID</MenuItem>
-              <MenuItem value={2}>중간관리자명</MenuItem>
-              <MenuItem value={3}>이메일</MenuItem>
-            </Select>
-          </FormControl>
+          <SearchSelect
+            searchMenuIndex={searchMenuIndex}
+            onChange={handleChangeSelect}
+            dataset={['전체', 'CMS ID', '중간관리자명', '이메일']}
+          />
         </Grid>
 
         <Grid item xs>
@@ -177,23 +171,40 @@ export default function MiddleAdmin() {
         </Grid>
       </Grid>
 
-      <Box
-        mb={5}
+      <Table
+        columns={columns}
+        rows={middleAdmin.list}
+        onRowClick={handleRowClick}
+        getRowId={row => row.userSeq} // 변경 가능성 있음
         sx={{
-          width: 1,
-          height: '649px',
+          borderRadius: 3,
+          textAlign: 'center',
 
-          '& .super-app-theme--header': {
+          '& .MuiDataGrid-columnHeadersInner': {
             borderBottom: 6,
             fontSize: '1rem',
           },
-          '& .super-app-theme--header:nth-of-type(1)': {
+
+          '& .MuiDataGrid-columnSeparator--sideRight': {
+            display: 'none',
+          },
+
+          '& .MuiDataGrid-columnHeaderTitle': {
+            fontWeight: 'bold',
+          },
+
+          '& .MuiDataGrid-row:nth-of-type(2n)': {
+            backgroundColor: 'grey.100',
+          },
+
+          '& .MuiDataGrid-cell:nth-of-type(1)': {
             paddingLeft: 5,
           },
+          '& .MuiDataGrid-cell': {
+            border: 0,
+          },
         }}
-      >
-        <Table columns={columns} rows={middleAdmin.list} />
-      </Box>
+      />
     </>
   );
 }

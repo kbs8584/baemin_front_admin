@@ -6,12 +6,18 @@ const initialState = {
   searchColumn: 0,
   middleAdmin: {
     status: 'idle',
+    currentUserSeq: null,
+    currentSelectedStoreList: [],
     allCount: null,
     list: [],
+    availableList: [],
+    // canLinkStoreList
     totalPage: null,
     error: null,
   },
 };
+
+export const linkStoreLink
 
 export const fetchNotLinkedAccountList = createAsyncThunk(
   'manage/fetchNotLinkedAccountList',
@@ -22,7 +28,20 @@ export const fetchNotLinkedAccountList = createAsyncThunk(
       },
     });
 
-    console.log('fetchNotLinkedAccountList', response.data);
+    return response.data;
+  },
+);
+
+export const fetchLinkedAccountList = createAsyncThunk(
+  'manage/fetchLinkedAccountList',
+  async id => {
+    const response = await API.get('/api/v1/middle/list', {
+      params: {
+        userSeq: id,
+      },
+    });
+
+    console.log(response.data);
   },
 );
 
@@ -35,8 +54,6 @@ export const fetchAccountList = createAsyncThunk(
      1: 아이디 검색
      2: 매장명 검색
      */
-
-    console.log('data', data);
 
     const response = await API.get('/api/v1/user/search', {
       params: {
@@ -68,6 +85,9 @@ export const manageSlice = createSlice({
     setSearchText: (state, action) => {
       state.searchText = action.payload;
     },
+    setCurrentUserSeq: ({ middleAdmin }, { payload }) => {
+      middleAdmin.currentUserSeq = payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(fetchAccountList.pending, ({ middleAdmin }) => {
@@ -81,9 +101,33 @@ export const manageSlice = createSlice({
         middleAdmin.totalPage = payload.totalPage;
       },
     );
-    builder.addCase(fetchAccountList.rejected, () => {});
+    builder
+      .addCase(fetchAccountList.rejected, () => {})
+      .addCase(
+        fetchNotLinkedAccountList.pending,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'loading';
+        },
+      )
+      .addCase(
+        fetchNotLinkedAccountList.fulfilled,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'success';
+
+          middleAdmin.availableList = payload.content;
+          middleAdmin.totalPage = payload.totalPages;
+          middleAdmin.allCount = payload.totalElements;
+        },
+      )
+      .addCase(
+        fetchNotLinkedAccountList.rejected,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.status = 'fail';
+          // middleAdmin.error
+        },
+      );
   },
 });
 
-export const { setSearchText } = manageSlice.actions;
+export const { setSearchText, setCurrentUserSeq } = manageSlice.actions;
 export default manageSlice.reducer;

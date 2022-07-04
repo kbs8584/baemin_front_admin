@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,10 +9,11 @@ import Gallery from 'page/gallery';
 import ManageStore from 'page/manageStore';
 import CreateId from 'page/createId';
 import MiddleAdmin from 'page/MiddleAdmin';
+import MiddleAdminLink from 'page/MiddleAdminLink';
+import MiddleAdminLinkedStore from 'page/MiddleAdminLinkedList';
 import MiddleAdminAccount from 'page/MiddleAdminAccount';
 
 import { validateProfile } from 'store/auth';
-import { useEffect } from 'react';
 
 const TOKEN = 'TOKEN';
 
@@ -37,6 +39,8 @@ export default function App() {
           <Route path="middle-admin">
             <Route index element={<MiddleAdmin />} />
             <Route path="create-id" element={<MiddleAdminAccount />} />
+            <Route path="link-store" element={<MiddleAdminLink />} />
+            <Route path="linked-store" element={<MiddleAdminLinkedStore />} />
           </Route>
         </Route>
       </Route>

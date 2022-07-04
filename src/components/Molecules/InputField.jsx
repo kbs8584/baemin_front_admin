@@ -33,6 +33,12 @@ export default function InputField({
               onChange={onChangeInput}
               placeholder={placeholder}
               disabled={disabled}
+              sx={{
+                'input::-webkit-inner-spin-button': {
+                  WebkitAppearance: 'none',
+                  margin: 0,
+                },
+              }}
             />
           </Grid>
 
@@ -63,14 +69,3 @@ const StyledInputFieldGrid = styled(Grid)(({ theme }) => ({
   borderColor: theme.palette.grey['200'],
   borderRadius: '0 5px 5px 0',
 }));
-
-/*
-  Delete number type input default arrows
-  'input::-webkit-inner-spin-button': {
-     WebkitAppearance: 'none',
-     margin: 0,
-  }
-
-  Q) What is onBlur in InputBase
-  Q) how to describe initialize function when getting with parameter
- */
