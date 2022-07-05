@@ -10,18 +10,36 @@ const initialState = {
     currentSelectedStoreList: [],
     allCount: null,
     list: [],
-    linkedList: [],
-    /*
-      {
-        allCount: String,
-        list: Array,
-        totalPage: String
-      }
-    */
-    availableList: [],
-
+    // linkedList: [],
+    // availableList: [],
     totalPage: null,
     error: null,
+  },
+
+  notLinkedAccount: {
+    status: 'idle',
+    list: [],
+    totalPage: 0,
+    allCount: 0,
+  },
+
+  linkedAccount: {
+    status: 'idle',
+    list: [],
+    totalPage: 0,
+    allCount: 0,
+  },
+
+  linkAction: {
+    status: 'idle',
+    error: null,
+    message: '',
+  },
+
+  unlinkAction: {
+    status: 'idle',
+    error: null,
+    message: '',
   },
 };
 
@@ -115,60 +133,56 @@ export const manageSlice = createSlice({
       },
     );
     builder
-      .addCase(fetchAccountList.rejected, () => {})
       .addCase(
         fetchNotLinkedAccountList.pending,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'loading';
+        ({ notLinkedAccount }, { payload }) => {
+          notLinkedAccount.status = 'loading';
         },
       )
       .addCase(
         fetchNotLinkedAccountList.fulfilled,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'success';
+        ({ notLinkedAccount }, { payload }) => {
+          notLinkedAccount.status = 'success';
 
-          middleAdmin.availableList = payload.content;
-          middleAdmin.totalPage = payload.totalPages;
-          middleAdmin.allCount = payload.totalElements;
+          notLinkedAccount.list = payload.content;
+          notLinkedAccount.totalPage = payload.totalPages;
+          notLinkedAccount.allCount = payload.totalElements;
         },
       )
       .addCase(
         fetchNotLinkedAccountList.rejected,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'fail';
+        ({ notLinkedAccount }, { payload }) => {
+          notLinkedAccount.status = 'fail';
           // middleAdmin.error
         },
       )
-      .addCase(
-        fetchLinkedAccountList.pending,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'loading';
-        },
-      )
+      .addCase(fetchLinkedAccountList.pending, ({ linkedAccount }) => {
+        linkedAccount.status = 'loading';
+      })
       .addCase(
         fetchLinkedAccountList.fulfilled,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'success';
+        ({ linkedAccount }, { payload }) => {
+          linkedAccount.status = 'success';
 
-          middleAdmin.linkedList = payload.content;
-          middleAdmin.totalPage = payload.totalPages;
-          middleAdmin.allCount = payload.totalElements;
+          linkedAccount.list = payload.content;
+          linkedAccount.totalPage = payload.totalPages;
+          linkedAccount.allCount = payload.totalElements;
         },
       )
       .addCase(
         fetchLinkedAccountList.rejected,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'fail';
+        ({ linkedAccount }, { payload }) => {
+          linkedAccount.status = 'fail';
           // middleAdmin.error
         },
       )
-      .addCase(linkStoreToMiddleAccount.pending, ({ middleAdmin }) => {
-        middleAdmin.status = 'loading';
+      .addCase(linkStoreToMiddleAccount.pending, ({ linkAction }) => {
+        linkAction.status = 'loading';
       })
       .addCase(
         linkStoreToMiddleAccount.fulfilled,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'success';
+        ({ linkAction }, { payload }) => {
+          linkAction.status = 'success';
 
           if (payload.msg === 'Complete') {
             alert('연동되었습니다.');
@@ -177,27 +191,29 @@ export const manageSlice = createSlice({
       )
       .addCase(
         linkStoreToMiddleAccount.rejected,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'fail';
+        ({ linkAction }, { payload }) => {
+          linkAction.status = 'fail';
         },
       )
-      .addCase(unlinkStoreToMiddleAccount.pending, ({ middleAdmin }) => {
-        middleAdmin.status = 'loading';
+      .addCase(unlinkStoreToMiddleAccount.pending, ({ unlinkAction }) => {
+        unlinkAction.status = 'loading';
       })
       .addCase(
         unlinkStoreToMiddleAccount.fulfilled,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'success';
+        ({ unlinkAction }, { payload }) => {
+          unlinkAction.status = 'success';
 
           if (payload.msg === 'Complete') {
+            // add success message
             alert('연동이 해제되었습니다.');
           }
         },
       )
       .addCase(
         unlinkStoreToMiddleAccount.rejected,
-        ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'fail';
+        ({ unlinkAction }, { payload }) => {
+          // add error message
+          unlinkAction.status = 'fail';
         },
       );
   },

@@ -123,6 +123,7 @@ export default function MiddleAdmin() {
   const handleRowClick = ({ row }) => {
     navigate('linked-store');
 
+    dispatch(setCurrentUserSeq(row.userSeq));
     dispatch(fetchLinkedAccountList(row.userSeq));
   };
 
@@ -131,6 +132,8 @@ export default function MiddleAdmin() {
   };
 
   const handleAddStoreClick = e => {
+    e.stopPropagation();
+
     navigate('link-store');
 
     dispatch(setCurrentUserSeq(parseInt(e.target.id)));

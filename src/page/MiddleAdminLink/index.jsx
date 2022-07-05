@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Typography, Grid } from '@mui/material';
@@ -9,10 +10,21 @@ import {
   linkStoreToMiddleAccount,
   unlinkStoreToMiddleAccount,
   setCurrentSelectedStoreList,
+  fetchNotLinkedAccountList,
 } from 'store/manage';
 
 export default function MiddleAdminLink() {
-  const middleAdmin = useSelector(state => state.manage.middleAdmin);
+  const currentUserSeq = useSelector(
+    state => state.manage.middleAdmin.currentUserSeq,
+  );
+  const currentSelectedStoreList = useSelector(
+    state => state.manage.middleAdmin.currentSelectedStoreList,
+  );
+  const notLinkedAccount = useSelector(state => state.manage.notLinkedAccount);
+  const linkAction = useSelector(state => state.manage.linkAction);
+  const unlinkAction = useSelector(state => state.manage.unlinkAction);
+
+  const [searchMenuIndex, setSearchMenuIndex] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -48,7 +60,7 @@ export default function MiddleAdminLink() {
       align: 'center',
       editable: false,
       renderCell: params => {
-        const isLinked = middleAdmin.currentUserSeq === params.row.adminSeq;
+        const isLinked = currentUserSeq === params.row.adminSeq;
 
         return (
           <>
@@ -88,10 +100,16 @@ export default function MiddleAdminLink() {
     },
   ];
 
+  useEffect(() => {
+    if (linkAction.status === 'success' || unlinkAction.status === 'success') {
+      dispatch(fetchNotLinkedAccountList(currentUserSeq));
+    }
+  }, [linkAction.status, unlinkAction.status]);
+
   const handleLinkStoreClick = e => {
     dispatch(
       linkStoreToMiddleAccount({
-        userSeq: middleAdmin.currentUserSeq,
+        userSeq: currentUserSeq,
         storeList: [e.currentTarget.id],
       }),
     );
@@ -100,7 +118,7 @@ export default function MiddleAdminLink() {
   const handleUnlinkStoreClick = e => {
     dispatch(
       unlinkStoreToMiddleAccount({
-        userSeq: middleAdmin.currentUserSeq,
+        userSeq: currentUserSeq,
         storeList: [e.currentTarget.id],
       }),
     );
@@ -109,8 +127,8 @@ export default function MiddleAdminLink() {
   const handleLinkSelectedStore = () => {
     dispatch(
       linkStoreToMiddleAccount({
-        userSeq: middleAdmin.currentUserSeq,
-        storeList: middleAdmin.currentSelectedStoreList,
+        userSeq: currentUserSeq,
+        storeList: currentSelectedStoreList,
       }),
     );
   };
@@ -118,14 +136,18 @@ export default function MiddleAdminLink() {
   const handleUnlinkSelectedStore = () => {
     dispatch(
       unlinkStoreToMiddleAccount({
-        userSeq: middleAdmin.currentUserSeq,
-        storeList: middleAdmin.currentSelectedStoreList,
+        userSeq: currentUserSeq,
+        storeList: currentSelectedStoreList,
       }),
     );
   };
 
   const handleCheckBoxClick = params => {
     dispatch(setCurrentSelectedStoreList(params));
+  };
+
+  const handleChangeSelect = e => {
+    setSearchMenuIndex(e.target.value);
   };
 
   return (
@@ -162,8 +184,8 @@ export default function MiddleAdminLink() {
       <Grid container alignItems="center" columnSpacing={3} mb={4}>
         <Grid item xs={2}>
           <SearchSelect
-            // searchMenuIndex={searchMenuIndex}
-            // onChange={handleChangeSelect}
+            searchMenuIndex={searchMenuIndex}
+            onChange={handleChangeSelect}
             dataset={['전체', '매장 ID', '매장명', 'CMS ID']}
           />
         </Grid>
@@ -177,7 +199,7 @@ export default function MiddleAdminLink() {
         checkboxSelection
         disableSelectionOnClick
         columns={columns}
-        rows={middleAdmin.availableList}
+        rows={notLinkedAccount.list}
         getRowId={row => row.storeId}
         onSelectionModelChange={handleCheckBoxClick}
         sx={{

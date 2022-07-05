@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { Typography, Grid, Box } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 
 import { Button } from 'components/Atoms';
 import { SearchBar, SearchSelect } from 'components/Molecules';
@@ -10,13 +10,16 @@ import Table from 'components/Table';
 
 import {
   fetchLinkedAccountList,
-  fetchNotLinkedAccountList,
+  unlinkStoreToMiddleAccount,
   setSearchText,
-  setCurrentUserSeq,
 } from 'store/manage';
 
 export default function MiddleAdminLinkedList() {
-  const middleAdmin = useSelector(state => state.manage.middleAdmin);
+  const currentUserSeq = useSelector(
+    state => state.manage.middleAdmin.currentUserSeq,
+  );
+  const linkedAccount = useSelector(state => state.manage.linkedAccount);
+  const unlinkAction = useSelector(state => state.manage.unlinkAction);
 
   const [searchMenuIndex, setSearchMenuIndex] = useState(0);
 
@@ -26,7 +29,7 @@ export default function MiddleAdminLinkedList() {
   const columns = [
     {
       headerClassName: 'super-app-theme--header',
-      field: 'userId',
+      field: 'cmsId',
       headerName: 'CMS ID',
       editable: false,
       width: 174,
@@ -53,12 +56,12 @@ export default function MiddleAdminLinkedList() {
       align: 'center',
       editable: false,
       renderCell: params => {
-        console.log(params);
+        // console.log(params);
 
         return (
           <Button
             id={params.id}
-            onClick={handleAddStoreClick}
+            onClick={handleUnlinkStoreClick}
             sx={{ width: 0.7, bgcolor: 'common.white' }}
             variant="outlined"
           >
@@ -122,17 +125,26 @@ export default function MiddleAdminLinkedList() {
     dispatch(setSearchText(''));
   }, []);
 
-  const handleMoveAddLinkStore = () => {
-    navigate('linked-store');
+  useEffect(() => {
+    if (unlinkAction.status === 'success') {
+      dispatch(fetchLinkedAccountList(currentUserSeq));
+    }
+  }, [unlinkAction.status]);
 
-    //
+  const handleUnlinkStoreClick = e => {
+    dispatch(
+      unlinkStoreToMiddleAccount({
+        userSeq: currentUserSeq,
+        storeList: [e.currentTarget.id],
+      }),
+    );
   };
 
-  const handleAddStoreClick = e => {
-    navigate('link-store');
-
-    dispatch(setCurrentUserSeq(parseInt(e.target.id)));
-    dispatch(fetchNotLinkedAccountList(e.target.id));
+  const handleMoveAddLinkStore = () => {
+    navigate('linked-store');
+    /*
+      userSeq를 알 수 없기 때문에 구현이 불가능할 것으로 보임
+     */
   };
 
   const handleChangeSelect = e => {
@@ -144,7 +156,7 @@ export default function MiddleAdminLinkedList() {
       <Grid container justifyContent="space-between" alignItems="center" py={5}>
         <Grid item xs>
           <Typography fontSize="32px" fontWeight={700}>
-            중간관리자
+            중간관리자[연동된 매장]
           </Typography>
         </Grid>
 
@@ -171,8 +183,8 @@ export default function MiddleAdminLinkedList() {
 
       <Table
         columns={columns}
-        rows={middleAdmin.list}
-        getRowId={row => row.userSeq} // 변경 가능성 있음
+        rows={linkedAccount.list}
+        getRowId={row => row.storeId}
         sx={{
           borderRadius: 3,
           textAlign: 'center',
