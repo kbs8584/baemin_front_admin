@@ -78,8 +78,6 @@ export const createAccount = createAsyncThunk(
   async formData => {
     const response = await API.post('api/v1/login/signUp', formData);
 
-    console.log(response.data);
-
     return response.data;
   },
 );

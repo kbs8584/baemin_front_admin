@@ -12,6 +12,7 @@ import {
   fetchLinkedAccountList,
   unlinkStoreToMiddleAccount,
   setSearchText,
+  searchLinkedAccountList,
 } from 'store/manage';
 
 export default function MiddleAdminLinkedList() {
@@ -20,6 +21,7 @@ export default function MiddleAdminLinkedList() {
   );
   const linkedAccount = useSelector(state => state.manage.linkedAccount);
   const unlinkAction = useSelector(state => state.manage.unlinkAction);
+  const inputText = useSelector(state => state.manage.searchText);
 
   const [searchMenuIndex, setSearchMenuIndex] = useState(0);
 
@@ -151,6 +153,18 @@ export default function MiddleAdminLinkedList() {
     setSearchMenuIndex(e.target.value);
   };
 
+  const handleClickSearch = () => {
+    const data = {
+      userSeq: currentUserSeq,
+      mode: searchMenuIndex,
+      searchInput: inputText,
+      size: 10,
+      page: 0,
+    };
+
+    dispatch(searchLinkedAccountList(data));
+  };
+
   return (
     <>
       <Grid container justifyContent="space-between" alignItems="center" py={5}>
@@ -172,12 +186,12 @@ export default function MiddleAdminLinkedList() {
           <SearchSelect
             searchMenuIndex={searchMenuIndex}
             onChange={handleChangeSelect}
-            dataset={['전체', 'CMS ID', '중간관리자명', '이메일']}
+            dataset={['전체', 'CMS ID', '매장명']}
           />
         </Grid>
 
         <Grid item xs>
-          <SearchBar role={2} />
+          <SearchBar onClickSearch={handleClickSearch} />
         </Grid>
       </Grid>
 

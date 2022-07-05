@@ -4,14 +4,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 const initialState = {
   searchText: '',
   searchColumn: 0,
+
   middleAdmin: {
     status: 'idle',
     currentUserSeq: null,
     currentSelectedStoreList: [],
     allCount: null,
     list: [],
-    // linkedList: [],
-    // availableList: [],
     totalPage: null,
     error: null,
   },
@@ -102,6 +101,30 @@ export const fetchAccountList = createAsyncThunk(
       },
     });
 
+    return response.data;
+  },
+);
+
+export const searchLinkedAccountList = createAsyncThunk(
+  'manage/searchLinkedAccountList',
+  async data => {
+    const response = await API.get('/api/v1/middle/list/search', {
+      params: data,
+    });
+
+    console.log('Linked Account List', response.data);
+    return response.data;
+  },
+);
+
+export const searchWillLinkAccountList = createAsyncThunk(
+  'manage/searchWillLinkAccountList',
+  async data => {
+    const response = await API.get('/api/v1/middle/search', {
+      params: data,
+    });
+
+    console.log('Will Link Account List', response.data);
     return response.data;
   },
 );
@@ -214,6 +237,47 @@ export const manageSlice = createSlice({
         ({ unlinkAction }, { payload }) => {
           // add error message
           unlinkAction.status = 'fail';
+        },
+      )
+      /////////////////////////////// Search ///////////////////////////////////
+      .addCase(searchLinkedAccountList.pending, ({ linkedAccount }) => {
+        linkedAccount.status = 'loading';
+      })
+      .addCase(
+        searchLinkedAccountList.fulfilled,
+        ({ linkedAccount }, { payload }) => {
+          linkedAccount.status = 'success';
+
+          linkedAccount.list = payload.content;
+          linkedAccount.totalPage = payload.totalPages;
+          linkedAccount.allCount = payload.totalElements;
+        },
+      )
+      .addCase(
+        searchLinkedAccountList.rejected,
+        ({ linkedAccount }, { payload }) => {
+          // add error message
+          linkedAccount.status = 'fail';
+        },
+      )
+      .addCase(searchWillLinkAccountList.pending, ({ notLinkedAccount }) => {
+        notLinkedAccount.status = 'loading';
+      })
+      .addCase(
+        searchWillLinkAccountList.fulfilled,
+        ({ notLinkedAccount }, { payload }) => {
+          notLinkedAccount.status = 'success';
+
+          notLinkedAccount.list = payload.content;
+          notLinkedAccount.totalPage = payload.totalPages;
+          notLinkedAccount.allCount = payload.totalElements;
+        },
+      )
+      .addCase(
+        searchWillLinkAccountList.rejected,
+        ({ notLinkedAccount }, { payload }) => {
+          // add error message
+          notLinkedAccount.status = 'fail';
         },
       );
   },

@@ -5,24 +5,12 @@ import { Button, Input } from 'components/Atoms';
 import SearchIcon from '@mui/icons-material/Search';
 import { fetchAccountList, setSearchText } from 'store/manage';
 
-export default function SearchBar({ role }) {
-  const inputText = useSelector(state => state.manage.searchText);
+/*
+  role :  0(일반), 1(슈퍼관리자), 2(중간관리자)
+*/
 
+export default function SearchBar({ onClickSearch }) {
   const dispatch = useDispatch();
-
-  const handleClickSearch = () => {
-    const data = {
-      cpage: 1,
-      rowItem: 10,
-      sortMode: 1,
-      searchInput: inputText,
-      searchMode: 0,
-      orderMode: false,
-      role: role,
-    };
-
-    dispatch(fetchAccountList(data));
-  };
 
   const handleChangeText = e => {
     dispatch(setSearchText(e.target.value));
@@ -55,7 +43,7 @@ export default function SearchBar({ role }) {
 
       <Grid item xs={1}>
         <Button
-          onClick={handleClickSearch}
+          onClick={onClickSearch}
           sx={{ bgcolor: 'grey.200', borderRadius: '0 30px 30px 0' }}
         >
           <Typography color="common.black">검색</Typography>

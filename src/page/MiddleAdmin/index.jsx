@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { Typography, Grid, Box } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 
 import { Button } from 'components/Atoms';
 import { SearchBar, SearchSelect } from 'components/Molecules';
@@ -13,10 +13,12 @@ import {
   fetchNotLinkedAccountList,
   setSearchText,
   setCurrentUserSeq,
+  fetchAccountList,
 } from 'store/manage';
 
 export default function MiddleAdmin() {
   const middleAdmin = useSelector(state => state.manage.middleAdmin);
+  const inputText = useSelector(state => state.manage.searchText);
 
   const [searchMenuIndex, setSearchMenuIndex] = useState(0);
 
@@ -144,6 +146,20 @@ export default function MiddleAdmin() {
     setSearchMenuIndex(e.target.value);
   };
 
+  const handleClickSearch = () => {
+    const data = {
+      cpage: 1,
+      rowItem: 10,
+      sortMode: 1,
+      searchInput: inputText,
+      searchMode: searchMenuIndex,
+      orderMode: false,
+      role: 2,
+    };
+
+    dispatch(fetchAccountList(data));
+  };
+
   return (
     <>
       <Grid container justifyContent="space-between" alignItems="center" py={5}>
@@ -165,12 +181,12 @@ export default function MiddleAdmin() {
           <SearchSelect
             searchMenuIndex={searchMenuIndex}
             onChange={handleChangeSelect}
-            dataset={['전체', 'CMS ID', '중간관리자명', '이메일']}
+            dataset={['전체', 'CMS ID', '중간관리자명']}
           />
         </Grid>
 
         <Grid item xs>
-          <SearchBar role={2} />
+          <SearchBar role={2} onClickSearch={handleClickSearch} />
         </Grid>
       </Grid>
 
