@@ -33,6 +33,7 @@ export default function InputField({
               onChange={onChangeInput}
               placeholder={placeholder}
               disabled={disabled}
+              error={error}
               sx={{
                 'input::-webkit-inner-spin-button': {
                   WebkitAppearance: 'none',

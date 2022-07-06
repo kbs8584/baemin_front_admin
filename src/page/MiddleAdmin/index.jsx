@@ -194,7 +194,7 @@ export default function MiddleAdmin() {
         columns={columns}
         rows={middleAdmin.list}
         onRowClick={handleRowClick}
-        getRowId={row => row.userSeq} // 변경 가능성 있음
+        getRowId={row => row.userSeq}
         sx={{
           borderRadius: 3,
           textAlign: 'center',

@@ -1,7 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Grid, IconButton, Typography } from '@mui/material';
+import {
+  Grid,
+  IconButton,
+  Typography,
+  Snackbar,
+  Fade,
+  Alert as _Alert,
+} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 import IssuedAccount from 'page/MiddleAdmin/IssuedAccount';
@@ -12,12 +19,45 @@ import { InputField } from 'components/Molecules';
 
 import { setIsOpenDialog } from 'store/app';
 import {
+  initDuplicatedCheckStatus,
   checkIdIsDuplicated,
   checkEmailIsDuplicated,
   createAccount,
   setMiddleAdminInputValue,
   setCanCreateAccount,
 } from 'store/account';
+import { setSnackbar, setCloseSnackbar } from 'store/app';
+
+const Alert = () => {
+  const snackbar = useSelector(state => state.app.snackbar);
+  const dispatch = useDispatch();
+
+  const handleClose = (e, reason) => {
+    if (reason === 'clickaway' || reason === 'escapeKeyDown') {
+      return;
+    }
+
+    dispatch(setCloseSnackbar());
+  };
+
+  return (
+    <Snackbar
+      open={snackbar.open}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+      TransitionComponent={Fade}
+      autoHideDuration={4000}
+      message={<Typography>{snackbar.message}</Typography>}
+    >
+      <_Alert icon={false} variant="filled" color="primary">
+        {snackbar.message}
+      </_Alert>
+    </Snackbar>
+  );
+};
 
 export default function MiddleAdminAccount() {
   const middleAdmin = useSelector(state => state.account.middleAdmin);
@@ -45,12 +85,19 @@ export default function MiddleAdminAccount() {
   }, [isSuccess]);
 
   useEffect(() => {
-    console.log('Duplicated Check Status');
-
     if (middleAdmin.duplicatedCheck.status === 'success') {
-      alert(middleAdmin.duplicatedCheck.message);
+      // alert(middleAdmin.duplicatedCheck.message);
+
+      dispatch(
+        setSnackbar({
+          open: true,
+          message: middleAdmin.duplicatedCheck.message,
+        }),
+      );
+
+      dispatch(initDuplicatedCheckStatus());
     }
-  }, [middleAdmin.duplicatedCheck.status]);
+  }, [middleAdmin.duplicatedCheck]);
 
   const handleIdIsDuplicated = e => {
     dispatch(
@@ -126,6 +173,8 @@ export default function MiddleAdminAccount() {
         <IssuedAccount onClose={handleCloseDialog} />
       </Dialog>
 
+      <Alert />
+
       <Grid container alignItems="center" my={4}>
         <Grid item>
           <IconButton>
@@ -150,6 +199,7 @@ export default function MiddleAdminAccount() {
             name="id"
             hasButton
             buttonName="중복검사"
+            error
             onChangeInput={handleChangeInput}
             onClickButton={handleIdIsDuplicated}
           />

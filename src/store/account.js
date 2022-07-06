@@ -72,26 +72,17 @@ export const checkIdIsDuplicated = createAsyncThunk(
     });
 
     return response;
-
-    // return {
-    //   name: fieldData.name,
-    //   data: true, // temp
-    // };
   },
 );
 
 export const checkEmailIsDuplicated = createAsyncThunk(
   'account/checkEmailIsDuplicated',
   async (data, { rejectWithValue }) => {
-    try {
-      const response = API.get('api/v1/login/checkEmail', {
-        params: data,
-      });
+    const response = API.get('api/v1/login/checkEmail', {
+      params: data,
+    });
 
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
+    return response;
   },
 );
 
@@ -113,6 +104,9 @@ export const accountSlice = createSlice({
     },
     initErrorMessage: ({ cmsAdmin }) => {
       cmsAdmin.errorMessage = '';
+    },
+    initDuplicatedCheckStatus: ({ middleAdmin }) => {
+      middleAdmin.duplicatedCheck.status = 'idle';
     },
     setCMSInputValue: ({ cmsAdmin }, { payload }) => {
       cmsAdmin[payload.name] = payload.value;
@@ -192,34 +186,43 @@ export const accountSlice = createSlice({
           middleAdmin.duplicatedCheck.status = 'success';
 
           if (payload.data.idCheck) {
+            middleAdmin.duplicatedCheck.id = true;
             middleAdmin.duplicatedCheck.message = '사용 가능한 ID 입니다.';
-          } else {
-            middleAdmin.duplicatedCheck.message = '이미 존재하는 ID 입니다.';
+
+            return;
           }
+
+          middleAdmin.duplicatedCheck.id = false;
+          middleAdmin.duplicatedCheck.message =
+            '이미 존재하는 ID 입니다. 다른 ID를 사용해주세요.';
         },
       )
-      .addCase(checkIdIsDuplicated.rejected, ({ middleAdmin }, { payload }) => {
-        middleAdmin.status = 'fail';
+      .addCase(checkIdIsDuplicated.rejected, ({ middleAdmin }) => {
+        middleAdmin.duplicatedCheck.status = 'fail';
       })
       .addCase(checkEmailIsDuplicated.pending, ({ middleAdmin }) => {
-        middleAdmin.status = 'loading';
+        middleAdmin.duplicatedCheck.status = 'loading';
       })
       .addCase(
         checkEmailIsDuplicated.fulfilled,
         ({ middleAdmin }, { payload }) => {
-          console.log('Fulfilled', payload);
-          // middleAdmin.status = 'success';
-          // middleAdmin.duplicatedCheck[payload.name] = payload.data;
-        },
-      )
-      .addCase(
-        checkEmailIsDuplicated.rejected,
-        ({ middleAdmin }, { payload }) => {
-          console.log('Rejected', payload);
+          middleAdmin.duplicatedCheck.status = 'success';
 
-          // middleAdmin.status = 'fail';
+          if (payload.data.emailCheck) {
+            middleAdmin.duplicatedCheck.email = true;
+            middleAdmin.duplicatedCheck.message = '사용 가능한 이메일 입니다.';
+
+            return;
+          }
+
+          middleAdmin.duplicatedCheck.email = false;
+          middleAdmin.duplicatedCheck.message =
+            '이미 존재하는 이메일 입니다. 다른 이메일을 사용해주세요.';
         },
       )
+      .addCase(checkEmailIsDuplicated.rejected, ({ middleAdmin }) => {
+        middleAdmin.duplicatedCheck.status = 'fail';
+      })
       .addCase(createAccount.pending, state => {
         state.status = 'loading';
       })
@@ -237,6 +240,7 @@ export const accountSlice = createSlice({
 export const {
   initializeState,
   initErrorMessage,
+  initDuplicatedCheckStatus,
   setCMSInputValue,
   setMiddleAdminInputValue,
   setCanCreateAccount,

@@ -1,5 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUsersInfo } from 'api/auth';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   currentMenu: '/',
@@ -9,7 +8,10 @@ const initialState = {
     resultOfIssueMiddleAdminId: false,
   },
 
-  storeList: [],
+  snackbar: {
+    open: false,
+    message: '',
+  },
 };
 
 export const appSlice = createSlice({
@@ -22,8 +24,22 @@ export const appSlice = createSlice({
     setIsOpenDialog: ({ isOpenDialog }, action) => {
       isOpenDialog[action.payload.name] = action.payload.status;
     },
+    setSnackbar: (state, { payload }) => {
+      state.snackbar = {
+        open: payload.open,
+        message: payload.message,
+      };
+    },
+    setCloseSnackbar: state => {
+      state.snackbar = initialState['snackbar'];
+    },
   },
 });
 
-export const { setCurrentMenu, setIsOpenDialog } = appSlice.actions;
+export const {
+  setCurrentMenu,
+  setIsOpenDialog,
+  setSnackbar,
+  setCloseSnackbar,
+} = appSlice.actions;
 export default appSlice.reducer;
