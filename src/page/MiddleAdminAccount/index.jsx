@@ -12,7 +12,8 @@ import { InputField } from 'components/Molecules';
 
 import { setIsOpenDialog } from 'store/app';
 import {
-  checkIsFieldDuplicated,
+  checkIdIsDuplicated,
+  checkEmailIsDuplicated,
   createAccount,
   setMiddleAdminInputValue,
   setCanCreateAccount,
@@ -43,11 +44,26 @@ export default function MiddleAdminAccount() {
     }
   }, [isSuccess]);
 
-  const handleCheckIsDuplicated = e => {
+  useEffect(() => {
+    console.log('Duplicated Check Status');
+
+    if (middleAdmin.duplicatedCheck.status === 'success') {
+      alert(middleAdmin.duplicatedCheck.message);
+    }
+  }, [middleAdmin.duplicatedCheck.status]);
+
+  const handleIdIsDuplicated = e => {
     dispatch(
-      checkIsFieldDuplicated({
-        name: e.target.name,
-        value: middleAdmin[e.target.name],
+      checkIdIsDuplicated({
+        userId: middleAdmin[e.target.name],
+      }),
+    );
+  };
+
+  const handleCheckEmailIsDuplicated = e => {
+    dispatch(
+      checkEmailIsDuplicated({
+        email: middleAdmin[e.target.name],
       }),
     );
   };
@@ -135,7 +151,7 @@ export default function MiddleAdminAccount() {
             hasButton
             buttonName="중복검사"
             onChangeInput={handleChangeInput}
-            onClickButton={handleCheckIsDuplicated}
+            onClickButton={handleIdIsDuplicated}
           />
         </Grid>
 
@@ -144,10 +160,7 @@ export default function MiddleAdminAccount() {
             title="관리자명"
             name="name"
             placeholder="관리자명을 입력해주세요."
-            hasButton
-            buttonName="중복검사"
             onChangeInput={handleChangeInput}
-            onClickButton={handleCheckIsDuplicated}
           />
         </Grid>
 
@@ -159,7 +172,7 @@ export default function MiddleAdminAccount() {
             hasButton
             buttonName="중복검사"
             onChangeInput={handleChangeInput}
-            onClickButton={handleCheckIsDuplicated}
+            onClickButton={handleCheckEmailIsDuplicated}
           />
         </Grid>
 

@@ -26,9 +26,10 @@ const initialState = {
     password: '',
 
     duplicatedCheck: {
+      status: 'idle',
       id: false,
-      name: false,
       email: false,
+      message: '',
     },
     error: '',
   },
@@ -63,13 +64,34 @@ export const checkIsDuplicatedAccountId = createAsyncThunk(
 );
 
 // 중복검사가 정확히 어떤 값에 이루어지는지 기획 및 백단 검토 필요, 지금은 임시로!
-export const checkIsFieldDuplicated = createAsyncThunk(
-  'account/checkIsFieldDuplicated',
-  async fieldData => {
-    return {
-      name: fieldData.name,
-      data: true, // temp
-    };
+export const checkIdIsDuplicated = createAsyncThunk(
+  'account/checkIdIsDuplicated',
+  async data => {
+    const response = API.get('api/v1/login/checkUserId', {
+      params: data,
+    });
+
+    return response;
+
+    // return {
+    //   name: fieldData.name,
+    //   data: true, // temp
+    // };
+  },
+);
+
+export const checkEmailIsDuplicated = createAsyncThunk(
+  'account/checkEmailIsDuplicated',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = API.get('api/v1/login/checkEmail', {
+        params: data,
+      });
+
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   },
 );
 
@@ -115,10 +137,6 @@ export const accountSlice = createSlice({
       .addCase(
         fetchStoreNameAndEmail.fulfilled,
         ({ cmsAdmin }, { payload }) => {
-          // 매장 ID 조회는 배민 로봇 에이전트를 거치고 나오는 응답임
-          // '등록되지 않은 매장 ID'는 텐스의 Server만으로는 알 수 없음.
-          // Error 처리가 현재 기형적임
-
           if (payload.status === 400) {
             cmsAdmin.status = 'fail';
 
@@ -137,8 +155,6 @@ export const accountSlice = createSlice({
           cmsAdmin.storeName = payload.name;
 
           if (!payload.email)
-            // 배민 로봇 에이전트 -> 이메일 계정이 없는경우 가입이 불가능하게 만들면
-            // 아래 코드가 필요없음
             alert(
               '등록된 이메일이 없습니다. 매장 대표자 이메일 등록 후, CMS아이디 생성이 가능합니다.',
             );
@@ -167,20 +183,41 @@ export const accountSlice = createSlice({
           cmsAdmin.status = 'fail';
         },
       )
-      .addCase(checkIsFieldDuplicated.pending, ({ middleAdmin }) => {
+      .addCase(checkIdIsDuplicated.pending, ({ middleAdmin }) => {
+        middleAdmin.duplicatedCheck.status = 'loading';
+      })
+      .addCase(
+        checkIdIsDuplicated.fulfilled,
+        ({ middleAdmin }, { payload }) => {
+          middleAdmin.duplicatedCheck.status = 'success';
+
+          if (payload.data.idCheck) {
+            middleAdmin.duplicatedCheck.message = '사용 가능한 ID 입니다.';
+          } else {
+            middleAdmin.duplicatedCheck.message = '이미 존재하는 ID 입니다.';
+          }
+        },
+      )
+      .addCase(checkIdIsDuplicated.rejected, ({ middleAdmin }, { payload }) => {
+        middleAdmin.status = 'fail';
+      })
+      .addCase(checkEmailIsDuplicated.pending, ({ middleAdmin }) => {
         middleAdmin.status = 'loading';
       })
       .addCase(
-        checkIsFieldDuplicated.fulfilled,
+        checkEmailIsDuplicated.fulfilled,
         ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'success';
-          middleAdmin.duplicatedCheck[payload.name] = payload.data;
+          console.log('Fulfilled', payload);
+          // middleAdmin.status = 'success';
+          // middleAdmin.duplicatedCheck[payload.name] = payload.data;
         },
       )
       .addCase(
-        checkIsFieldDuplicated.rejected,
+        checkEmailIsDuplicated.rejected,
         ({ middleAdmin }, { payload }) => {
-          middleAdmin.status = 'fail';
+          console.log('Rejected', payload);
+
+          // middleAdmin.status = 'fail';
         },
       )
       .addCase(createAccount.pending, state => {

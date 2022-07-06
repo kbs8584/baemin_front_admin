@@ -171,7 +171,7 @@ export default function MiddleAdmin() {
 
         <Grid item xs={2}>
           <Button variant="contained" onClick={handleMoveIssueAccount}>
-            <Typography fontSize="14px">신규 중간 관리자 ID 생성</Typography>
+            <Typography fontSize="13px">신규 중간 관리자 ID 생성</Typography>
           </Button>
         </Grid>
       </Grid>
