@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Grid,
@@ -25,6 +26,7 @@ import {
   createAccount,
   setMiddleAdminInputValue,
   setCanCreateAccount,
+  initializeState,
 } from 'store/account';
 import { setSnackbar, setCloseSnackbar } from 'store/app';
 
@@ -61,6 +63,9 @@ const Alert = () => {
 
 export default function MiddleAdminAccount() {
   const middleAdmin = useSelector(state => state.account.middleAdmin);
+  const { status, id, email, message } = useSelector(
+    state => state.account.middleAdmin.duplicatedCheck,
+  );
   const isSuccess = useSelector(state => state.account.isSuccessCreateAccount);
   const canCreateAccount = useSelector(state => state.account.canCreateAccount);
   const isOpen = useSelector(
@@ -68,15 +73,13 @@ export default function MiddleAdminAccount() {
   );
 
   const dispatch = useDispatch();
+  let navigate = useNavigate();
 
   useEffect(() => {
-    if (
-      middleAdmin.password &&
-      inspectDuplicatedCheckAllTrue(middleAdmin.duplicatedCheck)
-    ) {
+    if (middleAdmin.password && id && email) {
       dispatch(setCanCreateAccount(true));
     }
-  }, [middleAdmin.duplicatedCheck, middleAdmin.password]);
+  }, [id, email, middleAdmin.password]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -85,19 +88,19 @@ export default function MiddleAdminAccount() {
   }, [isSuccess]);
 
   useEffect(() => {
-    if (middleAdmin.duplicatedCheck.status === 'success') {
+    if (status === 'success') {
       // alert(middleAdmin.duplicatedCheck.message);
 
       dispatch(
         setSnackbar({
           open: true,
-          message: middleAdmin.duplicatedCheck.message,
+          message: message,
         }),
       );
 
       dispatch(initDuplicatedCheckStatus());
     }
-  }, [middleAdmin.duplicatedCheck]);
+  }, [status]);
 
   const handleIdIsDuplicated = e => {
     dispatch(
@@ -148,6 +151,10 @@ export default function MiddleAdminAccount() {
     dispatch(createAccount(form));
   };
 
+  const handleMoveBackward = () => {
+    navigate(-1);
+  };
+
   const handleOpenDialog = () => {
     dispatch(
       setIsOpenDialog({
@@ -164,6 +171,17 @@ export default function MiddleAdminAccount() {
         status: false,
       }),
     );
+
+    initializeMiddleAdminState();
+  };
+
+  const initializeMiddleAdminState = () => {
+    dispatch(
+      initializeState({
+        name: 'middleAdmin',
+      }),
+    );
+    dispatch(setCanCreateAccount(false));
   };
 
   return (
@@ -177,7 +195,7 @@ export default function MiddleAdminAccount() {
 
       <Grid container alignItems="center" my={4}>
         <Grid item>
-          <IconButton>
+          <IconButton onClick={handleMoveBackward}>
             <ArrowBackIosNewIcon
               sx={{ color: 'common.black' }}
               transform="scale(1.2)"
@@ -196,6 +214,7 @@ export default function MiddleAdminAccount() {
           <InputField
             title="중간관리자 ID"
             placeholder="ID를 입력해주세요"
+            value={middleAdmin.id}
             name="id"
             hasButton
             buttonName="중복검사"
@@ -208,8 +227,9 @@ export default function MiddleAdminAccount() {
         <Grid item xs={9} pb={1}>
           <InputField
             title="관리자명"
-            name="name"
             placeholder="관리자명을 입력해주세요."
+            value={middleAdmin.name}
+            name="name"
             onChangeInput={handleChangeInput}
           />
         </Grid>
@@ -217,8 +237,9 @@ export default function MiddleAdminAccount() {
         <Grid item xs={9} pb={1}>
           <InputField
             title="이메일"
-            name="email"
             placeholder="대표이메일을 입력해주세요."
+            value={middleAdmin.email}
+            name="email"
             hasButton
             buttonName="중복검사"
             onChangeInput={handleChangeInput}
@@ -229,9 +250,9 @@ export default function MiddleAdminAccount() {
         <Grid item xs={9} pb={1}>
           <InputField
             title="비밀번호"
-            name="password"
-            value={middleAdmin.password}
             placeholder="비밀번호를 입력해주세요."
+            value={middleAdmin.password}
+            name="password"
             hasButton
             buttonName="자동생성"
             onChangeInput={handleChangeInput}
