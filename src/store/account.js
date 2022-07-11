@@ -167,8 +167,14 @@ export const accountSlice = createSlice({
         checkIsDuplicatedAccountId.fulfilled,
         ({ cmsAdmin }, { payload }) => {
           cmsAdmin.status = 'success';
-          cmsAdmin.duplicatedCheck = payload.idCheck;
-          alert('사용 가능한 ID 입니다.');
+
+          if (payload.idCheck) {
+            alert('사용 가능한 ID 입니다.');
+            cmsAdmin.duplicatedCheck = payload.idCheck;
+          } else {
+            alert('이미 존재하는 ID 입니다.');
+            cmsAdmin.duplicatedCheck = payload.idCheck;
+          }
         },
       )
       .addCase(

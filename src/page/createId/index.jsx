@@ -65,7 +65,7 @@ export default function CreateId() {
     form.append('email', cmsAdmin.storeEmail);
     form.append('storeId', cmsAdmin.storeId);
     form.append('storeName', cmsAdmin.storeEmail);
-    form.append('role', '1');
+    form.append('role', '0');
 
     dispatch(createAccount(form));
   };
